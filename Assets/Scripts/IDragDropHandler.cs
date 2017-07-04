@@ -4,5 +4,5 @@ public interface IDragDropHandler {
 
 	void OnBeginDrag();
 	void OnDrag();
-	void OnDrop();
+	void OnDrop(Vector3 position);
 }

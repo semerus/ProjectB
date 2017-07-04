@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
 public abstract class Area : MonoBehaviour {
-	// timer
+// timer
 
-	// ontrigger2d
-	// activate
+// ontrigger2d
+	protected void Activate() {
+	}
 }
+
+

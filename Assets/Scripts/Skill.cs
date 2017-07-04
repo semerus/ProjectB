@@ -6,6 +6,11 @@ public abstract class Skill : MonoBehaviour {
 	// skill state
 	SkillState state;
 
-	void OnClick(); // list timer
-	void Activate ();
+	public void OnClick() {
+		// when ui button is clicked
+		// start channeling
+	} 
+	public void Activate (IBattleHandler target) {
+		// activate skill (launch projectile, area etc)
+	}
 }

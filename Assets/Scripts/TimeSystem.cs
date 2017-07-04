@@ -1,15 +1,28 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeSystem : MonoBehaviour {
+public sealed class TimeSystem : MonoBehaviour {
 	// singleton
+	private static TimeSystem instance;
 
-	// list of timers
-
-	public void AddTimer () {
-		
+	public static TimeSystem GetTimeSystem() {
+		if (!instance) {
+			instance = GameObject.FindObjectOfType (typeof(TimeSystem)) as TimeSystem;
+			if (!instance)
+				Debug.LogError ("No active TimeSystem in the scene");
+		}
+		return instance;
 	}
 
-	public void DeleteTimer() {
+	// list of timers
+	private List<ITimeHandler> timers = new List<ITimeHandler>();
+
+
+	public void AddTimer (ITimeHandler handler) {
+		timers.Add (handler);
+	}
+
+	public void DeleteTimer(ITimeHandler handler) {
+		timers.Remove (handler);
 	}
 }

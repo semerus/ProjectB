@@ -1,6 +1,18 @@
 ﻿using UnityEngine;
 
-public class ControlSystem : MonoBehaviour {
+public sealed class ControlSystem : MonoBehaviour {
+	#if UNITY_EDITOR
+	// use mouse click
+	#endif
+
+	Transform[] target = new Transform[2];
+	int[] touchId = new int[2]{ -1, -1 };
+	Vector3[] startPos = new Vector3[2];
+
+	#if UNITY_ANDROID
+	// use touch
+		
+	#endif
 	// singleton
 	// active during battlescene
 
@@ -14,11 +26,104 @@ public class ControlSystem : MonoBehaviour {
 
 	// Disable input
 
+
+	void Update() {
+		#if UNITY_EDITOR
+		// use mouse click
+		ProcessClick ();
+		#endif
+
+
+
+		#if UNITY_ANDROID
+		ProcessTouch();
+		#endif
+	}
+
 	#if UNITY_EDITOR
 	// use mouse click
 	#endif
 
-	#if UNITY_ANDROID
-	// use touch
-	#endif
+	private void ProcessClick() {
+		if (Input.GetMouseButtonDown (0)) {
+			startPos [0] = Input.mousePosition;
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
+			if (hitInfo.collider != null) {
+				target [0] = hitInfo.collider.transform.root;
+			}
+		} else if (Input.GetMouseButtonUp(0)){
+			if (target [0] == null)
+				return;
+			// tap
+			if (Vector3.Distance(Input.mousePosition, startPos [0]) < 0.1f) {
+				ITapHandler tap = target [0].GetComponent<ITapHandler> ();
+				if (tap != null) {
+					tap.OnTap ();
+				}
+			} else { // drop
+				IDragDropHandler drop = target [0].GetComponent<IDragDropHandler> ();
+				if (drop != null) {
+					drop.OnDrop (Input.mousePosition);
+				}
+			}
+			target [0] = null;
+		}
+	}
+
+
+	private void ProcessTouch() {
+		for (int i = 0; i < Input.touchCount; i++) {
+			switch (Input.GetTouch (i).phase) {
+			case TouchPhase.Began:
+				SaveFirstTouch (i);
+				break;
+			case TouchPhase.Moved:
+				// drag
+				break;
+			case TouchPhase.Ended:
+				ResetTouch (Input.GetTouch(i).fingerId, i);
+				break;
+			}
+		}
+	}
+
+	private void SaveFirstTouch(int index) {
+		for (int i = 0; i < touchId.Length; i++) {
+			// unused touchId
+			if (touchId [i] == -1) {
+				touchId [i] = Input.GetTouch(index).fingerId;
+				startPos [i] = Input.GetTouch (index).position;
+				Ray ray = Camera.main.ScreenPointToRay (startPos [i]);
+				RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
+				if (hitInfo.collider != null) {
+					target[i] = hitInfo.collider.transform.root;
+				}
+				break;
+			}
+		}
+	}
+
+	private void ResetTouch(int fingerId, int index) {
+		for (int i = 0; i < touchId.Length; i++) {
+			if (touchId [i] == fingerId) {
+				// reset touch and give drop
+				if (Vector3.Distance(Input.GetTouch(index).position, startPos [i]) < 0.1f) {
+					ITapHandler tap = target [i].GetComponent<ITapHandler> ();
+					if (tap != null) {
+						tap.OnTap ();
+					}
+				} else {
+					IDragDropHandler drop = target [i].GetComponent<IDragDropHandler> ();
+					if (drop != null) {
+						drop.OnDrop (Input.GetTouch(index).position);
+					}
+				}
+				target [i] = null;
+				startPos [i] = new Vector3();
+				touchId [i] = -1;
+				break;
+			}
+		}
+	}
 }

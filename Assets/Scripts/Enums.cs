@@ -14,6 +14,7 @@ public enum Team {
 
 public enum CharacterState {
 	Idle,
+	Moving,
 	Channeling,
-	Dead,
+	Dead
 }
