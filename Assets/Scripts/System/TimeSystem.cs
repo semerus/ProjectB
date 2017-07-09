@@ -17,6 +17,15 @@ public sealed class TimeSystem : MonoBehaviour {
 	// list of timers
 	private List<ITimeHandler> timers = new List<ITimeHandler>();
 
+	void Update() {
+		RunTime ();
+	}
+
+	private void RunTime() {
+		for (int i = 0; i < timers.Count; i++) {
+			timers [i].RunTime ();
+		}
+	}
 
 	public void AddTimer (ITimeHandler handler) {
 		timers.Add (handler);

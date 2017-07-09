@@ -5,6 +5,7 @@ public abstract class Skill : MonoBehaviour {
 
 	// skill state
 	SkillState state;
+	float range;
 
 	public void OnClick() {
 		// when ui button is clicked

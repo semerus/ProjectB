@@ -1,18 +1,12 @@
 ﻿using UnityEngine;
 
 public abstract class Enemy : Character, IDoubleTapHandler {
-	#region implemented abstract members of Character
-	public override void Spawn ()
-	{
-		throw new System.NotImplementedException ();
-	}
-	#endregion
 
 	#region IDoubleTapHandler implementation
 
-	public void OnDoubleTap ()
+	public void OnDoubleTap (Vector3 pixelPos)
 	{
-		throw new System.NotImplementedException ();
+		BattleManager.GetBattleManager ().AttackByAllFriendly (this as IBattleHandler);
 	}
 
 	#endregion

@@ -2,5 +2,5 @@
 
 public interface IDoubleTapHandler{
 
-	void OnDoubleTap();
+	void OnDoubleTap(Vector3 pixelPos);
 }

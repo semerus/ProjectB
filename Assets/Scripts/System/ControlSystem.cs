@@ -9,6 +9,12 @@ public sealed class ControlSystem : MonoBehaviour {
 	int[] touchId = new int[2]{ -1, -1 };
 	Vector3[] startPos = new Vector3[2];
 
+	float lastClickTime = 0f;
+	bool oneClick = false;
+	float clickDelay = 0.2f;
+	int mask_area = 1 << 8;
+	int mask_char = 2 << 8;
+
 	#if UNITY_ANDROID
 	// use touch
 		
@@ -48,18 +54,31 @@ public sealed class ControlSystem : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 			startPos [0] = Input.mousePosition;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
+			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, mask_char);
+
 			if (hitInfo.collider != null) {
 				target [0] = hitInfo.collider.transform.root;
+			} else {
+				hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, mask_area);
+				if (hitInfo.collider != null) {
+					target [0] = hitInfo.collider.transform.root;
+				}
 			}
 		} else if (Input.GetMouseButtonUp(0)){
 			if (target [0] == null)
 				return;
 			// tap
 			if (Vector3.Distance(Input.mousePosition, startPos [0]) < 0.1f) {
-				ITapHandler tap = target [0].GetComponent<ITapHandler> ();
-				if (tap != null) {
-					tap.OnTap ();
+				if (!oneClick) {
+					oneClick = true;
+					lastClickTime = Time.time;
+				} else {
+					// double tap
+					IDoubleTapHandler doubleTap = target[0].GetComponent<IDoubleTapHandler>();
+					if (doubleTap != null) {
+						doubleTap.OnDoubleTap (Input.mousePosition);
+					}
+					oneClick = false;
 				}
 			} else { // drop
 				IDragDropHandler drop = target [0].GetComponent<IDragDropHandler> ();
@@ -67,10 +86,21 @@ public sealed class ControlSystem : MonoBehaviour {
 					drop.OnDrop (Input.mousePosition);
 				}
 			}
-			target [0] = null;
+		}
+		if (oneClick) {
+			if (Time.time - lastClickTime > clickDelay) {
+				// tap
+				ITapHandler tap = target [0].GetComponent<ITapHandler> ();
+				if (tap != null) {
+					tap.OnTap ();
+				}
+				oneClick = false;
+				target [0] = null;
+			}
 		}
 	}
 
+	// need fixing on touch
 
 	private void ProcessTouch() {
 		for (int i = 0; i < Input.touchCount; i++) {
