@@ -4,6 +4,17 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	protected IBattleHandler target;
 	protected Skill autoAttack;
+	protected HeroUI heroUI; // load it from spawn
+
+	#region implemented abstract members of Character
+
+	protected override void UpdateHpUI ()
+	{
+		float percent = (float)hp / (float)maxHp;
+		heroUI.UpdateHp (percent);
+	}
+
+	#endregion
 
 	#region ITapHandler implementation
 	public void OnTap ()
@@ -25,6 +36,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	{
 		Vector3 p = Camera.main.ScreenToWorldPoint (pixelPos);
 		p = new Vector3 (p.x, p.y, 0f);
+
+		Background.GetBackground ().pointer.PositionPointer (p, transform.position);
 	}
 
 	// receives pixel coordinates
@@ -47,12 +60,20 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
 			Move (p);
 		}
+
+		Background.GetBackground ().pointer.DeactivatePointer ();
 	}
 
 	#endregion
 
 	public void SetSkill(Skill[] skills) {
 		// set skill on load
+	}
+
+	public override void Spawn ()
+	{
+		base.Spawn ();
+		heroUI = GetComponentInChildren<HeroUI> ();
 	}
 
 	public virtual void AutoAttack (IBattleHandler target) {
