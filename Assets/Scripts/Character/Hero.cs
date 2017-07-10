@@ -2,7 +2,7 @@
 
 public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
-	protected IBattleHandler target;
+
 	protected Skill autoAttack;
 	protected HeroUI heroUI; // load it from spawn
 

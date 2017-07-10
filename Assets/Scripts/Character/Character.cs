@@ -9,7 +9,18 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
+	protected IBattleHandler target;
 	protected Vector3 moveTarget;
+
+	#region Getters and Setters
+
+	public IBattleHandler Target {
+		get {
+			return target;
+		}
+	}
+
+	#endregion
 
 	#region IBattleHandler implementation
 

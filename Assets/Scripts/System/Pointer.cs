@@ -11,6 +11,10 @@ public class Pointer : MonoBehaviour {
 		line.sortingLayerName = "UI";
 	}
 
+	void Start() {
+		gameObject.SetActive (false);
+	}
+
 	public void PositionPointer(Vector3 pos, Vector3 sender) {
 		if (!gameObject.activeSelf) {
 			gameObject.SetActive (true);
