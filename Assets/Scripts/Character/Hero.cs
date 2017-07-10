@@ -21,28 +21,29 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		throw new System.NotImplementedException ();
 	}
 
-	public void OnDrag ()
+	public void OnDrag (Vector3 pixelPos)
 	{
-		throw new System.NotImplementedException ();
+		Vector3 p = Camera.main.ScreenToWorldPoint (pixelPos);
+		p = new Vector3 (p.x, p.y, 0f);
 	}
 
 	// receives pixel coordinates
-	public void OnDrop (Vector3 position)
+	public void OnDrop (Vector3 pixelPos)
 	{
 		// if move only one moveable state
 		Vector3 p = new Vector3();
-		Ray ray = Camera.main.ScreenPointToRay (position);
+		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
 		RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
 		if (hitInfo.collider != null) {
 			IBattleHandler target = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
 			if (target != null && target.Team != Team.Friendly) {
 				AutoAttack (target);
 			} else {
-				p = Camera.main.ScreenToWorldPoint (position);
+				p = Camera.main.ScreenToWorldPoint (pixelPos);
 				Move (new Vector3(p.x, p.y, 0f));
 			}
 		} else {
-			p = Camera.main.ScreenToWorldPoint (position);
+			p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
 			Move (p);
 		}

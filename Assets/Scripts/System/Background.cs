@@ -1,6 +1,19 @@
 ﻿using UnityEngine;
 
 public class Background : MonoBehaviour, IDoubleTapHandler {
+
+	private static Background instance;
+
+	public static Background GetBackground() {
+		if (!instance) {
+			instance = GameObject.FindObjectOfType (typeof(Background)) as Background;
+			if (!instance)
+				Debug.LogError ("No active Background in the scene");
+		}
+		return instance;
+	}
+
+
 	#region IDoubleTapHandler implementation
 
 	public void OnDoubleTap (Vector3 pixelPos)

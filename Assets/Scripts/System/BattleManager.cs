@@ -15,6 +15,7 @@ public class BattleManager : MonoBehaviour {
 		}
 		return instance;
 	}
+
 	// list of IBattleHandler
 	List<IBattleHandler> friendly = new List<IBattleHandler> ();
 	List<IBattleHandler> neutral = new List<IBattleHandler> ();
@@ -44,6 +45,22 @@ public class BattleManager : MonoBehaviour {
 				neutral.Add (entity);
 			break;
 		}
+	}
+
+	public IBattleHandler[] GetEntities(Team team) {
+		IBattleHandler[] arr;
+		switch (team) {
+		case Team.Friendly:
+			friendly.CopyTo (arr);
+			break;
+		case Team.Hostile:
+			hostile.CopyTo (arr);
+			break;
+		case Team.Neutral:
+			neutral.CopyTo (arr);
+			break;
+		}
+		return arr;
 	}
 
 	public void AttackByAllFriendly(IBattleHandler target) {

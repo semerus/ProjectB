@@ -64,17 +64,17 @@ public sealed class ControlSystem : MonoBehaviour {
 					target [0] = hitInfo.collider.transform.root;
 				}
 			}
-		} else if (Input.GetMouseButtonUp(0)){
+		} else if (Input.GetMouseButtonUp (0)) {
 			if (target [0] == null)
 				return;
 			// tap
-			if (Vector3.Distance(Input.mousePosition, startPos [0]) < 0.1f) {
+			if (Vector3.Distance (Input.mousePosition, startPos [0]) < 0.1f) {
 				if (!oneClick) {
 					oneClick = true;
 					lastClickTime = Time.time;
 				} else {
 					// double tap
-					IDoubleTapHandler doubleTap = target[0].GetComponent<IDoubleTapHandler>();
+					IDoubleTapHandler doubleTap = target [0].GetComponent<IDoubleTapHandler> ();
 					if (doubleTap != null) {
 						doubleTap.OnDoubleTap (Input.mousePosition);
 					}
@@ -84,6 +84,16 @@ public sealed class ControlSystem : MonoBehaviour {
 				IDragDropHandler drop = target [0].GetComponent<IDragDropHandler> ();
 				if (drop != null) {
 					drop.OnDrop (Input.mousePosition);
+				}
+			}
+		} else if (Input.GetMouseButton (0)) {
+			// on drag
+			if (target[0] != null) {
+				if(Vector3.Distance(Input.mousePosition, startPos[0]) > 0.1f) {
+					IDragDropHandler drag = target [0].GetComponent<IDragDropHandler> ();
+					if (drag != null) {
+						drag.OnDrag (Input.mousePosition);
+					}
 				}
 			}
 		}
@@ -101,7 +111,6 @@ public sealed class ControlSystem : MonoBehaviour {
 	}
 
 	// need fixing on touch
-
 	private void ProcessTouch() {
 		for (int i = 0; i < Input.touchCount; i++) {
 			switch (Input.GetTouch (i).phase) {
