@@ -14,5 +14,7 @@ public class Fighter : Hero {
 
 		// temporary spawning -> should be moved to BattleManager
 		Spawn();
+
+        // 
 	}
 }

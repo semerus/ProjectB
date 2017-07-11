@@ -4,6 +4,9 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	protected IBattleHandler target;
 	protected Skill autoAttack;
+    protected Skill passiveSkill;
+    protected Skill[] activeSkills;
+    protected Transform attackTarget;
 
 	#region ITapHandler implementation
 	public void OnTap ()
@@ -69,6 +72,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	private Vector3 CalculatePosition(Vector3 target) {
 		int layermask = 1 << 8;
+        // i don't know what this mean, explain me lol
 		RaycastHit2D hitInfo = Physics2D.Linecast (target, transform.position, layermask);
 		Debug.DrawLine (transform.position, target);
 

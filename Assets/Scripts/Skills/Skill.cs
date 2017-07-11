@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 
-public abstract class Skill : MonoBehaviour {
+public abstract class Skill : MonoBehaviour{
 	// gameUI prefab
-
 	// skill state
-	SkillState state;
-	float range;
+	protected SkillState state;
+	protected float range;
+    protected float coolTime;
 
-	public void OnClick() {
+    public void OnClick() {
 		// when ui button is clicked
 		// start channeling
 	} 
 	public void Activate (IBattleHandler target) {
 		// activate skill (launch projectile, area etc)
 	}
+    
 }

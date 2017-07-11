@@ -37,7 +37,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
 	#endregion
 
-	void Update() {
+	protected virtual void Update() {
 		switch (state) {
 		case CharacterState.Idle:
 			break;
@@ -70,12 +70,18 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
 		// calculate speed
 		Vector3 n = Vector3.Normalize(target - transform.position);
-		speed = speed_x * (n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * (n.y * n.y / (n.x * n.x + n.y * n.y));
+		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
+        // i added Mathf.sqrt because calculation doesn't match. think about deltaX,speedX = 3, deltaY,speedY=4  (3,4,5 triangle)
 
 		if (Vector3.Distance (target, transform.position) > 0.01f) {
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
+            // may cause bugs if delta Distance is greater than 0.01f ex -> 0.13f - 0.25 -> abs. 0.12f
+            // but i think it's unique case
 		} else {
 			moveTarget = transform.position;
+            // why not
+            // moveTarget = null;
+            // may want to  keep last finished moveLocation?
 			state = CharacterState.Idle;
 		}
 	}
