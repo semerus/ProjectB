@@ -3,6 +3,7 @@
 public class Background : MonoBehaviour, IDoubleTapHandler {
 
 	private static Background instance;
+	public Pointer pointer;
 
 	public static Background GetBackground() {
 		if (!instance) {
@@ -24,4 +25,8 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 	}
 
 	#endregion
+
+	void Awake() {
+		pointer = GetComponentInChildren<Pointer> ();
+	}
 }

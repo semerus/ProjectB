@@ -15,6 +15,7 @@ public sealed class TimeSystem : MonoBehaviour {
 	}
 
 	// list of timers
+    [SerializeField] // for debug easy
 	private List<ITimeHandler> timers = new List<ITimeHandler>();
 
 	void Update() {

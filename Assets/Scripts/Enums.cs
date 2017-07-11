@@ -16,8 +16,10 @@ public enum Team {
 /// Idle, Moving, Channeling, Dead
 /// </summary>
 public enum CharacterState {
-	Idle,
+    None,
+    Idle,
 	Moving,
+    AutoAttaking,
 	Channeling,
 	Dead
 }
