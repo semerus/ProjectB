@@ -9,7 +9,18 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
+	protected IBattleHandler target;
 	protected Vector3 moveTarget;
+
+	#region Getters and Setters
+
+	public IBattleHandler Target {
+		get {
+			return target;
+		}
+	}
+
+	#endregion
 
 	#region IBattleHandler implementation
 
@@ -27,12 +38,24 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
 	public void ReceiveDamage (int damage)
 	{
-		throw new System.NotImplementedException ();
+		hp -= damage;
+		if (hp <= 0) {
+			hp = 0;
+			KillCharacter ();
+		}
+		
+		UpdateHpUI ();
 	}
 
 	public void ReceiveHeal (int heal)
 	{
-		throw new System.NotImplementedException ();
+		hp += heal;
+		if (hp >= maxHp) {
+			hp = maxHp;
+			KillCharacter ();
+		}
+
+		UpdateHpUI ();
 	}
 
 	#endregion
@@ -48,6 +71,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			break;
 		}
 	}
+
+	// update hpBar for each character
+	protected abstract void UpdateHpUI ();
 
 	public virtual void Spawn () {
 		// things to happen at load

@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 
 public abstract class Area : MonoBehaviour {
-// timer
+	// timer
+	// ontrigger2d
+	protected abstract void OnTriggerStay2D(Collider2D other);
 
-// ontrigger2d
 	protected void Activate() {
+		
 	}
 }
 

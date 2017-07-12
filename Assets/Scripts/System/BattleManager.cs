@@ -51,20 +51,20 @@ public class BattleManager : MonoBehaviour {
 		IBattleHandler[] arr;
 		switch (team) {
 		case Team.Friendly:
-                arr = new IBattleHandler[friendly.Count];
+			arr = new IBattleHandler[friendly.Count];
 			friendly.CopyTo (arr);
 			break;
 		case Team.Hostile:
-                arr = new IBattleHandler[hostile.Count];
+			arr = new IBattleHandler[hostile.Count];
 			hostile.CopyTo (arr);
 			break;
 		case Team.Neutral:
-                arr = new IBattleHandler[neutral.Count];
+			arr = new IBattleHandler[hostile.Count];
 			neutral.CopyTo (arr);
 			break;
-            default:
-                arr = null;
-                break;
+		default:
+			arr = null;
+			break;
 		}
 		return arr;
 	}

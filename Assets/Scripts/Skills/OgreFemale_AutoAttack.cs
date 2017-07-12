@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OgreFemaleSkill : Skill {
+public class OgreFemale_AutoAttack : Skill {
 
     bool attackColliderOn = false;
     bool isTargetInMeleeRange;
@@ -28,7 +27,13 @@ public class OgreFemaleSkill : Skill {
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(friendlyNum.Length);
         AutoAttacking();
+        if(Input.GetKeyDown("q"))
+        {
+            Debug.Log("q");
+            Activate(null);
+        }
     }
 
     private void AutoAttacking()
@@ -41,16 +46,21 @@ public class OgreFemaleSkill : Skill {
             {
                 // 준비동작
             }
-            if (ctime == 1)
+            if (ctime <= 1.0&&ctime>=0.99)
             {
-                EdgeCollider2D col = this.gameObject.transform.GetComponentInChildren<EdgeCollider2D>();
-                col.offset = new Vector2(minC.transform.position.x - this.gameObject.transform.position.x, minC.transform.position.y - this.gameObject.transform.position.y);
-                attackColliderOn = true;
+                Debug.Log("555");
+                Collider2D[] cols = Physics2D.OverlapCircleAll(GameObject.Find("Fighter").gameObject.transform.position,2);
+                Debug.Log(cols.Length);
+                foreach(Collider2D col in cols)
+                {
+                    
+                }
 
-               
+                attackColliderOn = true;
             }
-            if (ctime > 1 & ctime <= 1.5)
+            if (ctime > 1 && ctime <= 1.5)
             {
+                Debug.Log("666");
                 // 마무리 동작
             }
             if (ctime > 1.5)
@@ -69,16 +79,18 @@ public class OgreFemaleSkill : Skill {
     {
         if (attackOn == false)
         {
-            AutoAttackTargetting();
+           // AutoAttackTargetting();
 
             CheckTargetRange();
-        }    
+        }
     }
 
     private void AutoAttackTargetting()
     {
+
         for (int i = 0; i < friendlyNum.Length; i++)
         {
+            
             Character c = friendlyNum[i] as Character;
             x = this.gameObject.transform.position.x - c.transform.position.x;
             y = this.gameObject.transform.position.y - c.transform.position.y;
@@ -95,47 +107,45 @@ public class OgreFemaleSkill : Skill {
 
     private void CheckTargetRange()
     {
-        Vector3 enemyPosition = minC.transform.position;
-        float deltaX = enemyPosition.x - this.transform.position.x;
-        float deltaY = enemyPosition.y - this.transform.position.y;
+        // enemyPosition 알아서 수정
+        //Vector3 enemyPosition = minC.transform.position;
+        Vector3 enemyPosition = GameObject.Find("Fighter").gameObject.transform.position;
 
+        // 공격 시전자의 타원반경 (기획서에 나와았는 AxB 사이즈 넣으면됨)
+        float myA = 2.1f;
+        float myB = 0.7f;
+
+        // 공격 범위
         float outerX = 0.5f;
-        float innerX = 0.4f;
+        float innerX = 0.2f;
         float outerY = 0.3f;
 
-        float avgX = (outerX + innerX) / 2;
-        float halfY = outerY / 2;
+        float dX = enemyPosition.x - this.transform.position.x;
+        float dY = enemyPosition.y - this.transform.position.y;
 
-        if (deltaX > outerX)
-            deltaX -= avgX;
-        else if (deltaX > innerX)
-            deltaX = 0;
-        else if (deltaX >= 0)
-            deltaX = -avgX + deltaX;
+        float inX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX;
+        float outX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX;
 
-        else if (deltaX < -outerX)
-            deltaX += avgX;
-        else if (deltaX < -innerX)
-            deltaX = 0;
-        else if (deltaX < 0)
-            deltaX = avgX + deltaX;
+        float m_inX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX);
+        float m_outX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX);
 
-        if (deltaY > outerY)
-            deltaY -= halfY;
-        else if (deltaY < -outerY)
-            deltaY += halfY;
-        else
-            deltaY = 0;
-
-        if (deltaX == 0 && deltaY == 0)
+        if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
+            // 공격 사정범위내에 들어옴 공격을 실행
+            // 필요한대로 알아서 수정
+            Debug.Log("attack on");
             attackOn = true;
         }
+
         else
         {
+            //공격 사정범위가 아님
+            //필요한대로 수정
+            Debug.Log("no");
             attackOn = false;
-            positionToMeleeAttack = transform.position + new Vector3(deltaX, deltaY, 0);
+            //positionToMeleeAttack = transform.position + new Vector3(deltaX, deltaY, 0);
         }
+
     }
 
     public override void Activate(IBattleHandler target)

@@ -1,17 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OgreFemale_Sk2 : MonoBehaviour {
-
-    private float gametime = 0;
+public class OgreFemale_Sk2 : Skill {
+    
     IBattleHandler[] friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
     float[] distance;
-    float x;
-    float y;
     float max = 0;
-    float sk2coolTime = 10;
-    bool jumpCoolDownAcess = false;
     bool jumpTargettingOn = false;
     int jumpNum = 0;
     Vector3 adjustpoint;
@@ -28,58 +24,39 @@ public class OgreFemale_Sk2 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        gametime += Time.deltaTime;
-
-        if (gametime >= 5)
-        {
-
-        }
-    }
-
-    public void JumpCoolDown()
-    {
-        if (jumpCoolDownAcess == true)
-        {
-            sk2coolTime -= Time.deltaTime;
-        }
-
-        if (sk2coolTime == 0)
-        {
-            sk2coolTime = 10;
-            jumpCoolDownAcess = false;
-            jumpTargettingOn = false;
-        }
+        JumpAttack();
     }
 
     public void JumpAttack()
     {
-        if (jumpTargettingOn == false)
+        if(jumpTargettingOn==true)
         {
-            JumpAttackTargetting();
-        }
+            if (this.gameObject.transform.position != adjustpoint && jumpTargettingOn == true)
+            {
+                this.gameObject.transform.position += Time.deltaTime * jumpdistance / jumptime;
+            }
 
-        if (this.gameObject.transform.position != adjustpoint)
-        {
-            this.gameObject.transform.position += Time.deltaTime * jumpdistance / jumptime;
-        }
-        if (this.gameObject.transform.position == adjustpoint && jumpNum == 0)
-        {
-           //기절
-           // AutoAttak();
-            jumpNum = 1;
+            if (this.gameObject.transform.position == adjustpoint && jumpNum == 0)
+            {
+                //기절 - maxC
+                // AutoAttak();
+                jumpNum = 1;
+                jumpTargettingOn = false;
+            }
         }
     }
 
     public void JumpAttackTargetting()
     {
+        state = SkillState.OnCoolDown;
+
         for (int i = 0; i < friendlyNum.Length; i++)
         {
-            jumpCoolDownAcess = true;
             jumpNum = 0;
 
             Character c = friendlyNum[i] as Character;
-            x = this.gameObject.transform.position.x - c.transform.position.x;
-            y = this.gameObject.transform.position.y - c.transform.position.y;
+            float x = this.gameObject.transform.position.x - c.transform.position.x;
+            float y = this.gameObject.transform.position.y - c.transform.position.y;
             distance[i] = x * x + y * y;
 
             if (distance[i] >= max)
@@ -108,5 +85,11 @@ public class OgreFemale_Sk2 : MonoBehaviour {
         jumpTargettingOn = true;
     }
 
-
+    public override void Activate(IBattleHandler target) //발동조건
+    {
+        if (jumpTargettingOn == false)
+        {
+            JumpAttackTargetting();
+        }
+    }
 }
