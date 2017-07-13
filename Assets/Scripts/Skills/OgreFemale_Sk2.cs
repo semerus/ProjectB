@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class OgreFemale_Sk2 : Skill {
-    
-    IBattleHandler[] friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+
+    IBattleHandler[] friendlyNum;
     float[] distance;
     float max = 0;
     bool jumpTargettingOn = false;
@@ -18,6 +18,7 @@ public class OgreFemale_Sk2 : Skill {
 
     // Use this for initialization
     void Start () {
+        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
         float[] distance = new float[friendlyNum.Length];
         adjustpoint = this.gameObject.transform.position;
     }
