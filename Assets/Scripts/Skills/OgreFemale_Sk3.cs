@@ -6,26 +6,26 @@ using UnityEngine;
 public class OgreFemale_Sk3 : Skill {
 
     IBattleHandler[] friendlyNum;
-    bool[] hitCheck;
-    bool[] targetOn;
-    bool[] stunCheck;
+    int startNum = 0;
     private bool Sk3Acess = false;
     private float ctime = 0;
 
-	// Use this for initialization
-	void Start () {
-        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-        for (int i = 0; i<= friendlyNum.Length - 1; i++)
-        {
-            stunCheck[i] = false;
-            hitCheck[i] = false;
-            targetOn[i] = false;
-        }
-    }
 	
 	// Update is called once per frame
 	void Update () {
+        if(startNum==0)
+        {
+            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+            Debug.Log(friendlyNum.Length);
+            startNum = 1;
+        }
+
         Sk3On();
+        if(Input.GetKeyDown("e"))
+        {
+            Debug.Log("e");
+            Activate(null);
+        }
 	}
 
 
@@ -33,7 +33,7 @@ public class OgreFemale_Sk3 : Skill {
     {
         if(Sk3Acess==true)
         {
-            ctime = +Time.deltaTime;
+            ctime += Time.deltaTime;
 
             if(ctime<=2)
             {
@@ -44,12 +44,13 @@ public class OgreFemale_Sk3 : Skill {
                 for(int i=0; i<=friendlyNum.Length-1; i++)
                 {
                     Character c = friendlyNum[i] as Character;
-                    hitCheck[i] = EllipseScanner(3.5f, 1.3f, this.gameObject.transform.position, c.gameObject.transform.position);
+                    Debug.Log(c.transform.name);
+                    bool hitCheck = EllipseScanner(3.5f, 1.3f, this.gameObject.transform.position, c.gameObject.transform.position);
 
-                    if(hitCheck[i]==true && stunCheck[i]==false)
+                    if(hitCheck==true)
                     {
+                        Debug.Log("stun "+c.transform.name);
                         //기절
-                        stunCheck[i] = true;
                     }
 
                 }
@@ -74,16 +75,16 @@ public class OgreFemale_Sk3 : Skill {
         for(int i=0; i<=friendlyNum.Length-1; i++)
         {
             Character c = friendlyNum[i] as Character;
-            targetOn[i] = EllipseScanner(4, 1.5f, this.gameObject.transform.position, c.gameObject.transform.position);
+            bool targetOn = EllipseScanner(4, 1.5f, this.gameObject.transform.position, c.gameObject.transform.position);
 
-            if(targetOn[i] == true)
+            if(targetOn == true)
             {
                 targetingNum++;
             }
         }
-        //bool targetOn = EllipseScanner(4, 1.5f, this.gameObject.transform.position, GameObject.Find("Fighter").gameObject.transform.position);
         if(targetingNum>=2)
         {
+            Debug.Log("e skill on");
             Sk3Acess = true;
             state = SkillState.OnCoolDown;
         }
