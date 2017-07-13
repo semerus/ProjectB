@@ -6,8 +6,9 @@ using UnityEngine;
 public class OgreFemale_Sk2 : Skill {
 
     IBattleHandler[] friendlyNum;
-    float[] distance;
+    int startNum = 0;
     float max = 0;
+    float ctime = 0;
     bool jumpTargettingOn = false;
     int jumpNum = 0;
     Vector3 adjustpoint;
@@ -18,31 +19,45 @@ public class OgreFemale_Sk2 : Skill {
 
     // Use this for initialization
     void Start () {
-        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-        float[] distance = new float[friendlyNum.Length];
-        adjustpoint = this.gameObject.transform.position;
+        adjustpoint = this.gameObject.transform.position+ Vector3.down;
     }
 	
 	// Update is called once per frame
 	void Update () {
+        if (startNum == 0)
+        {
+            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+            Debug.Log(friendlyNum.Length);
+            startNum = 1;
+        }
+
         JumpAttack();
+        if(Input.GetKeyDown("w"))
+        {
+            Debug.Log("w");
+            Activate(null);
+        }
+
     }
 
     public void JumpAttack()
     {
         if(jumpTargettingOn==true)
         {
-            if (this.gameObject.transform.position != adjustpoint && jumpTargettingOn == true)
+            ctime += Time.deltaTime;
+
+            if (ctime<1 && jumpTargettingOn == true)
             {
                 this.gameObject.transform.position += Time.deltaTime * jumpdistance / jumptime;
             }
 
-            if (this.gameObject.transform.position == adjustpoint && jumpNum == 0)
+            if (ctime>=1 && jumpNum == 0)
             {
                 //기절 - maxC
                 // AutoAttak();
                 jumpNum = 1;
                 jumpTargettingOn = false;
+                Debug.Log("nice");
             }
         }
     }
@@ -58,15 +73,16 @@ public class OgreFemale_Sk2 : Skill {
             Character c = friendlyNum[i] as Character;
             float x = this.gameObject.transform.position.x - c.transform.position.x;
             float y = this.gameObject.transform.position.y - c.transform.position.y;
-            distance[i] = x * x + y * y;
+            float distance = x * x + y * y;
 
-            if (distance[i] >= max)
+            if (distance >= max)
             {
-                max = distance[i];
+                max = distance;
                 maxNum = friendlyNum[i];
             }
         }
         maxC = maxNum as Character;
+        Debug.Log(maxC.gameObject.transform.name);
 
         if (this.gameObject.transform.position.x >= maxC.transform.position.x)
         {

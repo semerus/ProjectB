@@ -5,7 +5,6 @@ using UnityEngine;
 public class OgreFemale_AutoAttack : Skill {
 
     IBattleHandler[] friendlyNum;
-    float[] distance;
     float x;
     float y;
     float min = 1000000000000;
@@ -18,9 +17,8 @@ public class OgreFemale_AutoAttack : Skill {
     // Use this for initialization
     void Start()
     {
-        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-        float[] distance = new float[friendlyNum.Length];
-        Debug.Log(friendlyNum.Length);
+       friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+       Debug.Log(friendlyNum.Length);
     }
 
     // Update is called once per frame
