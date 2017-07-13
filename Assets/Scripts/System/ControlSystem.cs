@@ -12,6 +12,8 @@ public sealed class ControlSystem : MonoBehaviour {
 	float lastClickTime = 0f;
 	bool oneClick = false;
 	float clickDelay = 0.2f;
+
+	int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
 	int mask_area = 1 << 8;
 	int mask_char = 2 << 8;
 
@@ -54,14 +56,12 @@ public sealed class ControlSystem : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 			startPos [0] = Input.mousePosition;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, mask_char);
 
-			if (hitInfo.collider != null) {
-				target [0] = hitInfo.collider.transform.root;
-			} else {
-				hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, mask_area);
+			for (int i = 0; i < masks.Length; i++) {
+				RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[i]);
 				if (hitInfo.collider != null) {
 					target [0] = hitInfo.collider.transform.root;
+					break;
 				}
 			}
 		} else if (Input.GetMouseButtonUp (0)) {

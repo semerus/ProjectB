@@ -5,7 +5,7 @@ public class Fighter : Hero {
 		// temporary value given
 		id = 1;
 		team = Team.Friendly;
-		state = CharacterState.Idle;
+		state_temp = CharacterState.Idle;
 		maxHp = 100000;
 		hp = 100000;
 		speed_x = 2.57f;

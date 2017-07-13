@@ -3,6 +3,7 @@
 public enum SkillState {
 	Ready,
 	Channeling,
+	InProcess,
 	OnCoolDown
 }
 
@@ -17,4 +18,10 @@ public enum CharacterState {
 	Moving,
 	Channeling,
 	Dead
+}
+
+public enum AreaState {
+	Ready,
+	Active,
+	Disabled
 }

@@ -67,4 +67,11 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 			TimeSystem.GetTimeSystem ().DeleteTimer (this as ITimeHandler);
 		}
 	}
+
+	protected void StartCoolDown() {
+		state = SkillState.OnCoolDown;
+		if (!TimeSystem.GetTimeSystem ().CheckTimer (this as ITimeHandler)) {
+			TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
+		}
+	}
 }

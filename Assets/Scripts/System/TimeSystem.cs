@@ -31,6 +31,13 @@ public sealed class TimeSystem : MonoBehaviour {
 		timers.Add (handler);
 	}
 
+	public bool CheckTimer(ITimeHandler handler) {
+		if (timers.Contains (handler))
+			return true;
+		else
+			return false;
+	}
+
 	public void DeleteTimer(ITimeHandler handler) {
 		timers.Remove (handler);
 	}
