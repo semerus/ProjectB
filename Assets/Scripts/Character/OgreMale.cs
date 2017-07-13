@@ -11,7 +11,7 @@ public class OgreMale : Enemy {
 		// temporary <- put this in spawn
 		id = 3;
 		team = Team.Hostile;
-		state_temp = CharacterState.Idle;
+		state = CharacterState.Idle;
 		maxHp = 15000;
 		hp = 15000;
 		speed_x = 1f;

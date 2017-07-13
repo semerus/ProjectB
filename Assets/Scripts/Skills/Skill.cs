@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
 public abstract class Skill : MonoBehaviour, ITimeHandler {
+
 	// gameUI prefab
-	int id;
+	protected int id;
 	protected Character caster;
+    [SerializeField]
 	protected SkillState state;
 	protected float cooldown;
+    [SerializeField]
 	protected float timer_cooldown;
 
 	#region ITimeHandler implementation
@@ -25,9 +28,9 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		}
 	}
 
-	#endregion
-
-	public void SetSkill(Character caster) {
+    #endregion
+    
+    public void SetSkill(Character caster) {
 		this.caster = caster;
 	}
 
