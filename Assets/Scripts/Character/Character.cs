@@ -64,9 +64,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		hp += heal;
 		if (hp >= maxHp) {
 			hp = maxHp;
-			KillCharacter ();
 		}
-
 		UpdateHpUI ();
 	}
 

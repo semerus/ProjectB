@@ -3,9 +3,9 @@
 public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 
-	protected Skill autoAttack;
-    protected Skill passiveSkill;
-    protected Skill[] activeSkills;
+	public Skill autoAttack;
+    public Skill passiveSkill;
+    public Skill[] activeSkills;
 
     protected HeroUI heroUI; // load it from spawn
     

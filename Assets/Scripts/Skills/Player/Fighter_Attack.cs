@@ -15,6 +15,7 @@ public class Fighter_Attack : Skill {
             {
                 (target as Enemy).ReceiveDamage(dmg);
                 print((target as Enemy).CurHP);
+                (caster as Hero).passiveSkill.Activate(caster as IBattleHandler);
 
                 state = SkillState.OnCoolDown;
                 this.timer_cooldown = 0f;
@@ -39,8 +40,8 @@ public class Fighter_Attack : Skill {
     void Awake()
     {
         // set original value
-        cooldown = 2f;
-        dmg = 100;
+        cooldown = 0.9f;
+        dmg = 20;
 
         // set initial value
         state = SkillState.Ready;
