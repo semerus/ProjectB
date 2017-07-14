@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Character : MonoBehaviour, IBattleHandler {
@@ -18,6 +19,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
+
+	public event EventHandler<MoveEventArgs> MoveComplete;
 
 	#region Getters and Setters
 
@@ -76,6 +79,13 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	#endregion
+
+	public void OnMoveComplete(MoveEventArgs e) {
+		EventHandler<MoveEventArgs> moveComplete = MoveComplete;
+		if (moveComplete != null) {
+			moveComplete (this, e);
+		}
+	}
 
 	protected virtual void Update() {
 		switch (state) {
@@ -161,6 +171,32 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		} else {
 			moveTarget = transform.position;
             state = CharacterState.Idle;
+
+			// send move complete(reached destination event)
+			MoveEventArgs e = new MoveEventArgs (true, transform.position);
+			OnMoveComplete (e);
+		}
+	}
+
+	public void Move(Vector3 target, float speed_x, float speed_y) {
+		float speed;
+		moveTarget = target;
+		state = CharacterState.Moving;
+
+		// calculate speed
+		Vector3 n = Vector3.Normalize(target - transform.position);
+		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
+		// i added Mathf.sqrt because calculation doesn't match. think about deltaX,speedX = 3, deltaY,speedY=4  (3,4,5 triangle)
+
+		if (Vector3.Distance (target, transform.position) > 0.01f) {
+			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
+		} else{
+			moveTarget = transform.position;
+			state = CharacterState.Idle;
+
+			// send move complete(reached destination event)
+			MoveEventArgs e = new MoveEventArgs (true, transform.position);
+			OnMoveComplete (e);
 		}
 	}
 }
