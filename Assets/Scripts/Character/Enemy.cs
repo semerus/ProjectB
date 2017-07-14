@@ -2,16 +2,16 @@
 
 public abstract class Enemy : Character, IDoubleTapHandler {
 
-	#region implemented abstract members of Character
-	protected override void UpdateHpUI ()
-	{
-		throw new System.NotImplementedException ();
-	}
-	#endregion
+    #region implemented abstract members of Character
+    protected override void UpdateHpUI()
+    {
+        Debug.LogError("You should Implement this");
+    }
+    #endregion
 
-	#region IDoubleTapHandler implementation
+    #region IDoubleTapHandler implementation
 
-	public void OnDoubleTap (Vector3 pixelPos)
+    public void OnDoubleTap (Vector3 pixelPos)
 	{
 		BattleManager.GetBattleManager ().AttackByAllFriendly (this as IBattleHandler);
 	}

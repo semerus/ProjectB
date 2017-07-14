@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
 public abstract class Skill : MonoBehaviour, ITimeHandler {
+
 	// gameUI prefab
-	int id;
+	protected int id;
 	protected Character caster;
+    [SerializeField]
 	protected SkillState state;
 	protected float cooldown;
+    [SerializeField]
 	protected float timer_cooldown;
 
 	#region ITimeHandler implementation
@@ -25,9 +28,9 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		}
 	}
 
-	#endregion
-
-	public void SetSkill(Character caster) {
+    #endregion
+    
+    public void SetSkill(Character caster) {
 		this.caster = caster;
 	}
 
@@ -65,6 +68,13 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 			state = SkillState.Ready;
 			timer_cooldown = 0f;
 			TimeSystem.GetTimeSystem ().DeleteTimer (this as ITimeHandler);
+		}
+	}
+
+	protected void StartCoolDown() {
+		state = SkillState.OnCoolDown;
+		if (!TimeSystem.GetTimeSystem ().CheckTimer (this as ITimeHandler)) {
+			TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
 		}
 	}
 }

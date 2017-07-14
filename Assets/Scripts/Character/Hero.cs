@@ -3,9 +3,12 @@
 public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 
-	protected Skill autoAttack;
-	protected HeroUI heroUI; // load it from spawn
+	public Skill autoAttack;
+    public Skill passiveSkill;
+    public Skill[] activeSkills;
 
+    protected HeroUI heroUI; // load it from spawn
+    
 	#region implemented abstract members of Character
 
 	protected override void UpdateHpUI ()
@@ -50,24 +53,27 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		if (hitInfo.collider != null) {
 			IBattleHandler target = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
 			if (target != null && target.Team != Team.Friendly) {
-				AutoAttack (target);
+                print("autoAttack case");
+                queueState = CharacterState.AutoAttaking;
+                AutoAttack (target);
 			} else {
-				p = Camera.main.ScreenToWorldPoint (pixelPos);
+                p = Camera.main.ScreenToWorldPoint (pixelPos);
+                queueState = CharacterState.None;
 				Move (new Vector3(p.x, p.y, 0f));
 			}
 		} else {
-			p = Camera.main.ScreenToWorldPoint (pixelPos);
+            p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
-			Move (p);
+            queueState = CharacterState.None;
+            Move (p);
 		}
 
 		Background.GetBackground ().pointer.DeactivatePointer ();
 	}
 
 	#endregion
-
-	public void SetSkill(Skill[] skills) {
-		// set skill on load
+    
+	public virtual void SetSkill(Skill[] skills) {
 	}
 
 	public override void Spawn ()
@@ -77,10 +83,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	}
 
 	public virtual void AutoAttack (IBattleHandler target) {
-		Debug.Log ("autoattack by "+transform.root.name);
-		// use skill inside
-		// set target
-		this.target = target;
+        this.target = target;
+        state = CharacterState.AutoAttaking;
 		//autoAttack.Activate (this.target);
 	}
 
@@ -90,6 +94,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	private Vector3 CalculatePosition(Vector3 target) {
 		int layermask = 1 << 8;
+        // i don't know what this mean, explain me lol
 		RaycastHit2D hitInfo = Physics2D.Linecast (target, transform.position, layermask);
 		Debug.DrawLine (transform.position, target);
 

@@ -15,6 +15,7 @@ public sealed class TimeSystem : MonoBehaviour {
 	}
 
 	// list of timers
+    [SerializeField] // for debug easy
 	private List<ITimeHandler> timers = new List<ITimeHandler>();
 
 	void Update() {
@@ -29,6 +30,13 @@ public sealed class TimeSystem : MonoBehaviour {
 
 	public void AddTimer (ITimeHandler handler) {
 		timers.Add (handler);
+	}
+
+	public bool CheckTimer(ITimeHandler handler) {
+		if (timers.Contains (handler))
+			return true;
+		else
+			return false;
 	}
 
 	public void DeleteTimer(ITimeHandler handler) {

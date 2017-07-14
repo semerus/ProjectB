@@ -3,6 +3,7 @@
 public enum SkillState {
 	Ready,
 	Channeling,
+	InProcess,
 	OnCoolDown
 }
 
@@ -12,9 +13,48 @@ public enum Team {
 	Friendly
 }
 
+/// <summary>
+/// Idle, Moving, Channeling, Dead
+/// </summary>
 public enum CharacterState {
-	Idle,
+    None,
+    Idle,
 	Moving,
+    AutoAttaking,
 	Channeling,
 	Dead
+}
+
+public enum AreaState {
+	Ready,
+	Active,
+	Disabled
+}
+
+/// <summary>
+/// None, Before, On, After
+/// </summary>
+public enum AttackMotionState
+{
+    None,
+    beforeAttack,
+    OnAttack,
+    afterAttack
+}
+
+/// <summary>
+/// None, 
+/// </summary>
+public enum SkillTrait
+{
+    None,
+    Left,
+    Right
+}
+
+public enum AttackType
+{
+    None,
+    Melee,
+    Range
 }
