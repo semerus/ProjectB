@@ -35,7 +35,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(EdgeCollider2D))]
 public class EllipseCollider2D : MonoBehaviour {
 
-    [Range(1, 25)]
+    [Range(0.1f, 25)]
     public float radiusX = 1, radiusY = 2;
 
     [Range(10,90)]

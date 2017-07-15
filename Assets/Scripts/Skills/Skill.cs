@@ -38,6 +38,8 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	public virtual void OnClick() {
 		// check state
 		switch (caster.State) {
+        case CharacterState.None:
+        case CharacterState.Moving:
 		case CharacterState.Idle:
 			// states when skill can be used
 			IChanneling ch = this as IChanneling;

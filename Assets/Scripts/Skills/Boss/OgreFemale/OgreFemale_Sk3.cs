@@ -8,61 +8,53 @@ public class OgreFemale_Sk3 : Skill {
     IBattleHandler[] friendlyNum;
     int startNum = 0;
     private bool Sk3Acess = false;
-    private float ctime = 0;
+    public float ofT3ime = 0;
 
-	
-	// Update is called once per frame
-	void Update () {
-        if(startNum==0)
-        {
-            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-            Debug.Log(friendlyNum.Length);
-            startNum = 1;
-        }
-
-        Sk3On();
-        if(Input.GetKeyDown("e"))
-        {
-            Debug.Log("e");
-            Activate(null);
-        }
-	}
-
-
+    public override void RunTime()
+    {
+        ofT3ime += Time.deltaTime;
+        base.RunTime();
+    }
+    
     private void Sk3On()
     {
         if(Sk3Acess==true)
         {
-            ctime += Time.deltaTime;
+            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+            {
+                TimeSystem.GetTimeSystem().AddTimer(this);
+                ofT3ime = 0;
+            }
 
-            if(ctime<=2)
+            if(ofT3ime <= 2)
             {
                 //캐스팅
             }
-            if(ctime>=2 && ctime<=6)
+            if(ofT3ime >= 2 && ofT3ime <= 6)
             {
                 for(int i=0; i<=friendlyNum.Length-1; i++)
                 {
                     Character c = friendlyNum[i] as Character;
-                    Debug.Log(c.transform.name);
                     bool hitCheck = EllipseScanner(3.5f, 1.3f, this.gameObject.transform.position, c.gameObject.transform.position);
-
                     if(hitCheck==true)
                     {
                         Debug.Log("stun "+c.transform.name);
                         //기절
                     }
-
                 }
             }
-            if(ctime>=6 && ctime<=7.5)
+            if(ofT3ime >= 6 && ofT3ime <= 7.5)
             {
                 // 마무리 동작
             }
-            if(ctime>7.5)
+            if(ofT3ime > 7.5)
             {
                 Sk3Acess = false;
-                ctime = 0;
+                ofT3ime = 0;
+                if (TimeSystem.GetTimeSystem().CheckTimer(this))
+                {
+                    TimeSystem.GetTimeSystem().DeleteTimer(this);
+                }
             }
         }
     }
@@ -86,16 +78,11 @@ public class OgreFemale_Sk3 : Skill {
         {
             Debug.Log("e skill on");
             Sk3Acess = true;
-            state = SkillState.OnCoolDown;
         }
     }
 
     private bool EllipseScanner(float a, float b, Vector3 center,Vector3 targetPosition)
     {
-        // a는 스캐너 장축 b는 스캐너 단축
-        // center 는 스캐너의 중심좌표
-        // targetPosition 에 타겟의 위치를 넣는다 
-
         float dx = targetPosition.x - center.x;
         float dy = targetPosition.y - center.y;
 
@@ -104,21 +91,27 @@ public class OgreFemale_Sk3 : Skill {
 
         if (l1 + l2 <= 2 * a)
         {
-            // 범위스캐너 안에 타겟이 잡힘
             return true;
         }
         else
         {
-            // 범위스캐너 안에 타겟이 없음
             return false;
         }
     }
 
     public override void Activate(IBattleHandler target)
     {
-        if(Sk3Acess==false)
+        if (startNum == 0)
+        {
+            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+            Debug.Log(friendlyNum.Length);
+            startNum = 1;
+        }
+
+        if (Sk3Acess==false)
         {
             Sk3Targgetting();
         }
+        Sk3On();
     }
 }

@@ -8,7 +8,7 @@ public class OgreFemale_Sk2 : Skill {
     IBattleHandler[] friendlyNum;
     int startNum = 0;
     float max = 0;
-    float ctime = 0;
+    float of2Time = 0;
     bool jumpTargettingOn = false;
     int jumpNum = 0;
     Vector3 adjustpoint;
@@ -20,51 +20,49 @@ public class OgreFemale_Sk2 : Skill {
     // Use this for initialization
     void Start () {
         adjustpoint = this.gameObject.transform.position+ Vector3.down;
+        //cooldown = 10;
+        //timer_cooldown = 0;
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (startNum == 0)
-        {
-            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-            Debug.Log(friendlyNum.Length);
-            startNum = 1;
-        }
 
-        JumpAttack();
-        if(Input.GetKeyDown("w"))
-        {
-            Debug.Log("w");
-            Activate(null);
-        }
-
+    public override void RunTime()
+    {
+        of2Time += Time.deltaTime;
+        base.RunTime();
     }
 
     public void JumpAttack()
     {
         if(jumpTargettingOn==true)
         {
-            ctime += Time.deltaTime;
-
-            if (ctime<1 && jumpTargettingOn == true)
+            Debug.Log("asdasdasdasds");
+            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
             {
-                this.gameObject.transform.position += Time.deltaTime * jumpdistance / jumptime;
+                TimeSystem.GetTimeSystem().AddTimer(this);
+                of2Time = 0;
             }
 
-            if (ctime>=1 && jumpNum == 0)
+            of2Time += Time.deltaTime;
+            if (of2Time < 1 && jumpTargettingOn == true)
             {
-                //기절 - maxC
-                // AutoAttak();
+                caster.Move(jumpdistance, jumptime);
+            }
+            if (of2Time >= 1 && jumpNum == 0)
+            {
                 jumpNum = 1;
                 jumpTargettingOn = false;
                 Debug.Log("nice");
+
+                if (TimeSystem.GetTimeSystem().CheckTimer(this))
+                {
+                    TimeSystem.GetTimeSystem().DeleteTimer(this);
+                }
             }
         }
     }
 
     public void JumpAttackTargetting()
     {
-        state = SkillState.OnCoolDown;
+        //state = SkillState.OnCoolDown;
 
         for (int i = 0; i < friendlyNum.Length; i++)
         {
@@ -82,7 +80,6 @@ public class OgreFemale_Sk2 : Skill {
             }
         }
         maxC = maxNum as Character;
-        Debug.Log(maxC.gameObject.transform.name);
 
         if (this.gameObject.transform.position.x >= maxC.transform.position.x)
         {
@@ -102,11 +99,19 @@ public class OgreFemale_Sk2 : Skill {
         jumpTargettingOn = true;
     }
 
-    public override void Activate(IBattleHandler target) //발동조건
+    public override void Activate(IBattleHandler target)
     {
+        if (startNum == 0)
+        {
+            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+            Debug.Log(friendlyNum.Length);
+            startNum = 1;
+        }
+
         if (jumpTargettingOn == false)
         {
             JumpAttackTargetting();
         }
+        JumpAttack();
     }
 }

@@ -59,7 +59,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 			} else {
                 p = Camera.main.ScreenToWorldPoint (pixelPos);
                 queueState = CharacterState.None;
-				Move (new Vector3(p.x, p.y, 0f));
+                Move(new Vector3(p.x, p.y, 0f));
 			}
 		} else {
             p = Camera.main.ScreenToWorldPoint (pixelPos);

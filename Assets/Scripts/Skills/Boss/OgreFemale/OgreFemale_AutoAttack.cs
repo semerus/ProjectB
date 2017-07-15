@@ -8,11 +8,16 @@ public class OgreFemale_AutoAttack : Skill {
     float x;
     float y;
     float min = 1000000000000;
-    float ctime = 0f;
+    float ofTime = 0f;
     bool attackOn = false;
     IBattleHandler minNum = null;
     Character minC;
 
+    public override void RunTime()
+    {
+        ofTime += Time.deltaTime;
+        base.RunTime();
+    }
 
     // Use this for initialization
     void Start()
@@ -21,34 +26,27 @@ public class OgreFemale_AutoAttack : Skill {
        Debug.Log(friendlyNum.Length);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        AutoAttacking();
-        if(Input.GetKeyDown("q"))
-        {
-            Debug.Log("q");
-            Activate(null);
-        }
-    }
-
     private void AutoAttacking()
     {
         if (attackOn == true)
         {
-            ctime += Time.deltaTime;
+            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+            {
+                TimeSystem.GetTimeSystem().AddTimer(this);
+                ofTime = 0;
+            }
 
-            if (ctime < 1)
+            if (ofTime < 1)
             {
                 // 준비동작
             }
-            if (ctime <= 1.0&&ctime>=0.99)
+            if (ofTime <= 1.0 && ofTime >= 0.99)
             {
-                for(int i=0; i< friendlyNum.Length; i++)
+                for (int i = 0; i < friendlyNum.Length; i++)
                 {
                     Character c = friendlyNum[i] as Character;
-                    bool hitCheck= EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
-                    if(hitCheck==true)
+                    bool hitCheck = EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
+                    if (hitCheck == true)
                     {
                         if (OgreFemale_Sk5.rageOn == true)
                         {
@@ -56,29 +54,29 @@ public class OgreFemale_AutoAttack : Skill {
                         }
                         else
                         {
-                            Debug.Log("Auto Attack => "+c.gameObject.transform.name);
+                            Debug.Log("Auto Attack => " + c.gameObject.transform.name);
                             //데미지 50
                         }
                     }
                 }
             }
-            if (ctime > 1 && ctime <= 1.5)
+            if (ofTime > 1 && ofTime <= 1.5)
             {
                 // 마무리 동작
             }
-            if (ctime > 1.5)
+            if (ofTime > 1.5)
             {
+                if (TimeSystem.GetTimeSystem().CheckTimer(this))
+                {
+                    TimeSystem.GetTimeSystem().DeleteTimer(this);
+                }
                 attackOn = false;
-                ctime = 0;
+                ofTime = 0;
             }
-        }
-        else
-        {
-            //Move(positionToMeleeAttack);
         }
     }
 
-    public void AutoAttack() // 일반공격
+    public void AutoAttack()
     {
         if (attackOn == false)
         {
@@ -108,15 +106,11 @@ public class OgreFemale_AutoAttack : Skill {
 
     private void CheckTargetRange()
     {
-        // enemyPosition 알아서 수정
-        //Vector3 enemyPosition = minC.transform.position;
-        Vector3 enemyPosition = GameObject.Find("Fighter").gameObject.transform.position;
-
-        // 공격 시전자의 타원반경 (기획서에 나와았는 AxB 사이즈 넣으면됨)
+        Vector3 enemyPosition = minC.transform.position;
+        
         float myA = 2.1f;
         float myB = 0.7f;
 
-        // 공격 범위
         float outerX = 0.5f;
         float innerX = 0.2f;
         float outerY = 0.3f;
@@ -132,29 +126,27 @@ public class OgreFemale_AutoAttack : Skill {
 
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
-            // 공격 사정범위내에 들어옴 공격을 실행
-            // 필요한대로 알아서 수정
+            caster.Move(this.gameObject.transform.position);
             Debug.Log("attack on");
             attackOn = true;
         }
-
         else
         {
-            //공격 사정범위가 아님
-            //필요한대로 수정
             Debug.Log("no");
             attackOn = false;
-            //positionToMeleeAttack = transform.position + new Vector3(deltaX, deltaY, 0);
+            if(this.gameObject.transform.position.x <= minC.transform.position.x)
+            {
+                caster.ChangeMoveTarget(minC.transform.position- new Vector3(2.5f,0,0));
+            }
+            else
+            {
+                caster.ChangeMoveTarget(minC.gameObject.transform.position + new Vector3(2.5f, 0, 0));
+            }
         }
-
     }
 
     private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
     {
-        // a는 스캐너 장축 b는 스캐너 단축
-        // center 는 스캐너의 중심좌표
-        // targetPosition 에 타겟의 위치를 넣는다 
-
         float dx = targetPosition.x - center.x;
         float dy = targetPosition.y - center.y;
 
@@ -163,20 +155,17 @@ public class OgreFemale_AutoAttack : Skill {
 
         if (l1 + l2 <= 2 * a)
         {
-            // 범위스캐너 안에 타겟이 잡힘
             return true;
         }
         else
         {
-            // 범위스캐너 안에 타겟이 없음
             return false;
         }
     }
 
-
-
     public override void Activate(IBattleHandler target)
     {
         AutoAttack();
+        AutoAttacking();
     }
 }

@@ -89,10 +89,10 @@ public sealed class ControlSystem : MonoBehaviour {
 		} else if (Input.GetMouseButton (0)) {
 			// on drag
 			if (target[0] != null) {
-				if(Vector3.Distance(Input.mousePosition, startPos[0]) > 0.1f) {
+                if (Vector3.Distance(Input.mousePosition, startPos[0]) > 0.1f) {
 					IDragDropHandler drag = target [0].GetComponent<IDragDropHandler> ();
-					if (drag != null) {
-						drag.OnDrag (Input.mousePosition);
+                    if (drag != null) {
+                        drag.OnDrag (Input.mousePosition);
 					}
 				}
 			}

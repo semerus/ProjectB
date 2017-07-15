@@ -5,40 +5,21 @@ using UnityEngine;
 
 public class OgreFemale_Sk4 : Skill
 {
-
     int count = 0;
     int mod = 1;
     int startNum = 0;
     bool sk4_On = false;
     IBattleHandler[] friendlyNum;
 
-
     public override void Activate(IBattleHandler target)
     {
         sk4_On = true;
-    }
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         if (startNum == 0)
         {
             friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
             Debug.Log(friendlyNum.Length);
             startNum = 1;
         }
-
-        if (Input.GetKeyDown("r"))
-        {
-            Activate(null);
-        }
-
         Sk4();
     }
 
@@ -46,12 +27,9 @@ public class OgreFemale_Sk4 : Skill
     {
         if (sk4_On == true)
         {
-            WayMod();
-            Debug.Log("001");
+            BurnRun();
             EdgeChange();
-            Debug.Log("002");
             BurnBurn();
-            Debug.Log("003");
         }
     }
 
@@ -69,28 +47,82 @@ public class OgreFemale_Sk4 : Skill
         }
     }
 
-    private void WayMod()
+    private void BurnRun()
     {
-        float alpha = (3 / 2 )* Mathf.Sqrt(2);
+        float speed = 3 * Mathf.Sqrt(2);
+        Vector3 target = FindTarget();
+        caster.Move(target, speed, speed);
+    }
+
+    private Vector3 FindTarget()
+    {
+        Vector3 cPosition = this.gameObject.transform.position;
+
+        Vector3 target = new Vector3();
+
         switch (mod)
         {
             case 1:
-                this.gameObject.transform.position += new Vector3(alpha, alpha, 0) * Time.deltaTime;
-                break;
+                if(3.4f-cPosition.y <= 9-cPosition.x)
+                {
+                    target.y = 3.4f;
+                    target.x = cPosition.x + (3.4f - cPosition.y);
+                    return target;
+                }
+                else
+                {
+                    target.x = 9f;
+                    target.y = cPosition.x + (9f - cPosition.x);
+                    return target;
+                }
 
             case 2:
-                this.gameObject.transform.position += new Vector3(alpha, -1 * alpha, 0) * Time.deltaTime;
-                break;
+                if (9 - cPosition.x <= cPosition.y + 3.4f)
+                {
+                    target.x = 9f;
+                    target.y = cPosition.y - (9 - cPosition.x);
+                    return target;
+                }
+                else
+                {
+                    target.y = -3.4f;
+                    target.x = cPosition.x + (3.4f + cPosition.y);
+                    return target;
+                }
 
             case 3:
-                this.gameObject.transform.position += new Vector3(-1 * alpha, -1 * alpha, 0) * Time.deltaTime;
-                break;
+                Debug.Log("ssss");
+                Debug.Log(mod);
+                if (cPosition.y+3.14f <= cPosition.x+9)
+                {
+                    Debug.Log("bbbbb");
+                    target.y = -3.4f;
+                    target.x = cPosition.x - (cPosition.y + 3.4f);
+                    return target;
+                }
+                else
+                {
+                    target.x = -9f;
+                    target.y = cPosition.y + (cPosition.x + 9);
+                    return target;
+                }
 
             case 4:
-                this.gameObject.transform.position += new Vector3(-1 * alpha, alpha, 0) * Time.deltaTime;
-                break;
+                if(9+cPosition.x <= 3.4f-cPosition.y)
+                {
+                    target.x = -9f;
+                    target.y = cPosition.y + (cPosition.x + 9);
+                    return target;
+                }
+                else
+                {
+                    target.y = 3.4f;
+                    target.x = cPosition.x - (3.4f - cPosition.y);
+                    return target;
+                }
+            default:
+                return new Vector3(0,0,0);
         }
-        Debug.Log(mod);
     }
 
     private void EdgeChange()
@@ -98,7 +130,7 @@ public class OgreFemale_Sk4 : Skill
         Vector3 myPosition = this.gameObject.transform.position;
         if (count <= 6)
         {
-            if (myPosition.y >= 3.4)
+            if (myPosition.y >= 3.39)
             {
                 if (mod == 1)
                 {
@@ -106,11 +138,11 @@ public class OgreFemale_Sk4 : Skill
                 }
                 else
                 {
-                    mod = 1;
+                    mod = 3;
                 }
                 count++;
             }
-            if (myPosition.y <= -3.4)
+            if (myPosition.y <= -3.39)
             {
                 if (mod == 3)
                 {
@@ -118,11 +150,11 @@ public class OgreFemale_Sk4 : Skill
                 }
                 else
                 {
-                    mod = 3;
+                    mod = 1;
                 }
                 count++;
             }
-            if (myPosition.x >= 9)
+            if (myPosition.x >= 8.99)
             {
                 if (mod == 2)
                 {
@@ -130,11 +162,11 @@ public class OgreFemale_Sk4 : Skill
                 }
                 else
                 {
-                    mod = 2;
+                    mod = 4;
                 }
                 count++;
             }
-            if (myPosition.x <= -9)
+            if (myPosition.x <= -8.99)
             {
                 if (mod == 4)
                 {
@@ -142,7 +174,7 @@ public class OgreFemale_Sk4 : Skill
                 }
                 else
                 {
-                    mod = 4;
+                    mod = 2;
                 }
                 count++;
             }
@@ -152,15 +184,10 @@ public class OgreFemale_Sk4 : Skill
             sk4_On = false;
             count = 0;
         }
-        Debug.Log(count);
     }
 
     private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
     {
-        // a는 스캐너 장축 b는 스캐너 단축
-        // center 는 스캐너의 중심좌표
-        // targetPosition 에 타겟의 위치를 넣는다 
-
         float dx = targetPosition.x - center.x;
         float dy = targetPosition.y - center.y;
 
@@ -169,14 +196,11 @@ public class OgreFemale_Sk4 : Skill
 
         if (l1 + l2 <= 2 * a)
         {
-            // 범위스캐너 안에 타겟이 잡힘
             return true;
         }
         else
         {
-            // 범위스캐너 안에 타겟이 없음
             return false;
         }
-
     }
 }

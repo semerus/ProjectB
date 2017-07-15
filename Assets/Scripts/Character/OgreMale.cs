@@ -6,6 +6,7 @@ public class OgreMale : Enemy {
 	public Enemy partner;
 
 	public Skill heal;
+	public MoveTest moveTest;
 
 	void Start() {
 		// temporary <- put this in spawn
@@ -21,10 +22,17 @@ public class OgreMale : Enemy {
 	}
 
 	void Update() {
+		base.Update ();
+
 		if (Input.GetKeyDown (KeyCode.H)) {
 			OgreHeal oh = heal as OgreHeal;
 			oh.SetTarget (partner);
 			heal.OnClick ();
+		}
+
+		if (Input.GetKeyDown (KeyCode.M)) {
+			moveTest.SetSkill (this);
+			moveTest.OnClick ();
 		}
 	}
 
