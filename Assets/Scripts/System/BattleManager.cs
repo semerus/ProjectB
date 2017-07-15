@@ -115,6 +115,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 		}
 		if (classifier) {
 			Debug.Log ("Win");
+			Debugging.DebugWindow ("Player Wins!");
 			return;
 		}
 
@@ -125,6 +126,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 		}
 		if (classifier) {
 			Debug.Log ("Lose");
+			Debugging.DebugWindow ("Boss Wins!");
 			return;
 		}
 	}

@@ -7,7 +7,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
     public Skill[] activeSkills;
 
     protected HeroUI heroUI; // load it from spawn
-    
+	protected int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
+
 	#region implemented abstract members of Character
 
 	protected override void UpdateHpUI ()
@@ -39,7 +40,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		Vector3 p = Camera.main.ScreenToWorldPoint (pixelPos);
 		p = new Vector3 (p.x, p.y, 0f);
 
-		Background.GetBackground ().pointer.PositionPointer (p, transform.position);
+		Background.GetBackground ().PositionPointer (p, this);
 	}
 
 	// receives pixel coordinates
@@ -48,6 +49,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		// move only if it is moveable state
 		Vector3 p = new Vector3();
 		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
+<<<<<<< HEAD
 		RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
 		if (hitInfo.collider != null) {
 			IBattleHandler target = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
@@ -57,15 +59,38 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
                 p = Camera.main.ScreenToWorldPoint (pixelPos);
                 Move(new Vector3(p.x, p.y, 0f));
                 RemoveAttackTarget();
+=======
+		IBattleHandler b = null;
+		for (int i = 0; i < masks.Length; i++) {
+			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[i]);
+			if (hitInfo.collider != null) {
+				b = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
+				if (b != null && b.Team != Team.Friendly) {
+					AutoAttack (b);
+				} else {
+					p = Camera.main.ScreenToWorldPoint (pixelPos);
+					Move(new Vector3(p.x, p.y, 0f));
+                    RemoveAttackTarget();
+				}
+				break;
+>>>>>>> bf972b4b096d4f70f2fafc58ff50733443436f6a
 			}
-		} else {
-            p = Camera.main.ScreenToWorldPoint (pixelPos);
+		}
+		if (b == null) {
+			p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
+<<<<<<< HEAD
             Move (p);
             RemoveAttackTarget();
         }
 
 		Background.GetBackground ().pointer.DeactivatePointer ();
+=======
+			queueState = CharacterState.None;
+			Move (p);
+		}
+		Background.GetBackground ().DeactivatePointer (this);
+>>>>>>> bf972b4b096d4f70f2fafc58ff50733443436f6a
 	}
 
 	#endregion
@@ -73,6 +98,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
     // not in use now
 	public virtual void SetSkill(Skill[] skills) {
+		
 	}
 
 	public override void Spawn ()

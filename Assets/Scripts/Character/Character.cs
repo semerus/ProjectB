@@ -226,7 +226,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     public void ChangeMoveTarget(Vector3 target)
     {
         moveTarget = target;
-        status = CharacterStatus.Moving;
+		RefreshStatus (CharacterStatus.Moving);
     }
 
 	public void StopMove() {
