@@ -11,14 +11,25 @@ public class OgreFemale_Sk4 : Skill
     bool sk4_On = false;
     IBattleHandler[] friendlyNum;
 
+    //public override void RunTime()
+    //{
+    //    base.RunTime();
+    //    Sk4();
+    //}
+
     public override void Activate(IBattleHandler target)
     {
-        sk4_On = true;
         if (startNum == 0)
         {
             friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
             Debug.Log(friendlyNum.Length);
             startNum = 1;
+            sk4_On = true;
+
+            //if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+            //{
+            //    TimeSystem.GetTimeSystem().AddTimer(this);
+            //}
         }
         Sk4();
     }
@@ -43,6 +54,7 @@ public class OgreFemale_Sk4 : Skill
             if (burnCheck == true)
             {
                 Debug.Log("Burn " + c.transform.name);
+                // 불붙기
             }
         }
     }
@@ -52,6 +64,13 @@ public class OgreFemale_Sk4 : Skill
         float speed = 3 * Mathf.Sqrt(2);
         Vector3 target = FindTarget();
         caster.Move(target, speed, speed);
+        if(count>=6)
+        {
+            caster.StopMove();
+            sk4_On = false;
+            count = 0;
+            Debug.Log(target);
+        }
     }
 
     private Vector3 FindTarget()
@@ -181,8 +200,7 @@ public class OgreFemale_Sk4 : Skill
         }
         else
         {
-            sk4_On = false;
-            count = 0;
+
         }
     }
 

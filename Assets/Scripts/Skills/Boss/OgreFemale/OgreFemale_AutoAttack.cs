@@ -35,7 +35,6 @@ public class OgreFemale_AutoAttack : Skill {
                 TimeSystem.GetTimeSystem().AddTimer(this);
                 ofTime = 0;
             }
-
             if (ofTime < 1)
             {
                 // 준비동작
@@ -50,12 +49,14 @@ public class OgreFemale_AutoAttack : Skill {
                     {
                         if (OgreFemale_Sk5.rageOn == true)
                         {
-                            // 데미지 100
+                            IBattleHandler ch = c as IBattleHandler;
+                            caster.AttackTarget(c, 100);
                         }
                         else
                         {
                             Debug.Log("Auto Attack => " + c.gameObject.transform.name);
-                            //데미지 50
+                            IBattleHandler ch = c as IBattleHandler;
+                            caster.AttackTarget(c, 50);
                         }
                     }
                 }
@@ -124,6 +125,7 @@ public class OgreFemale_AutoAttack : Skill {
         float m_inX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX);
         float m_outX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX);
 
+
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
             caster.Move(this.gameObject.transform.position);
@@ -137,10 +139,19 @@ public class OgreFemale_AutoAttack : Skill {
             if(this.gameObject.transform.position.x <= minC.transform.position.x)
             {
                 caster.ChangeMoveTarget(minC.transform.position- new Vector3(2.5f,0,0));
+                
+                //if(true)
+                //{
+                //    caster.StopMove();
+                //}
             }
             else
             {
-                caster.ChangeMoveTarget(minC.gameObject.transform.position + new Vector3(2.5f, 0, 0));
+                caster.ChangeMoveTarget(minC.transform.position + new Vector3(2.5f, 0, 0));
+                //if (true)
+                //{
+                //    caster.StopMove();
+                //}
             }
         }
     }

@@ -1,0 +1,11 @@
+diff a/Assets/Scripts/Character/Character.cs b/Assets/Scripts/Character/Character.cs	(rejected hunks)
+@@ -229,8 +229,7 @@
+     public void ChangeMoveTarget(Vector3 target)
+     {
+         moveTarget = target;
+-        state = CharacterState.Moving;
+-
++		RefreshStatus (CharacterStatus.Moving);
+     }
+ 
+ 	public void StopMove() {

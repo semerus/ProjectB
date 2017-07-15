@@ -16,6 +16,7 @@ public class OgreFemale_Sk2 : Skill {
     float jumptime = 1;
     Character maxC;
     IBattleHandler maxNum = null;
+    OgreFemale_AutoAttack atk;
 
     // Use this for initialization
     void Start () {
@@ -34,24 +35,50 @@ public class OgreFemale_Sk2 : Skill {
     {
         if(jumpTargettingOn==true)
         {
-            Debug.Log("asdasdasdasds");
             if (!TimeSystem.GetTimeSystem().CheckTimer(this))
             {
                 TimeSystem.GetTimeSystem().AddTimer(this);
                 of2Time = 0;
             }
 
-            of2Time += Time.deltaTime;
             if (of2Time < 1 && jumpTargettingOn == true)
             {
                 caster.Move(jumpdistance, jumptime);
             }
-            if (of2Time >= 1 && jumpNum == 0)
+            if(of2Time>=1 && of2Time>1.99f)
             {
-                jumpNum = 1;
+                // 준비동작
+            }
+            if (of2Time <= 2.0 && of2Time >= 1.99)
+            {
+                Debug.Log("auto attack sk2 on");
+                for (int i = 0; i < friendlyNum.Length; i++)
+                {
+                    Character c = friendlyNum[i] as Character;
+                    bool hitCheck = EllipseScanner(2, 1.4f, maxC.gameObject.transform.position, c.gameObject.transform.position);
+                    if (hitCheck == true)
+                    {
+                        if (OgreFemale_Sk5.rageOn == true)
+                        {
+                            IBattleHandler ch = c as IBattleHandler;
+                            caster.AttackTarget(c, 100);
+                        }
+                        else
+                        {
+                            Debug.Log("Auto Attack => " + c.gameObject.transform.name);
+                            IBattleHandler ch = c as IBattleHandler;
+                            caster.AttackTarget(c, 50);
+                        }
+                    }
+                }
+            }
+            if(of2Time>2 && of2Time<=2.5)
+            {
+                //마무리 동작
+            }
+            if(of2Time>2.5)
+            {
                 jumpTargettingOn = false;
-                Debug.Log("nice");
-
                 if (TimeSystem.GetTimeSystem().CheckTimer(this))
                 {
                     TimeSystem.GetTimeSystem().DeleteTimer(this);
@@ -62,10 +89,10 @@ public class OgreFemale_Sk2 : Skill {
 
     public void JumpAttackTargetting()
     {
-        //state = SkillState.OnCoolDown;
-
+        max = 0;
         for (int i = 0; i < friendlyNum.Length; i++)
         {
+            Debug.Log(i);
             jumpNum = 0;
 
             Character c = friendlyNum[i] as Character;
@@ -80,6 +107,7 @@ public class OgreFemale_Sk2 : Skill {
             }
         }
         maxC = maxNum as Character;
+        Debug.Log(maxC.transform.name);
 
         if (this.gameObject.transform.position.x >= maxC.transform.position.x)
         {
@@ -113,5 +141,23 @@ public class OgreFemale_Sk2 : Skill {
             JumpAttackTargetting();
         }
         JumpAttack();
+    }
+
+    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
+    {
+        float dx = targetPosition.x - center.x;
+        float dy = targetPosition.y - center.y;
+
+        float l1 = Mathf.Sqrt((dx + Mathf.Sqrt(a * a - b * b)) * (dx + Mathf.Sqrt(a * a - b * b)) + (dy * dy));
+        float l2 = Mathf.Sqrt((dx - Mathf.Sqrt(a * a - b * b)) * (dx - Mathf.Sqrt(a * a - b * b)) + (dy * dy));
+
+        if (l1 + l2 <= 2 * a)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
