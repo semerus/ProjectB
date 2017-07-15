@@ -52,26 +52,26 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		if (hitInfo.collider != null) {
 			IBattleHandler target = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
 			if (target != null && target.Team != Team.Friendly) {
-                print("autoAttack case");
-                queueState = CharacterState.AutoAttaking;
                 AutoAttack (target);
 			} else {
                 p = Camera.main.ScreenToWorldPoint (pixelPos);
-                queueState = CharacterState.None;
                 Move(new Vector3(p.x, p.y, 0f));
+                RemoveAttackTarget();
 			}
 		} else {
             p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
-            queueState = CharacterState.None;
             Move (p);
-		}
+            RemoveAttackTarget();
+        }
 
 		Background.GetBackground ().pointer.DeactivatePointer ();
 	}
 
 	#endregion
     
+
+    // not in use now
 	public virtual void SetSkill(Skill[] skills) {
 	}
 
@@ -83,18 +83,21 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	public virtual void AutoAttack (IBattleHandler target) {
         this.target = target;
-        state = CharacterState.AutoAttaking;
-		//autoAttack.Activate (this.target);
+        print("first autoAttack");
 	}
 
-	protected void DisplaySkill(){
+    public void RemoveAttackTarget()
+    {
+        this.target = null;
+    }
+
+    protected void DisplaySkill(){
 		// display skill hud
 	}
 
 	private Vector3 CalculatePosition(Vector3 target) {
 		int layermask = 1 << 10;
         
-		// i don't know what this mean, explain me lol
 		RaycastHit2D hitInfo = Physics2D.Linecast (target, transform.position, layermask);
 		Debug.DrawLine (transform.position, target);
 

@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class Character : MonoBehaviour, IBattleHandler {
 
 	protected int id;
-    [SerializeField]
 	protected Team team;
 	protected int maxHp;
 	protected int hp;
@@ -13,13 +12,10 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	protected float speed_y;
 	protected List<Buff> buffs = new List<Buff>();
 
+    [SerializeField]
 	protected int status = CharacterStatus.Idle;
 
     [SerializeField]
-    protected CharacterState state;
-    // may input interface queueAble
-    public CharacterState queueState;
-    
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
 
@@ -49,7 +45,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     {
         get { return hp; }
     }
-
 	#endregion
 
 	#region IBattleHandler implementation
@@ -60,11 +55,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		}
 	}
 
-	public CharacterState State {
+	public int State {
 		get {
-			return this.state;
+			return this.status;
 		}
-        set { this.state = value; }
+        set { this.status = value; }
 	}
 
 	public void ReceiveDamage (int damage)
@@ -84,12 +79,12 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		if (hp >= maxHp) {
 			hp = maxHp;
 		}
-		//UpdateHpUI ();
+		UpdateHpUI ();
 	}
 
 	#endregion
 
-	public void OnMoveComplete(MoveEventArgs e) {
+	public virtual void OnMoveComplete(MoveEventArgs e) {
 		EventHandler<MoveEventArgs> moveComplete = MoveComplete;
 		if (moveComplete != null) {
 			moveComplete (this, e);
@@ -100,17 +95,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		if ((status & CharacterStatus.IsMovingMask) > 0) {
 			Move (moveTarget);
 		}
-
-
-//		switch (state) {
-//		case CharacterState.Idle:
-//			break;
-//		case CharacterState.Moving:
-//			Move (moveTarget);
-//			break;
-//		default:
-//			break;
-//		}
 	}
 
 	/// <summary>
@@ -119,7 +103,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	/// <param name="newAction">New action(Idle, Moving, Channeling)</param>
 	public virtual void RefreshStatus(int newAction) {
 		for (int i = 0; i < buffs.Count; i++) {
-			IStatusBuff buff = buffs [i] as IStatusBuff;
+            
+            IStatusBuff buff = buffs [i] as IStatusBuff;
 			if (buff != null) {
 				newAction = newAction | buff.Status;
 			}
@@ -133,19 +118,32 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	public void AttackTarget(IBattleHandler target, int damage) {
 		// check for buffs
 		float dmgRatio = 1f;
-		float lifeStealRatio = 1f;
+		float lifeStealRatio = 0f;
+        float lifeStealAbs = 0f;
+        float lifeStealSum = 0f;
 
 		for (int i = 0; i < buffs.Count; i++) {
-			IDamageBuff buff = buffs [i] as IDamageBuff;
+            IDamageBuff buff = buffs [i] as IDamageBuff;
 			if (buff != null) {
 				// change this formula later
 				dmgRatio = dmgRatio * buff.DamageRatio;
 			}
 		}
 
-		// add life steal later
+        for (int i = 0; i < buffs.Count; i++)
+        {
+            ILifeStealAbsBuff buff = buffs[i] as ILifeStealAbsBuff;
+            if (buff != null)
+            {
+                lifeStealAbs += buff.LifeStealAbs;
+            }
+    
+        }
+
+        lifeStealSum = (damage * dmgRatio * lifeStealRatio) + lifeStealAbs;
 
 		target.ReceiveDamage ((int) (damage * dmgRatio));
+        target.ReceiveHeal((int)lifeStealSum);
 	}
 
 	public virtual void HealTarget(int heal, IBattleHandler target) {
@@ -165,7 +163,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	protected virtual void KillCharacter () {
-		state = CharacterState.Dead;
+        status = CharacterStatus.Dead;
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
@@ -178,7 +176,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	public void Move(Vector3 target, float speed_x, float speed_y) {
 		float speed;
 
-		// do not move when rooted
+        // check status -- can moving or not( rooted +@  )
 		if ((status & CharacterStatus.IsRootedMask) > 0) {
 			RefreshStatus (CharacterStatus.Idle);
 			return;
@@ -207,7 +205,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     public void Move(Vector3 target, float sec)
     {
         moveTarget = target;
-        state = CharacterState.Moving;
+        status = CharacterStatus.Moving;
         if (Vector3.Distance(target, transform.position) > 0.01f)
         {
             this.gameObject.transform.position += Time.deltaTime * target / sec;
@@ -216,7 +214,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
         else
         {
             moveTarget = transform.position;
-            state = CharacterState.Idle;
+            status = CharacterStatus.Moving;
 
             // send move complete(reached destination event)
             MoveEventArgs e = new MoveEventArgs(true, transform.position);
@@ -224,13 +222,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
         }
 
     }
-
-
+    
     public void ChangeMoveTarget(Vector3 target)
     {
         moveTarget = target;
-        state = CharacterState.Moving;
-
+        status = CharacterStatus.Moving;
     }
 
 	public void StopMove() {

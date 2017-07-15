@@ -22,7 +22,7 @@ public class OgreMale : Enemy, ITimeHandler {
 		// temporary <- put this in spawn
 		id = 3;
 		team = Team.Hostile;
-		state = CharacterState.Idle;
+        status = CharacterStatus.Idle;
 		maxHp = 15000;
 		hp = 15000;
 		speed_x = 1f;

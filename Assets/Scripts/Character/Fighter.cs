@@ -6,8 +6,7 @@ public class Fighter : Hero {
 		// temporary value given
 		id = 1;
 		team = Team.Friendly;
-        state = CharacterState.Idle;
-        queueState = CharacterState.None;
+        status = CharacterStatus.Idle;
         maxHp = 1000;
 		hp = 1000;
 		speed_x = 2.57f;
@@ -22,6 +21,7 @@ public class Fighter : Hero {
 
         passiveSkill = gameObject.AddComponent<Fighter_Passive>();
         passiveSkill.SetSkill(this);
+        passiveSkill.Activate(this);
 
         activeSkills = new Skill[3];
         activeSkills[0] = gameObject.AddComponent<Fighter_MeowPunch>();
@@ -34,41 +34,34 @@ public class Fighter : Hero {
         
     }
 
+    public virtual void SetSkill(Skill[] skills)
+    {
+    }
+
+    public override void AutoAttack(IBattleHandler target)
+    {
+        this.target = target;
+        print("second AutoAttack"); 
+        autoAttack.Activate(target);
+    }
+
     protected override void Update()
     {
-		base.Update ();
-        switch(queueState)
+        if (status == CharacterStatus.Idle)
         {
-            case CharacterState.None:
-            case CharacterState.Idle:
-            case CharacterState.Moving:
-            case CharacterState.Dead:
-            case CharacterState.Channeling:
-                break;
-
-            case CharacterState.AutoAttaking:
-                state = queueState;
-                break;
-
-            default:
-                Debug.LogError("Set type of queue State!");
-                break;
-            
+            if (this.target != null)
+            {
+                if (this.target.Team == Team.Hostile)
+                    AutoAttack(target);
+            }
         }
-
-        switch (state)
+        else if ((status & CharacterStatus.IsMovingMask) > 0)
         {
-            case CharacterState.Idle:
-                // if range hero search auto target
-                break;
-            case CharacterState.Moving:
-                Move(moveTarget);
-                break;
-            case CharacterState.AutoAttaking:
-                autoAttack.Activate(target);
-                break;
-            default:
-                break;
+            Move(moveTarget);
+        }
+        else if ((status & CharacterStatus.IsChannelingMask) > 0)
+        {
+            // Do Channeling Things;
         }
     }
 }

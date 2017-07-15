@@ -27,7 +27,6 @@ public class Fighter_MeowPunch : Skill {
         else
         {
             caster.Move(positionToMeleeAttack);
-            caster.queueState = CharacterState.AutoAttaking;
         }
     }
 

@@ -37,23 +37,6 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// when ui button is clicked
 	public virtual void OnClick() {
 		// check state
-		switch (caster.State) {
-        case CharacterState.None:
-        case CharacterState.Moving:
-		case CharacterState.Idle:
-			// states when skill can be used
-			IChanneling ch = this as IChanneling;
-			if (ch != null) {
-				// start channeling
-				ch.OnChanneling ();
-			} else {
-				Activate (caster.Target);
-			}
-			break;
-		default:
-			// states when skill cannot be used
-			break;
-		}
 	}
 
 	// activate skill (launch projectile, area etc)

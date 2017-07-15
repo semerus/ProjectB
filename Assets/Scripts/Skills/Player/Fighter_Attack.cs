@@ -13,10 +13,8 @@ public class Fighter_Attack : Skill {
         {
             if(state == SkillState.Ready)
             {
-                (target as Enemy).ReceiveDamage(dmg);
-                print((target as Enemy).CurHP);
-                (caster as Hero).passiveSkill.Activate(caster as IBattleHandler);
-
+                caster.AttackTarget(target, dmg);
+                
                 state = SkillState.OnCoolDown;
                 this.timer_cooldown = 0f;
                 TimeSystem.GetTimeSystem().AddTimer(this);
@@ -30,7 +28,6 @@ public class Fighter_Attack : Skill {
         else
         {
             caster.Move(positionToMeleeAttack);
-            caster.queueState = CharacterState.AutoAttaking;
         }
 	}
 
@@ -41,7 +38,7 @@ public class Fighter_Attack : Skill {
     {
         // set original value
         cooldown = 0.9f;
-        dmg = 20;
+        dmg = 10;
 
         // set initial value
         state = SkillState.Ready;
