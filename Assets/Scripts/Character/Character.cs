@@ -12,6 +12,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	protected float speed_x;
 	protected float speed_y;
 	protected List<Buff> buffs = new List<Buff>();
+
+	protected int status = CharacterStatus.Idle;
+
     [SerializeField]
     protected CharacterState state;
     // may input interface queueAble
@@ -33,6 +36,12 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	public IBattleHandler Target {
 		get {
 			return target;
+		}
+	}
+
+	public int Status {
+		get {
+			return status;
 		}
 	}
 
@@ -65,7 +74,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			hp = 0;
 			KillCharacter ();
 		}
-		
+		Debug.Log (transform.name + "Received Damage: " + damage);
 		UpdateHpUI ();
 	}
 
@@ -88,34 +97,40 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	protected virtual void Update() {
-		switch (state) {
-		case CharacterState.Idle:
-			break;
-		case CharacterState.Moving:
+		if ((status & CharacterStatus.IsMovingMask) > 0) {
 			Move (moveTarget);
-			break;
-		default:
-			break;
 		}
+
+
+//		switch (state) {
+//		case CharacterState.Idle:
+//			break;
+//		case CharacterState.Moving:
+//			Move (moveTarget);
+//			break;
+//		default:
+//			break;
+//		}
 	}
 
-	protected virtual void RefreshState() {
-		// this should reflect moving or channeling
-//		state = state & (Status.IsMovingMask | Status.IsChannelingMask);
-//
-//		// compare with buff
-//		for (int i = 0; i < buffs.Count; i++) {
-//			IStatusBuff buff = buffs [i] as IStatusBuff;
-//			if (buff != null) {
-//				state = state | buff.Status;
-//			}
-//		}
+	/// <summary>
+	/// Refreshs the status.
+	/// </summary>
+	/// <param name="newAction">New action(Idle, Moving, Channeling)</param>
+	public virtual void RefreshStatus(int newAction) {
+		for (int i = 0; i < buffs.Count; i++) {
+			IStatusBuff buff = buffs [i] as IStatusBuff;
+			if (buff != null) {
+				newAction = newAction | buff.Status;
+			}
+		}
+		status = newAction;
 	}
 
 	// update hpBar for each character
 	protected abstract void UpdateHpUI ();
 
-	public void AttackTarget(int damage, IBattleHandler target) {
+	public void AttackTarget(IBattleHandler target, int damage) {
 		// check for buffs
 		float dmgRatio = 1f;
 		float lifeStealRatio = 1f;
@@ -149,40 +164,28 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		// place at the correct place
 	}
 
-	protected void KillCharacter () {
+	protected virtual void KillCharacter () {
 		state = CharacterState.Dead;
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
 	}
 
-
-    public void Move (Vector3 target) {
-		float speed;
-        moveTarget = target;
-        state = CharacterState.Moving;
-
-       // calculate speed
-       Vector3 n = Vector3.Normalize(target - transform.position);
-		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
-        // i added Mathf.sqrt because calculation doesn't match. think about deltaX,speedX = 3, deltaY,speedY=4  (3,4,5 triangle)
-
-		if (Vector3.Distance (target, transform.position) > 0.01f) {
-			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
-		} else {
-			moveTarget = transform.position;
-            state = CharacterState.Idle;
-
-			// send move complete(reached destination event)
-			MoveEventArgs e = new MoveEventArgs (true, transform.position);
-			OnMoveComplete (e);
-		}
+	public void Move (Vector3 target) {
+		Move (target, this.speed_x, this.speed_y);
 	}
 
 	public void Move(Vector3 target, float speed_x, float speed_y) {
 		float speed;
+
+		// do not move when rooted
+		if ((status & CharacterStatus.IsRootedMask) > 0) {
+			RefreshStatus (CharacterStatus.Idle);
+			return;
+		}
+
+		RefreshStatus (CharacterStatus.Moving);
 		moveTarget = target;
-		state = CharacterState.Moving;
 
 		// calculate speed
 		Vector3 n = Vector3.Normalize(target - transform.position);
@@ -193,7 +196,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
 		} else{
 			moveTarget = transform.position;
-			state = CharacterState.Idle;
+			RefreshStatus (CharacterStatus.Idle);
 
 			// send move complete(reached destination event)
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
@@ -230,5 +233,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
     }
 
-
+	public void StopMove() {
+		RefreshStatus (CharacterStatus.Idle);
+		MoveEventArgs e = new MoveEventArgs (false, transform.position);
+		OnMoveComplete (e);
+	}
 }

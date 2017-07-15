@@ -1,12 +1,22 @@
 ﻿using UnityEngine;
 
-public class OgreMale : Enemy {
+public class OgreMale : Enemy, ITimeHandler {
 
 	// temporary
 	public Enemy partner;
+	public OgreHeal heal;
+	public OgreMeteorStrike meteor;
 
-	public Skill heal;
-	public MoveTest moveTest;
+	protected float ai_timer;
+	protected int pattern = 0;
+
+	#region ITimeHandler implementation
+	public void RunTime ()
+	{
+		ai_timer += Time.deltaTime;
+		InstructEnemyAI ();
+	}
+	#endregion
 
 	void Start() {
 		// temporary <- put this in spawn
@@ -18,26 +28,59 @@ public class OgreMale : Enemy {
 		speed_x = 1f;
 		speed_y = 1f;
 
+		heal = gameObject.AddComponent<OgreHeal> ();
+		meteor = gameObject.AddComponent<OgreMeteorStrike> ();
 		heal.SetSkill (this);
-	}
+		meteor.SetSkill (this);
 
-	void Update() {
-		base.Update ();
-
-		if (Input.GetKeyDown (KeyCode.H)) {
-			OgreHeal oh = heal as OgreHeal;
-			oh.SetTarget (partner);
-			heal.OnClick ();
-		}
-
-		if (Input.GetKeyDown (KeyCode.M)) {
-			moveTest.SetSkill (this);
-			moveTest.OnClick ();
-		}
+		ai_timer = 0f;
+		TimeSystem.GetTimeSystem ().AddTimer (this);
 	}
 
 	protected override void InstructEnemyAI ()
 	{
-		
+//		switch (pattern) {
+//		// start
+//		case 0:
+//			if (ai_timer >= 20f) {
+//				pattern = 1;
+//				heal.SetTarget (partner);
+//				heal.OnClick ();
+//				ai_timer = 0f;
+//			}
+//			break;
+//		// after heal
+//		case 1:
+//			if (ai_timer >= 20f) {
+//				pattern = 2;
+//				// torch fire
+//				Debug.Log("Torch fire");
+//				ai_timer = 0f;
+//			}
+//			break;
+//		// after torch file
+//		case 2:
+//			if (ai_timer >= 20f) {
+//				pattern = 0;
+//				//meteor.OnClick ();
+//				Debug.Log("Meteor");
+//				ai_timer = 0;
+//			}
+//			break;
+//		default:
+//			Debug.LogError ("Wrong " + this.transform.root.name + " actions");
+//			break;
+//		}
+
+		if (ai_timer >= 20f) {
+			meteor.OnClick ();
+			ai_timer = 0f;
+		}
+	}
+
+	protected override void KillCharacter ()
+	{
+		base.KillCharacter ();
+		TimeSystem.GetTimeSystem ().DeleteTimer (this);
 	}
 }
