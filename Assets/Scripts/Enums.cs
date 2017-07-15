@@ -3,7 +3,7 @@
 public enum SkillState {
 	Ready,
 	Channeling,
-	InProcess,
+	InProgress,
 	OnCoolDown
 }
 

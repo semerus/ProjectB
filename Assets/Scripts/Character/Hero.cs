@@ -2,7 +2,6 @@
 
 public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
-
 	public Skill autoAttack;
     public Skill passiveSkill;
     public Skill[] activeSkills;
@@ -46,7 +45,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	// receives pixel coordinates
 	public void OnDrop (Vector3 pixelPos)
 	{
-		// if move only one moveable state
+		// move only if it is moveable state
 		Vector3 p = new Vector3();
 		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
 		RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
@@ -93,8 +92,9 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	}
 
 	private Vector3 CalculatePosition(Vector3 target) {
-		int layermask = 1 << 8;
-        // i don't know what this mean, explain me lol
+		int layermask = 1 << 10;
+        
+		// i don't know what this mean, explain me lol
 		RaycastHit2D hitInfo = Physics2D.Linecast (target, transform.position, layermask);
 		Debug.DrawLine (transform.position, target);
 

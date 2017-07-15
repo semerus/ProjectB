@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleManager : MonoBehaviour {
+public class BattleManager : MonoBehaviour, ITimeHandler {
 	// active throughout battle scene
 
 	// singleton
 	private static BattleManager instance;
+	private float gameTime;
 
 	public static BattleManager GetBattleManager() {
 		if (!instance) {
@@ -16,17 +17,28 @@ public class BattleManager : MonoBehaviour {
 		return instance;
 	}
 
+	// list of rigidbody
+	// game state
+
 	// list of IBattleHandler
 	List<IBattleHandler> friendly = new List<IBattleHandler> ();
 	List<IBattleHandler> neutral = new List<IBattleHandler> ();
 	List<IBattleHandler> hostile = new List<IBattleHandler> ();
 
-	// list of rigidbody
-	// game state
+	#region ITimeHandler implementation
+
+	public void RunTime ()
+	{
+		gameTime += Time.deltaTime;
+		UIManager.GetUIManager ().UpdateTime (gameTime);
+	}
+
+	#endregion
 
 	void Start() {
 		// spawn all necessary characters
-
+		gameTime = 0f;
+		TimeSystem.GetTimeSystem ().AddTimer (this);
 	}
 
 	// add entity state
@@ -119,4 +131,6 @@ public class BattleManager : MonoBehaviour {
 	// pause game
 
 	// unpause game
+
+	// end game(timer)
 }

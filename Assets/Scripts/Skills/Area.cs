@@ -1,9 +1,16 @@
 ﻿using UnityEngine;
 
 public abstract class Area : MonoBehaviour {
-	// timer
-	// ontrigger2d
-	//protected abstract void OnTriggerStay2D(Collider2D other);
+	public Character caster; // <- change to protected later
+	protected Collider2D col;
+
+	void Awake() {
+		col = GetComponentInChildren<Collider2D> ();
+	}
+
+	public void SetArea(Character caster) {
+		this.caster = caster;
+	}
 
 	protected void Activate() {
 		
