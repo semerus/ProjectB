@@ -2,9 +2,9 @@
 
 public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
-	public Skill autoAttack;
-    public Skill passiveSkill;
-    public Skill[] activeSkills;
+	protected Skill autoAttack;
+    protected Skill passiveSkill;
+    protected Skill[] activeSkills;
 
     protected HeroUI heroUI; // load it from spawn
 	protected int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
@@ -49,17 +49,6 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		// move only if it is moveable state
 		Vector3 p = new Vector3();
 		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
-<<<<<<< HEAD
-		RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
-		if (hitInfo.collider != null) {
-			IBattleHandler target = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
-			if (target != null && target.Team != Team.Friendly) {
-                AutoAttack (target);
-			} else {
-                p = Camera.main.ScreenToWorldPoint (pixelPos);
-                Move(new Vector3(p.x, p.y, 0f));
-                RemoveAttackTarget();
-=======
 		IBattleHandler b = null;
 		for (int i = 0; i < masks.Length; i++) {
 			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[i]);
@@ -73,31 +62,21 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
                     RemoveAttackTarget();
 				}
 				break;
->>>>>>> bf972b4b096d4f70f2fafc58ff50733443436f6a
 			}
 		}
 		if (b == null) {
 			p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
-<<<<<<< HEAD
-            Move (p);
-            RemoveAttackTarget();
-        }
-
-		Background.GetBackground ().pointer.DeactivatePointer ();
-=======
-			queueState = CharacterState.None;
 			Move (p);
+            RemoveAttackTarget();
 		}
 		Background.GetBackground ().DeactivatePointer (this);
->>>>>>> bf972b4b096d4f70f2fafc58ff50733443436f6a
 	}
 
-	#endregion
+    #endregion
     
-
     // not in use now
-	public virtual void SetSkill(Skill[] skills) {
+    public virtual void SetSkill(Skill[] skills) {
 		
 	}
 
@@ -107,10 +86,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		heroUI = GetComponentInChildren<HeroUI> ();
 	}
 
-	public virtual void AutoAttack (IBattleHandler target) {
-        this.target = target;
-        print("first autoAttack");
-	}
+    public abstract void AutoAttack(IBattleHandler target);
 
     public void RemoveAttackTarget()
     {

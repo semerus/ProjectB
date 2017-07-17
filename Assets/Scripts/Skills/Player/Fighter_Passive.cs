@@ -7,8 +7,10 @@ public class Fighter_Passive : Skill {
     
     public override void Activate(IBattleHandler target)
     {
+        float lifeDrainValue = 10f;
+
         Character self = target as Character;
-        Buff_LifeDrainAbs_FighterPassive fighter_Passive_Lifedrain = new Buff_LifeDrainAbs_FighterPassive(20f);
+        Buff_LifeDrainAbs_FighterPassive fighter_Passive_Lifedrain = new Buff_LifeDrainAbs_FighterPassive(lifeDrainValue);
         self.Buffs.Add(fighter_Passive_Lifedrain);
     }
 

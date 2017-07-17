@@ -17,11 +17,6 @@ public class Buff_LifeDrainAbs_FighterPassive :  Buff, ILifeStealAbsBuff {
 
     #region class Constructor
 
-    public Buff_LifeDrainAbs_FighterPassive()
-    {
-        lifeDrainAbs = 20f;
-    }
-
     public Buff_LifeDrainAbs_FighterPassive(float lifeDrainAbsValue)
     {
         lifeDrainAbs = lifeDrainAbsValue;

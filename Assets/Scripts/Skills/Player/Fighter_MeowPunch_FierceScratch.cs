@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_MeowPunch : Skill {
+public class Fighter_MeowPunch_FierceScratch : Skill {
     #region implemented abstract members of Skill
 
     public override void Activate(IBattleHandler target)
     {
         CheckTargetRange(target);
 
-        if (isTargetInMeleeRange == true)
+        if (isTargetInMeleeRange == true && caster.CurHP > HPCost)
         {
             if (state == SkillState.Ready)
             {
-                (target as Enemy).ReceiveDamage(dmg);
+                caster.AttackTarget(target, dmg);
+                // Buffs(Caster, target)
+                
+                caster.ReceiveDamage(caster, HPCost);
 
-                state = SkillState.OnCoolDown;
-                this.timer_cooldown = 0f;
-                TimeSystem.GetTimeSystem().AddTimer(this);
+                StartCoolDown();
             }
             else
             {
@@ -38,6 +39,7 @@ public class Fighter_MeowPunch : Skill {
         // set original value
         cooldown = 15f;
         dmg = 100;
+        HPCost = 50;
 
         // set initial value
         state = SkillState.Ready;
@@ -102,8 +104,9 @@ public class Fighter_MeowPunch : Skill {
         }
     }
 
-    // effect of this skill
+    // effect & cost of this Skill
     int dmg;
+    int HPCost;
 
     #endregion
 }

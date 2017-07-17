@@ -32,8 +32,15 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	}
 
     #endregion
-    
-	public void OnEndSkill(SkillEventArgs e) {
+
+    #region Getters and Setters
+    public SkillState State
+    {
+        get { return state; }
+    }
+    #endregion
+
+    public void OnEndSkill(SkillEventArgs e) {
 		EventHandler<SkillEventArgs> endSkill = EndSkill;
 		if (endSkill != null) {
 			endSkill (this, e);
@@ -53,7 +60,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// run cooldown
 	public abstract void Activate (IBattleHandler target);
 
-	protected void OnCoolDown() {
+	protected virtual void OnCoolDown() {
 		timer_cooldown += Time.deltaTime;
 
 		// change skill ui if necessary
@@ -66,7 +73,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		}
 	}
 
-	protected void StartCoolDown() {
+	protected virtual void StartCoolDown() {
 		state = SkillState.OnCoolDown;
 		if (!TimeSystem.GetTimeSystem ().CheckTimer (this as ITimeHandler)) {
 			TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);

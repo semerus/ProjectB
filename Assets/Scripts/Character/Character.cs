@@ -7,6 +7,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	protected int id;
 	protected Team team;
 	protected int maxHp;
+    [SerializeField]
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
@@ -44,6 +45,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     public int CurHP
     {
         get { return hp; }
+        set { hp = value; }
     }
 	#endregion
 
@@ -62,7 +64,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
         set { this.status = value; }
 	}
 
-	public void ReceiveDamage (int damage)
+	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
 		hp -= damage;
 		if (hp <= 0) {
@@ -142,7 +144,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
         lifeStealSum = (damage * dmgRatio * lifeStealRatio) + lifeStealAbs;
 
-		target.ReceiveDamage ((int) (damage * dmgRatio));
+		target.ReceiveDamage(this, (int) (damage * dmgRatio));
         target.ReceiveHeal((int)lifeStealSum);
 	}
 
