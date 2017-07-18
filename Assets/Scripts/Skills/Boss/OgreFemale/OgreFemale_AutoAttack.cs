@@ -6,24 +6,35 @@ using UnityEngine;
 public class OgreFemale_AutoAttack : Skill {
 
     IBattleHandler[] friendlyNum;
-    float min = 1000000000000;
-    IBattleHandler minNum = null;
     Character minC;
 
     public override void RunTime()
     {
-        AutoAttack();
         base.RunTime();
+        if (CheckSkillState(SkillStatus.ProcessMask))
+            AutoAttack();
+    }
+
+    protected override void OnCoolDown()
+    {
+        base.OnCoolDown();
+        if(CheckSkillState(SkillStatus.ProcessMask))
+        {
+            TimeSystem.GetTimeSystem().AddTimer(this);
+        }
     }
 
     public override void Activate(IBattleHandler target)
     {
-        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+        cooldown = 3;
+        UpdateSkillState(SkillStatus.ProcessOn);
         TimeSystem.GetTimeSystem().AddTimer(this);
+        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
     }
 
     private void AutoAttacking()
     {
+        StartCoolDown();
         for (int i = 0; i < friendlyNum.Length; i++)
         {
             Character c = friendlyNum[i] as Character;
@@ -35,6 +46,8 @@ public class OgreFemale_AutoAttack : Skill {
                 caster.AttackTarget(c, 0);
             }
         }
+        UpdateSkillState(SkillStatus.ProcessOff);
+        Debug.Log("dddddddd"+skillStatus);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
         OnEndSkill(s);
     }
@@ -47,6 +60,9 @@ public class OgreFemale_AutoAttack : Skill {
 
     private void AutoAttackTargetting()
     {
+        IBattleHandler minNum=null;
+        float temp = Mathf.Infinity;
+
         for (int i = 0; i < friendlyNum.Length; i++)
         {
             Character c = friendlyNum[i] as Character;
@@ -55,9 +71,9 @@ public class OgreFemale_AutoAttack : Skill {
 
             float distance = x * x + y * y;
             
-            if (distance <= min)
+            if (distance <= temp)
             {
-                min = distance;
+                temp = distance;
                 minNum = friendlyNum[i];
             }
         }
@@ -138,7 +154,7 @@ public class OgreFemale_AutoAttack : Skill {
         {
             if(!m.result)
             {
-                TimeSystem.GetTimeSystem().DeleteTimer(this);
+                UpdateSkillState(SkillStatus.ProcessOff);
                 SkillEventArgs s = new SkillEventArgs(this.name, true);
                 OnEndSkill(s);             
                 caster.MoveComplete -= OnMoveComplete;

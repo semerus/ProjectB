@@ -225,7 +225,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			return;
 		}
 
-		RefreshStatus (CharacterStatus.Moving);
+        int s = CharacterStatus.GetCurrentActionStatus(this) | CharacterStatus.Moving;
+		RefreshStatus (s);
 		moveTarget = target;
 
 		// calculate speed
@@ -251,7 +252,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     public void Move(Vector3 target, float sec)
     {
         moveTarget = target;
-        RefreshStatus(CharacterStatus.Moving);
+
+        int s = CharacterStatus.GetCurrentActionStatus(this) | CharacterStatus.Moving;
+        RefreshStatus(s);
 
         if (Vector3.Distance(target, transform.position) > 0.01f)
         {
@@ -267,8 +270,10 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
             OnMoveComplete(e);
         }
     }
+
     public void ChangeMoveTarget(Vector3 target)
     {
+        moveMethod = MoveMethod.Normal;
         moveTarget = target;
         RefreshStatus(CharacterStatus.Moving);
     }

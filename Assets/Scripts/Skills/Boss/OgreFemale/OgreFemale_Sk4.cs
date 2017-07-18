@@ -14,35 +14,27 @@ public class OgreFemale_Sk4 : Skill
     public override void RunTime()
     {
         base.RunTime();
-        Sk4();
-        Debug.Log(sk4_On);
-
+        if(CheckSkillState(SkillStatus.ProcessMask))
+        {
+            Sk4();
+        }
     }
 
     public override void Activate(IBattleHandler target)
     {
-        if (startNum == 0)
-        {
-            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-            Debug.Log(friendlyNum.Length);
-            startNum = 1;
-
-            sk4_On = true;
-            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
-            {
-                TimeSystem.GetTimeSystem().AddTimer(this);
-            }
-        }
+        caster.StopMove();
+        UpdateSkillState(SkillStatus.ProcessOn);
+        //caster.RefreshStatus(CharacterStatus.);
+        cooldown = 20f;
+        StartCoolDown();
+        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
     }
 
     private void Sk4()
     {
-        if (sk4_On == true)
-        {
-            BurnRun();
-            EdgeChange();
-            BurnBurn();
-        }
+        BurnRun();
+        EdgeChange();
+        BurnBurn();
     }
 
     private void BurnBurn()
@@ -62,7 +54,6 @@ public class OgreFemale_Sk4 : Skill
 
     private void BurnRun()
     {
-        Debug.Log("sdsdsdddsd");
         float speed = 3*Mathf.Sqrt(2);
         Vector3 target = FindTarget();
         caster.Move(target, speed, speed);
@@ -71,7 +62,6 @@ public class OgreFemale_Sk4 : Skill
             caster.StopMove();
             sk4_On = false;
             count = 0;
-            Debug.Log(target);
             SkillEventArgs s = new SkillEventArgs(this.name, true);
             OnEndSkill(s);
         }
@@ -114,7 +104,6 @@ public class OgreFemale_Sk4 : Skill
                 }
 
             case 3:
-                Debug.Log(mod);
                 if (cPosition.y+3.14f <= cPosition.x+9)
                 {
                     target.y = -3.4f;

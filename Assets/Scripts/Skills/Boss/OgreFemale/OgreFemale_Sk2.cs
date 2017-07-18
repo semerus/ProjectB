@@ -29,6 +29,7 @@ public class OgreFemale_Sk2 : Skill {
         float x = Mathf.Abs(adjustpoint.x - this.gameObject.transform.position.x);
         float y = Mathf.Abs(adjustpoint.y - this.gameObject.transform.position.y);
         Vector3 s = new Vector3(x, y);
+        caster.RefreshStatus(CharacterStatus.ForcedMoving);
         caster.Move(adjustpoint, s.x, s.y);
         caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
     }

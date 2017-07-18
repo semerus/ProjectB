@@ -13,7 +13,7 @@ public class OgreFemale : Enemy,ITimeHandler {
 
     void OnSkillEnd(object sender, EventArgs e)
     {
-        TimeSystem.GetTimeSystem().AddTimer(this);
+
     }
     
     protected override void Start()
@@ -45,20 +45,25 @@ public class OgreFemale : Enemy,ITimeHandler {
 
     protected override void InstructEnemyAI()
     {
-        if (atk3.State == SkillState.Ready && Sk3() == true)
+        Debug.Log("adsfad:" + (status & CharacterStatus.NotOrderableMask));
+        if ((status & CharacterStatus.NotOrderableMask) > 0)
+            return;
+        Debug.Log("atk2 : "+atk2.CheckSkillState(SkillStatus.ReadyMask));
+
+        if (atk3.CheckSkillState(SkillStatus.ReadyMask) && Sk3())
         {
+            StopMove();
             atk3.OnCast();
-            TimeSystem.GetTimeSystem().DeleteTimer(this);
         }
-        else if (atk2.State == SkillState.Ready)
+        else if (atk2.CheckSkillState(SkillStatus.ReadyMask))
         {
+
+            StopMove();
             atk2.OnCast();
-            TimeSystem.GetTimeSystem().DeleteTimer(this);
         }
-        else if(atk1.State == SkillState.Ready)
+        else if (atk1.CheckSkillState(SkillStatus.ReadyMask))
         {
             atk1.OnCast();
-            TimeSystem.GetTimeSystem().DeleteTimer(this);
         }
     }
     
