@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ILifeStealBuff : MonoBehaviour {
+public  class ILifeDrainAbs : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

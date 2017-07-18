@@ -11,16 +11,28 @@ public class OgreFemale_Sk4 : Skill
     bool sk4_On = false;
     IBattleHandler[] friendlyNum;
 
+    public override void RunTime()
+    {
+        base.RunTime();
+        Sk4();
+        Debug.Log(sk4_On);
+
+    }
+
     public override void Activate(IBattleHandler target)
     {
-        sk4_On = true;
         if (startNum == 0)
         {
             friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
             Debug.Log(friendlyNum.Length);
             startNum = 1;
+
+            sk4_On = true;
+            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+            {
+                TimeSystem.GetTimeSystem().AddTimer(this);
+            }
         }
-        Sk4();
     }
 
     private void Sk4()
@@ -43,15 +55,26 @@ public class OgreFemale_Sk4 : Skill
             if (burnCheck == true)
             {
                 Debug.Log("Burn " + c.transform.name);
+                // 불붙기
             }
         }
     }
 
     private void BurnRun()
     {
-        float speed = 3 * Mathf.Sqrt(2);
+        Debug.Log("sdsdsdddsd");
+        float speed = Mathf.Sqrt(2);
         Vector3 target = FindTarget();
         caster.Move(target, speed, speed);
+        if(count>=6)
+        {
+            caster.StopMove();
+            sk4_On = false;
+            count = 0;
+            Debug.Log(target);
+            SkillEventArgs s = new SkillEventArgs(this.name, true);
+            OnEndSkill(s);
+        }
     }
 
     private Vector3 FindTarget()
@@ -72,7 +95,7 @@ public class OgreFemale_Sk4 : Skill
                 else
                 {
                     target.x = 9f;
-                    target.y = cPosition.x + (9f - cPosition.x);
+                    target.y = cPosition.y + (9f - cPosition.x);
                     return target;
                 }
 
@@ -80,7 +103,7 @@ public class OgreFemale_Sk4 : Skill
                 if (9 - cPosition.x <= cPosition.y + 3.4f)
                 {
                     target.x = 9f;
-                    target.y = cPosition.y - (9 - cPosition.x);
+                    target.y = -cPosition.y + (9 - cPosition.x);
                     return target;
                 }
                 else
@@ -91,11 +114,9 @@ public class OgreFemale_Sk4 : Skill
                 }
 
             case 3:
-                Debug.Log("ssss");
                 Debug.Log(mod);
                 if (cPosition.y+3.14f <= cPosition.x+9)
                 {
-                    Debug.Log("bbbbb");
                     target.y = -3.4f;
                     target.x = cPosition.x - (cPosition.y + 3.4f);
                     return target;
@@ -181,8 +202,7 @@ public class OgreFemale_Sk4 : Skill
         }
         else
         {
-            sk4_On = false;
-            count = 0;
+
         }
     }
 

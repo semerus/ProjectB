@@ -2,7 +2,7 @@
 
 public interface IBattleHandler {
 	Team Team { get;}
-	CharacterState State { get; }
-	void ReceiveDamage(int damage);
+	int Status { get; }
+	void ReceiveDamage(IBattleHandler attacker, int damage);
 	void ReceiveHeal(int heal);
 }

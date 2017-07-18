@@ -2,25 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_Attack : Skill {
-	#region implemented abstract members of Skill
+public class Fighter_MeowPunch_FierceScratch : Skill {
+    #region implemented abstract members of Skill
 
-	public override void Activate (IBattleHandler target)
-	{
+    public override void Activate(IBattleHandler target)
+    {
         CheckTargetRange(target);
 
-        if(isTargetInMeleeRange == true)
+        if (isTargetInMeleeRange == true && caster.CurHP > HPCost)
         {
-            if(state == SkillState.Ready)
+            if (state == SkillState.Ready)
             {
-                (target as Enemy).ReceiveDamage(dmg);
-                print((target as Enemy).CurHP);
-                (caster as Hero).passiveSkill.Activate(caster as IBattleHandler);
+                caster.AttackTarget(target, dmg);
+                // Buffs(Caster, target)
+                
+                caster.ReceiveDamage(caster, HPCost);
 
-                state = SkillState.OnCoolDown;
-                this.timer_cooldown = 0f;
-                TimeSystem.GetTimeSystem().AddTimer(this);
-
+                StartCoolDown();
             }
             else
             {
@@ -30,9 +28,8 @@ public class Fighter_Attack : Skill {
         else
         {
             caster.Move(positionToMeleeAttack);
-            caster.queueState = CharacterState.AutoAttaking;
         }
-	}
+    }
 
     #endregion
 
@@ -40,8 +37,9 @@ public class Fighter_Attack : Skill {
     void Awake()
     {
         // set original value
-        cooldown = 0.9f;
-        dmg = 20;
+        cooldown = 15f;
+        dmg = 100;
+        HPCost = 50;
 
         // set initial value
         state = SkillState.Ready;
@@ -106,8 +104,9 @@ public class Fighter_Attack : Skill {
         }
     }
 
-    // effect of this skill
+    // effect & cost of this Skill
     int dmg;
+    int HPCost;
 
     #endregion
 }

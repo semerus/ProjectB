@@ -25,15 +25,22 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		case SkillState.Channeling:
 			IChanneling ch = this as IChanneling;
 			ch.OnChanneling ();
-			break;
+			break; 
 		default:
 			break;
 		}
 	}
 
     #endregion
-    
-	public void OnEndSkill(SkillEventArgs e) {
+
+    #region Getters and Setters
+    public SkillState State
+    {
+        get { return state; }
+    }
+    #endregion
+
+    public void OnEndSkill(SkillEventArgs e) {
 		EventHandler<SkillEventArgs> endSkill = EndSkill;
 		if (endSkill != null) {
 			endSkill (this, e);
@@ -47,22 +54,14 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// when ui button is clicked
 	public virtual void OnCast() {
 		// check state
-		switch (caster.State) {
-        case CharacterState.None:
-        case CharacterState.Moving:
-		case CharacterState.Idle:
-			// states when skill can be used
-			IChanneling ch = this as IChanneling;
-			if (ch != null) {
-				// start channeling
-				ch.OnChanneling ();
-			} else {
-				Activate (caster.Target);
-			}
-			break;
-		default:
-			// states when skill cannot be used
-			break;
+
+		// states when skill can be used
+		IChanneling ch = this as IChanneling;
+		if (ch != null) {
+			// start channeling
+			ch.OnChanneling ();
+		} else {
+			Activate (caster.Target);
 		}
 	}
 
@@ -70,7 +69,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// run cooldown
 	public abstract void Activate (IBattleHandler target);
 
-	protected void OnCoolDown() {
+	protected virtual void OnCoolDown() {
 		timer_cooldown += Time.deltaTime;
 
 		// change skill ui if necessary
@@ -83,7 +82,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		}
 	}
 
-	protected void StartCoolDown() {
+	protected virtual void StartCoolDown() {
 		state = SkillState.OnCoolDown;
 		if (!TimeSystem.GetTimeSystem ().CheckTimer (this as ITimeHandler)) {
 			TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);

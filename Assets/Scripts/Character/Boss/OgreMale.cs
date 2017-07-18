@@ -19,11 +19,12 @@ public class OgreMale : Enemy, ITimeHandler {
 	}
 	#endregion
 
-	void Start() {
+	protected override void Start() {
+		base.Start ();
 		// temporary <- put this in spawn
 		id = 3;
 		team = Team.Hostile;
-		state = CharacterState.Idle;
+        status = CharacterStatus.Idle;
 		maxHp = 15000;
 		hp = 15000;
 		speed_x = 1f;
@@ -54,7 +55,7 @@ public class OgreMale : Enemy, ITimeHandler {
 			break;
 		// after heal
 		case 1:
-			if (ai_timer >= 20f) {
+			if (ai_timer >= 5f) {
 				pattern = 2;
 				// torch fire
 				fire.OnCast();

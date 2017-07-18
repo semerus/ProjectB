@@ -12,76 +12,58 @@ public class OgreFemale_Sk3 : Skill {
 
     public override void RunTime()
     {
-        ofT3ime += Time.deltaTime;
+        Sk3On();
         base.RunTime();
     }
-    
+
+    public override void Activate(IBattleHandler target)
+    {
+        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+        if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+        {
+            TimeSystem.GetTimeSystem().AddTimer(this);
+            ofT3ime = 0;
+        }
+    }
+
     private void Sk3On()
     {
-        if(Sk3Acess==true)
+        ofT3ime += Time.deltaTime;
+        if (ofT3ime <= 2)
         {
-            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+            //캐스팅
+        }
+        if (ofT3ime >= 2 && ofT3ime <= 6)
+        {
+            for (int i = 0; i <= friendlyNum.Length - 1; i++)
             {
-                TimeSystem.GetTimeSystem().AddTimer(this);
-                ofT3ime = 0;
-            }
-
-            if(ofT3ime <= 2)
-            {
-                //캐스팅
-            }
-            if(ofT3ime >= 2 && ofT3ime <= 6)
-            {
-                for(int i=0; i<=friendlyNum.Length-1; i++)
+                Character c = friendlyNum[i] as Character;
+                bool hitCheck = EllipseScanner(3.5f, 1.3f, this.gameObject.transform.position, c.gameObject.transform.position);
+                if (hitCheck == true)
                 {
-                    Character c = friendlyNum[i] as Character;
-                    bool hitCheck = EllipseScanner(3.5f, 1.3f, this.gameObject.transform.position, c.gameObject.transform.position);
-                    if(hitCheck==true)
-                    {
-                        Debug.Log("stun "+c.transform.name);
-                        //기절
-                    }
-                }
-            }
-            if(ofT3ime >= 6 && ofT3ime <= 7.5)
-            {
-                // 마무리 동작
-            }
-            if(ofT3ime > 7.5)
-            {
-                Sk3Acess = false;
-                ofT3ime = 0;
-                if (TimeSystem.GetTimeSystem().CheckTimer(this))
-                {
-                    TimeSystem.GetTimeSystem().DeleteTimer(this);
+                    Debug.Log("stun " + c.transform.name);
+                    //기절
                 }
             }
         }
-    }
-
-
-    private void Sk3Targgetting()
-    {
-        int targetingNum = 0;
-
-        for(int i=0; i<=friendlyNum.Length-1; i++)
+        if (ofT3ime >= 6 && ofT3ime <= 7.5)
         {
-            Character c = friendlyNum[i] as Character;
-            bool targetOn = EllipseScanner(4, 1.5f, this.gameObject.transform.position, c.gameObject.transform.position);
-
-            if(targetOn == true)
+            // 마무리 동작
+        }
+        if (ofT3ime > 7.5)
+        {
+            Sk3Acess = false;
+            ofT3ime = 0;
+            if (TimeSystem.GetTimeSystem().CheckTimer(this))
             {
-                targetingNum++;
+                TimeSystem.GetTimeSystem().DeleteTimer(this);
             }
-        }
-        if(targetingNum>=2)
-        {
-            Debug.Log("e skill on");
-            Sk3Acess = true;
+            SkillEventArgs s = new SkillEventArgs(this.name, true);
+            OnEndSkill(s);
         }
     }
 
-    private bool EllipseScanner(float a, float b, Vector3 center,Vector3 targetPosition)
+    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
     {
         float dx = targetPosition.x - center.x;
         float dy = targetPosition.y - center.y;
@@ -97,21 +79,5 @@ public class OgreFemale_Sk3 : Skill {
         {
             return false;
         }
-    }
-
-    public override void Activate(IBattleHandler target)
-    {
-        if (startNum == 0)
-        {
-            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-            Debug.Log(friendlyNum.Length);
-            startNum = 1;
-        }
-
-        if (Sk3Acess==false)
-        {
-            Sk3Targgetting();
-        }
-        Sk3On();
     }
 }

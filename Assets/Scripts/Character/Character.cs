@@ -5,21 +5,23 @@ using UnityEngine;
 public abstract class Character : MonoBehaviour, IBattleHandler {
 
 	protected int id;
-    [SerializeField]
 	protected Team team;
 	protected int maxHp;
+    [SerializeField]
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
+    protected float customSpeed_x;
+    protected float customSpeed_y;
+
+
 	protected List<Buff> buffs = new List<Buff>();
 
+    [SerializeField]
 	protected int status = CharacterStatus.Idle;
+    protected MoveMethod moveMethod = MoveMethod.Normal;
 
     [SerializeField]
-    protected CharacterState state;
-    // may input interface queueAble
-    public CharacterState queueState;
-    
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
 	protected bool isFacingLeft = true;
@@ -50,8 +52,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     public int CurHP
     {
         get { return hp; }
+        set { hp = value; }
     }
-
 	#endregion
 
 	#region IBattleHandler implementation
@@ -62,14 +64,14 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		}
 	}
 
-	public CharacterState State {
+	public int State {
 		get {
-			return this.state;
+			return this.status;
 		}
-        set { this.state = value; }
+        set { this.status = value; }
 	}
 
-	public void ReceiveDamage (int damage)
+	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
 		hp -= damage;
 		if (hp <= 0) {
@@ -86,27 +88,41 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		if (hp >= maxHp) {
 			hp = maxHp;
 		}
-		//UpdateHpUI ();
+		UpdateHpUI ();
 	}
 
 	#endregion
 
-	public void OnMoveComplete(MoveEventArgs e) {
+	public virtual void OnMoveComplete(MoveEventArgs e) {
 		EventHandler<MoveEventArgs> moveComplete = MoveComplete;
 		if (moveComplete != null) {
 			moveComplete (this, e);
 		}
 	}
 
-	void Awake() {
+	protected virtual void Start() {
 		Spawn ();
 	}
 
 	protected virtual void Update() {
-		if ((status & CharacterStatus.IsMovingMask) > 0) {
-			Move (moveTarget);
-		}
-	}
+        switch (moveMethod)
+        {
+            case MoveMethod.Normal:
+                if ((status & CharacterStatus.IsMovingMask) > 0)
+                {
+                    Move(moveTarget);
+                }
+                break;
+            case MoveMethod.CustomSpeed:
+                if ((status & CharacterStatus.IsMovingMask) > 0)
+                {
+                    Move(moveTarget, customSpeed_x, customSpeed_y);
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
 	/// <summary>
 	/// Refreshs the status.
@@ -114,7 +130,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	/// <param name="newAction">New action(Idle, Moving, Channeling)</param>
 	public virtual void RefreshStatus(int newAction) {
 		for (int i = 0; i < buffs.Count; i++) {
-			IStatusBuff buff = buffs [i] as IStatusBuff;
+            
+            IStatusBuff buff = buffs [i] as IStatusBuff;
 			if (buff != null) {
 				newAction = newAction | buff.Status;
 			}
@@ -128,19 +145,32 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	public void AttackTarget(IBattleHandler target, int damage) {
 		// check for buffs
 		float dmgRatio = 1f;
-		float lifeStealRatio = 1f;
+		float lifeStealRatio = 0f;
+        float lifeStealAbs = 0f;
+        float lifeStealSum = 0f;
 
 		for (int i = 0; i < buffs.Count; i++) {
-			IDamageBuff buff = buffs [i] as IDamageBuff;
+            IDamageBuff buff = buffs [i] as IDamageBuff;
 			if (buff != null) {
 				// change this formula later
 				dmgRatio = dmgRatio * buff.DamageRatio;
 			}
 		}
 
-		// add life steal later
+        for (int i = 0; i < buffs.Count; i++)
+        {
+            ILifeStealAbsBuff buff = buffs[i] as ILifeStealAbsBuff;
+            if (buff != null)
+            {
+                lifeStealAbs += buff.LifeStealAbs;
+            }
+    
+        }
 
-		target.ReceiveDamage ((int) (damage * dmgRatio));
+        lifeStealSum = (damage * dmgRatio * lifeStealRatio) + lifeStealAbs;
+
+		target.ReceiveDamage(this, (int) (damage * dmgRatio));
+        target.ReceiveHeal((int)lifeStealSum);
 	}
 
 	public virtual void HealTarget(int heal, IBattleHandler target) {
@@ -162,20 +192,26 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	protected virtual void KillCharacter () {
-		state = CharacterState.Dead;
+        status = CharacterStatus.Dead;
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
 	}
 
 	public void Move (Vector3 target) {
+        // order matters
 		Move (target, this.speed_x, this.speed_y);
+        moveMethod = MoveMethod.Normal;
 	}
 
 	public void Move(Vector3 target, float speed_x, float speed_y) {
 		float speed;
+        customSpeed_x = speed_x;
+        customSpeed_y = speed_y;
+        moveMethod = MoveMethod.CustomSpeed;
 
 		// do not move when rooted
+        // check status -- can moving or not( rooted +@  )
 		if ((status & CharacterStatus.IsRootedMask) > 0) {
 			RefreshStatus (CharacterStatus.Idle);
 			return;
@@ -207,7 +243,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     public void Move(Vector3 target, float sec)
     {
         moveTarget = target;
-        state = CharacterState.Moving;
+        RefreshStatus(CharacterStatus.Moving);
+
         if (Vector3.Distance(target, transform.position) > 0.01f)
         {
             this.gameObject.transform.position += Time.deltaTime * target / sec;
@@ -216,20 +253,16 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
         else
         {
             moveTarget = transform.position;
-            state = CharacterState.Idle;
-
+            RefreshStatus(CharacterStatus.Idle);
             // send move complete(reached destination event)
             MoveEventArgs e = new MoveEventArgs(true, transform.position);
             OnMoveComplete(e);
         }
-
     }
-
-
     public void ChangeMoveTarget(Vector3 target)
     {
         moveTarget = target;
-		RefreshStatus (CharacterStatus.Moving);
+        RefreshStatus(CharacterStatus.Moving);
     }
 
 	public void StopMove() {
@@ -237,4 +270,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		MoveEventArgs e = new MoveEventArgs (false, transform.position);
 		OnMoveComplete (e);
 	}
+}
+
+
+public enum MoveMethod
+{
+    Normal,
+    CustomSpeed
 }

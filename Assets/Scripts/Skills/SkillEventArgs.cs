@@ -2,9 +2,11 @@
 using UnityEngine;
 
 public class SkillEventArgs : EventArgs{
-	Type skill;
+	public string name;
+    public bool result;
 
-	public SkillEventArgs(Type skill) {
-		this.skill = skill;
+	public SkillEventArgs(string name, bool result) {
+		this.name = name;
+        this.result = result;
 	}
 }
