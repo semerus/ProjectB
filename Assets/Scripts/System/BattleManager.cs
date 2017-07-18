@@ -1,12 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour, ITimeHandler {
 	// active throughout battle scene
 
+	// temporary -> will be loaded by gamemanager
+	public GameObject map;
+	public GameObject[] heroes;
+	public GameObject[] bosses;
+
+
 	// singleton
 	private static BattleManager instance;
 	private float gameTime;
+	private new Vector3[] heroPos = new Vector3[]{new Vector3(-5.7f, 0.65f), new Vector3(-7.5f, -0.3f), new Vector3(-3.75f, -0.3f), new Vector3(-5.7f, -2.1f)};
+	private new Vector3[] bossPos = new Vector3[]{new Vector3(6.17f, 0f), new Vector3(6.17f, -2.5f)};
 
 	public static BattleManager GetBattleManager() {
 		if (!instance) {
@@ -36,9 +45,13 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	#endregion
 
 	void Start() {
-		// spawn all necessary characters
-		gameTime = 0f;
-		TimeSystem.GetTimeSystem ().AddTimer (this);
+		// temporary load info
+		string[,] skills = new string[1, 2];
+		skills [0,0] = "Fighter_Attack";
+		skills [0,1] = "Figher_MeowPunch";
+
+		BattleInfo info = new BattleInfo(map, heroes, skills, bosses);
+		StartGame (info);
 	}
 
 	// add entity state
@@ -54,7 +67,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			break;
 		case Team.Hostile:
 			if (!hostile.Contains (entity))
-				neutral.Add (entity);
+				hostile.Add (entity);
 			break;
 		}
 	}
@@ -109,6 +122,8 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	// check game
 	public void CheckGame() {
 		bool classifier = true;
+
+		Debug.Log ("sss: " + hostile.Count);
 		// win scenario
 		for (int i = 0; i < hostile.Count; i++) {
 			classifier = classifier && ((hostile [i].Status & CharacterStatus.Dead) > 0); 
@@ -129,6 +144,13 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			Debugging.DebugWindow ("Boss Wins!");
 			return;
 		}
+	}
+
+	public void StartGame(BattleInfo info) {
+		gameTime = 0f;
+		TimeSystem.GetTimeSystem ().AddTimer (this);
+
+//		gameObject.AddComponent (Type.GetType (info.heroSkills [0, 0]));
 	}
 
 	// pause game

@@ -13,7 +13,7 @@ public class OgreMeteorStrike : Skill {
 	{
 		base.RunTime ();
 
-		if (state == SkillState.InProgress) {
+		if (CheckSkillState(SkillStatus.ProcessMask)) {
 			progressTimer += Time.deltaTime;
 			if (progressTimer >= 1.5f) {
 				progressTimer = 0f;
@@ -26,7 +26,7 @@ public class OgreMeteorStrike : Skill {
 
 	public override void Activate (IBattleHandler target)
 	{
-		state = SkillState.InProgress;
+		UpdateSkillState (SkillStatus.ProcessOn);
 		// first strike
 		counter = 0;
 		InProgress ();

@@ -11,14 +11,21 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
+    protected float customSpeed_x;
+    protected float customSpeed_y;
+
+
 	protected List<Buff> buffs = new List<Buff>();
 
     [SerializeField]
 	protected int status = CharacterStatus.Idle;
+    protected MoveMethod moveMethod = MoveMethod.Normal;
 
     [SerializeField]
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
+	protected bool isFacingLeft = true;
+	protected AnimationController anim;
 
 	public event EventHandler<MoveEventArgs> MoveComplete;
 
@@ -93,11 +100,29 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		}
 	}
 
-	protected virtual void Update() {
-		if ((status & CharacterStatus.IsMovingMask) > 0) {
-			Move (moveTarget);
-		}
+	protected virtual void Start() {
+		Spawn ();
 	}
+
+	protected virtual void Update() {
+        switch (moveMethod)
+        {
+            case MoveMethod.Normal:
+                if ((status & CharacterStatus.IsMovingMask) > 0)
+                {
+                    Move(moveTarget);
+                }
+                break;
+            case MoveMethod.CustomSpeed:
+                if ((status & CharacterStatus.IsMovingMask) > 0)
+                {
+                    Move(moveTarget, customSpeed_x, customSpeed_y);
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
 	/// <summary>
 	/// Refreshs the status.
@@ -158,26 +183,42 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	public virtual void Spawn () {
+		// set team
+		if (this is Hero) {
+			team = Team.Friendly;
+		} else if (this is Enemy) {
+			team = Team.Hostile;
+		}
+
 		// things to happen at load
 		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
 
 		// place at the correct place
+		anim = GetComponentInChildren<AnimationController> ();
+		anim.UpdateSortingLayer ();
 	}
 
 	protected virtual void KillCharacter () {
         status = CharacterStatus.Dead;
+		gameObject.SetActive (false);
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
 	}
 
 	public void Move (Vector3 target) {
+        // order matters
 		Move (target, this.speed_x, this.speed_y);
+        moveMethod = MoveMethod.Normal;
 	}
 
 	public void Move(Vector3 target, float speed_x, float speed_y) {
 		float speed;
+        customSpeed_x = speed_x;
+        customSpeed_y = speed_y;
+        moveMethod = MoveMethod.CustomSpeed;
 
+		// do not move when rooted
         // check status -- can moving or not( rooted +@  )
 		if ((status & CharacterStatus.IsRootedMask) > 0) {
 			RefreshStatus (CharacterStatus.Idle);
@@ -202,12 +243,16 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
 			OnMoveComplete (e);
 		}
+
+		// update sorting layer order by y axis
+		anim.UpdateSortingLayer ();
 	}
 
     public void Move(Vector3 target, float sec)
     {
         moveTarget = target;
-        status = CharacterStatus.Moving;
+        RefreshStatus(CharacterStatus.Moving);
+
         if (Vector3.Distance(target, transform.position) > 0.01f)
         {
             this.gameObject.transform.position += Time.deltaTime * target / sec;
@@ -216,19 +261,16 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
         else
         {
             moveTarget = transform.position;
-            status = CharacterStatus.Moving;
-
+            RefreshStatus(CharacterStatus.Idle);
             // send move complete(reached destination event)
             MoveEventArgs e = new MoveEventArgs(true, transform.position);
             OnMoveComplete(e);
         }
-
     }
-    
     public void ChangeMoveTarget(Vector3 target)
     {
         moveTarget = target;
-		RefreshStatus (CharacterStatus.Moving);
+        RefreshStatus(CharacterStatus.Moving);
     }
 
 	public void StopMove() {
@@ -236,4 +278,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		MoveEventArgs e = new MoveEventArgs (false, transform.position);
 		OnMoveComplete (e);
 	}
+}
+
+
+public enum MoveMethod
+{
+    Normal,
+    CustomSpeed
 }

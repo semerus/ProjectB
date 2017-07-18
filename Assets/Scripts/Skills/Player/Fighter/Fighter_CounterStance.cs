@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_ThousandFists : Skill, IChanneling {
-    #region implemented abstract members of Skill + override things
+public class Fighter_CounterStance : Skill, IChanneling {
+    #region implemented abstract members of Skill
 
     public override void Activate(IBattleHandler target)
     {
@@ -15,85 +15,28 @@ public class Fighter_ThousandFists : Skill, IChanneling {
         }
 
         // skillState check
-        if (state != SkillState.Ready)
+		if (skillStatus != SkillStatus.ReadyOn)
         {
             print("skill not ready");
             return;
         }
-        // should refine!!
         
         if (caster.Status == 0 || caster.Status == CharacterStatus.Moving)
         {
-            CheckTargetRange(target);
+            // Change character State
+            caster.RefreshStatus(CharacterStatus.Channeling);
+            caster.CurHP -= HPCost;
 
-            if(isTargetInMeleeRange == true)
-            {
-                // Change character State
-                caster.RefreshStatus(CharacterStatus.Channeling);
-                caster.CurHP -= HPCost;
+            // Change skill State
+			skillStatus = SkillStatus.ChannelingOn;
 
-                // Change skill State
-                state = SkillState.Channeling;
-
-                // Time system Check
-                TimeSystem.GetTimeSystem().AddTimer(this);
-            }
-            else
-            {
-                Debug.LogError("isTargetInMeleeRange is " + isTargetInMeleeRange);
-            }
+            // Time system Check
+            TimeSystem.GetTimeSystem().AddTimer(this);
         }
     }
 
-    public void TryAttack(IBattleHandler target)
-    {
-        if(curHitCoutns < 6 && timer_Channeling > delayBetweenNormal)
-        {
-            curHitCoutns++;
-            timer_Channeling = 0f;
-            // animation state
-            
-            caster.AttackTarget(target, normalDmg);
-            print("nor punch!!");
-        }
-        else if(curHitCoutns == 6 && timer_Channeling > delayBeforeLast)
-        {
-            // skill inspect
-            curHitCoutns++;
-            timer_Channeling = 0f;
-        
-            caster.AttackTarget(target, lastDmg);
-            print("last punch!");
-            
-            state = SkillState.OnCoolDown;
-
-            // character inspect
-            caster.RefreshStatus(CharacterStatus.Idle);
-            // animation state
-        }
-        else
-        {
-            // do nothing
-        }
-    }
-    
-    protected override void OnCoolDown()
-    {
-        timer_cooldown += Time.deltaTime;
-
-        if (timer_cooldown >= cooldown)
-        {
-            // reset chanlling things
-            curHitCoutns = 0;
-            timer_Channeling = 0;
-
-            state = SkillState.Ready;
-            timer_cooldown = 0f;
-            TimeSystem.GetTimeSystem().DeleteTimer(this as ITimeHandler);
-        }
-    }
     #endregion
-    
+
     #region implemented IChanneling
     public float ChannelTime
     {
@@ -104,16 +47,27 @@ public class Fighter_ThousandFists : Skill, IChanneling {
         get { return timer_Channeling; }
         set { timer_Channeling = value; }
     }
-    
+
     public void ResetChannelingValue()
     {
-        curHitCoutns = 0;
         Timer_Channeling = 0;
     }
 
     public void OnChanneling()
     {
         timer_Channeling += Time.deltaTime;
+
+        // skill fail
+        if(timer_Channeling > countableTime)
+        {
+            //time check
+            timer_Channeling = 0f;
+            timer_cooldown = 0f;
+            StartCoolDown();
+
+            //character status
+            caster.RefreshStatus(CharacterStatus.Idle);
+        }
     }
 
     public void OnInterrupt()
@@ -127,20 +81,14 @@ public class Fighter_ThousandFists : Skill, IChanneling {
     {
         // set original value
         cooldown = 20f;
-        normalDmg = 20;
-        lastDmg = 50;
-        HPCost = 30;
+        dmg = 250;
+        HPCost = 50;
+        countableTime = 20f; // for check easily
 
-        hitCounts = 7;
-
-        delayBetweenNormal = 0.15f;
-        delayBeforeLast = 0.5f;
-        
-
-        // set Timer value
-        state = SkillState.Ready;
+        // set initial value
+		skillStatus = SkillStatus.ReadyOn;
         timer_cooldown = cooldown;
-        timer_Channeling = 0f;
+        Timer_Channeling = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
     }
@@ -148,25 +96,39 @@ public class Fighter_ThousandFists : Skill, IChanneling {
     #endregion
 
     #region Field&Method
-    
+
     // effect & cost of this Skill
-    int normalDmg;
-    int lastDmg;
+    int dmg;
     int HPCost;
 
-    int hitCounts;
-    int curHitCoutns;
-    
-    float delayBetweenNormal;
-    float delayBeforeLast;
+    float countableTime;
 
     float channelTime;
     float timer_Channeling;
 
+    // Reflect Damage
+    public void ReflectDamage(IBattleHandler attacker)
+    {
+        // check melee range check
+        if(CheckTargetRange(attacker) == true)
+        {
+            // effect
+            (attacker as Character).ReceiveDamage(caster, dmg);
+
+            // skill state
+            timer_cooldown = 0f;
+            StartCoolDown();
+
+            // characterState
+            caster.RefreshStatus(CharacterStatus.Idle);
+            print("damage reflected!");
+        }
+    }
+
     // Check Melee Range
     bool isTargetInMeleeRange;
     Vector3 positionToMeleeAttack;
-    private void CheckTargetRange(IBattleHandler attackTarget)
+    public bool CheckTargetRange(IBattleHandler attackTarget)
     {
         // you can change 'as Enemy' to 'as Hero' (or something that has IBattleHandler
         // to get position
@@ -213,8 +175,10 @@ public class Fighter_ThousandFists : Skill, IChanneling {
             isTargetInMeleeRange = false;
             positionToMeleeAttack = transform.position + new Vector3(deltaX, deltaY, 0);
         }
+
+        return isTargetInMeleeRange;
     }
-    
+
     #endregion
 
 }

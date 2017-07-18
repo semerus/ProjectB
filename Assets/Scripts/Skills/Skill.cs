@@ -7,7 +7,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	protected int id;
 	protected Character caster;
     [SerializeField]
-	protected SkillState state;
+	protected int skillStatus = SkillStatus.ReadyOn;
 	protected float cooldown;
     [SerializeField]
 	protected float timer_cooldown;
@@ -18,29 +18,27 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 	public virtual void RunTime ()
 	{
-		switch(state){
-		case SkillState.OnCoolDown:
+		if (CheckSkillState(SkillStatus.OnCoolDownMask)) {
 			OnCoolDown ();
-			break;
-		case SkillState.Channeling:
+		}
+		if (CheckSkillState(SkillStatus.ChannelingMask)) {
 			IChanneling ch = this as IChanneling;
 			ch.OnChanneling ();
-			break;
-		default:
-			break;
 		}
 	}
 
     #endregion
 
     #region Getters and Setters
-    public SkillState State
+	public int State
     {
-        get { return state; }
+		get { return skillStatus; }
     }
     #endregion
 
     public void OnEndSkill(SkillEventArgs e) {
+		UpdateSkillState (SkillStatus.ProcessOff);
+
 		EventHandler<SkillEventArgs> endSkill = EndSkill;
 		if (endSkill != null) {
 			endSkill (this, e);
@@ -52,8 +50,17 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	}
 
 	// when ui button is clicked
-	public virtual void OnClick() {
+	public virtual void OnCast() {
 		// check state
+
+		// states when skill can be used
+		IChanneling ch = this as IChanneling;
+		if (ch != null) {
+			// start channeling
+			ch.OnChanneling ();
+		} else {
+			Activate (caster.Target);
+		}
 	}
 
 	// activate skill (launch projectile, area etc)
@@ -67,16 +74,38 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 		if (timer_cooldown >= cooldown) {
 			// reset skill to ready
-			state = SkillState.Ready;
+			UpdateSkillState(SkillStatus.OnCoolDownOff);
 			timer_cooldown = 0f;
 			TimeSystem.GetTimeSystem ().DeleteTimer (this as ITimeHandler);
 		}
 	}
 
 	protected virtual void StartCoolDown() {
-		state = SkillState.OnCoolDown;
+		UpdateSkillState (SkillStatus.OnCoolDownOn);
 		if (!TimeSystem.GetTimeSystem ().CheckTimer (this as ITimeHandler)) {
 			TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
+		}
+	}
+
+	public bool CheckSkillState(int mask){
+		int test = skillStatus & mask;
+		if (test > 0)
+			return true;
+		else
+			return false;
+	}
+
+	protected void UpdateSkillState(int change) {
+		skillStatus = change & SkillStatus.All;
+
+		if (change == SkillStatus.ChannelingOn || change == SkillStatus.ProcessOn || change == SkillStatus.OnCoolDownOn) {
+			skillStatus = skillStatus | change;
+		} else if (change == SkillStatus.ChannelingOff || change == SkillStatus.ProcessOff || change == SkillStatus.OnCoolDownOff) {
+			skillStatus = skillStatus & change;
+		}
+
+		if (skillStatus == 0) {
+			skillStatus = SkillStatus.ReadyOn;
 		}
 	}
 }
