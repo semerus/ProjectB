@@ -48,7 +48,7 @@ public class OgreMale : Enemy, ITimeHandler {
 			if (ai_timer >= 20f) {
 				pattern = 1;
 				heal.SetTarget (partner);
-				heal.OnClick ();
+				heal.OnCast ();
 				ai_timer = 0f;
 			}
 			break;
@@ -57,7 +57,7 @@ public class OgreMale : Enemy, ITimeHandler {
 			if (ai_timer >= 20f) {
 				pattern = 2;
 				// torch fire
-				fire.OnClick();
+				fire.OnCast();
 				Debug.Log("Torch fire");
 				ai_timer = 0f;
 			}
@@ -66,7 +66,7 @@ public class OgreMale : Enemy, ITimeHandler {
 		case 2:
 			if (ai_timer >= 20f) {
 				pattern = 0;
-				meteor.OnClick ();
+				meteor.OnCast ();
 				Debug.Log("Meteor");
 				ai_timer = 0;
 			}

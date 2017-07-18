@@ -22,6 +22,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
+	protected bool isFacingLeft = true;
+	protected AnimationController anim;
 
 	public event EventHandler<MoveEventArgs> MoveComplete;
 
@@ -96,21 +98,14 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		}
 	}
 
+	void Awake() {
+		Spawn ();
+	}
+
 	protected virtual void Update() {
 		if ((status & CharacterStatus.IsMovingMask) > 0) {
 			Move (moveTarget);
 		}
-
-
-//		switch (state) {
-//		case CharacterState.Idle:
-//			break;
-//		case CharacterState.Moving:
-//			Move (moveTarget);
-//			break;
-//		default:
-//			break;
-//		}
 	}
 
 	/// <summary>
@@ -162,6 +157,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
 
 		// place at the correct place
+		anim = GetComponentInChildren<AnimationController> ();
+		anim.UpdateSortingLayer ();
 	}
 
 	protected virtual void KillCharacter () {
@@ -202,6 +199,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
 			OnMoveComplete (e);
 		}
+
+		// update sorting layer order by y axis
+		anim.UpdateSortingLayer ();
 	}
 
     public void Move(Vector3 target, float sec)

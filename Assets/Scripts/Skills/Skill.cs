@@ -45,7 +45,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	}
 
 	// when ui button is clicked
-	public virtual void OnClick() {
+	public virtual void OnCast() {
 		// check state
 		switch (caster.State) {
         case CharacterState.None:

@@ -24,20 +24,20 @@ public class OgreFemale : Enemy {
         base.Update();
         if(Input.GetKey("q"))
         {
-            atk1.OnClick();
+            atk1.OnCast();
         }
         if(Input.GetKey("w"))
         {
-            atk2.OnClick();
+            atk2.OnCast();
             Debug.Log("w");
         }
         if(Input.GetKey("e"))
         {
-            atk3.OnClick();
+            atk3.OnCast();
         }
         if(Input.GetKey("x"))
         {
-            atk4.OnClick();
+            atk4.OnCast();
         }
         
     }
