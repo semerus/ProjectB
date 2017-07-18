@@ -63,7 +63,7 @@ public class OgreFemale_Sk4 : Skill
     private void BurnRun()
     {
         Debug.Log("sdsdsdddsd");
-        float speed = Mathf.Sqrt(2);
+        float speed = 3*Mathf.Sqrt(2);
         Vector3 target = FindTarget();
         caster.Move(target, speed, speed);
         if(count>=6)

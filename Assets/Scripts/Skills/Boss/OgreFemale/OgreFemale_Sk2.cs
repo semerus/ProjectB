@@ -5,11 +5,9 @@ using UnityEngine;
 
 public class OgreFemale_Sk2 : Skill {
 
-    protected Skill skill;
     IBattleHandler[] friendlyNum;
     int startNum = 0;
     float max = 0;
-    float of2Time = 0;
     bool jumpTargettingOn = false;
     int jumpNum = 0;
     Vector3 adjustpoint;
@@ -20,28 +18,13 @@ public class OgreFemale_Sk2 : Skill {
 
     public override void Activate(IBattleHandler target)
     {
+        adjustpoint = this.gameObject.transform.position + Vector3.down;
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
         JumpAttackTargetting();
         JumpAttack();
     }
-
-    void Start () {
-        adjustpoint = this.gameObject.transform.position+ Vector3.down;
-    }
-
-    public override void RunTime()
-    {    
-        //if (jumpTargettingOn == false)
-        //{
-        //    JumpAttackTargetting();
-        //}
-        //JumpAttack();
-        //base.RunTime();
-    }
-
     void JumpAttack()
     {
-        // jump(move)
         float x = Mathf.Abs(adjustpoint.x - this.gameObject.transform.position.x);
         float y = Mathf.Abs(adjustpoint.y - this.gameObject.transform.position.y);
         Vector3 s = new Vector3(x, y);
@@ -110,7 +93,6 @@ public class OgreFemale_Sk2 : Skill {
         max = 0;
         for (int i = 0; i < friendlyNum.Length; i++)
         {
-            Debug.Log(i);
             jumpNum = 0;
 
             Character c = friendlyNum[i] as Character;

@@ -19,6 +19,7 @@ public class OgreFemale : Enemy,ITimeHandler {
     void OnSkillEnd(object sender, EventArgs e)
     {
         SkillEventArgs s = e as SkillEventArgs;
+        //StopMove();
         if (Sk3() == true)
         {
             atk3.OnClick();
@@ -31,8 +32,7 @@ public class OgreFemale : Enemy,ITimeHandler {
         }
         else
         {
-        //    atk1.OnClick();
-        //    autoAtk = true;
+           atk1.OnClick();
         }
     }
 
@@ -69,7 +69,7 @@ public class OgreFemale : Enemy,ITimeHandler {
         atk4.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
         ctime = 0;
-        atk2.OnClick();
+        atk1.OnClick();
     }
 
     public void RunTime()
@@ -84,11 +84,6 @@ public class OgreFemale : Enemy,ITimeHandler {
             }
         }
         InstructEnemyAI();
-
-        if(autoAtk==true)
-        {
-            CheckAuttoAtaack();
-        }
     }
 
     protected override void InstructEnemyAI()
