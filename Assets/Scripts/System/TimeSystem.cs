@@ -29,7 +29,10 @@ public sealed class TimeSystem : MonoBehaviour {
 	}
 
 	public void AddTimer (ITimeHandler handler) {
-		timers.Add (handler);
+		if (CheckTimer (handler))
+			return;
+		else
+			timers.Add (handler);
 	}
 
 	public bool CheckTimer(ITimeHandler handler) {
@@ -40,6 +43,8 @@ public sealed class TimeSystem : MonoBehaviour {
 	}
 
 	public void DeleteTimer(ITimeHandler handler) {
-		timers.Remove (handler);
+		if (timers.Contains (handler)) {
+			timers.Remove (handler);
+		}
 	}
 }

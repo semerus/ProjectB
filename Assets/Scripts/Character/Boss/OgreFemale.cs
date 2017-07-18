@@ -58,6 +58,9 @@ public class OgreFemale : Enemy,ITimeHandler {
     {
 		base.Start ();
 
+		maxHp = 3000;
+		hp = 3000;
+
         speed_x = 1f;
         speed_y = 1f;
         atk1.SetSkill(this);

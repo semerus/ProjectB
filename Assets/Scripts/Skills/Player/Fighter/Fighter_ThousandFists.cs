@@ -15,7 +15,7 @@ public class Fighter_ThousandFists : Skill, IChanneling {
         }
 
         // skillState check
-        if (state != SkillState.Ready)
+		if (skillStatus != SkillStatus.ReadyOn)
         {
             print("skill not ready");
             return;
@@ -33,7 +33,7 @@ public class Fighter_ThousandFists : Skill, IChanneling {
                 caster.CurHP -= HPCost;
 
                 // Change skill State
-                state = SkillState.Channeling;
+				skillStatus = SkillStatus.ChannelingOn;
 
                 // Time system Check
                 TimeSystem.GetTimeSystem().AddTimer(this);
@@ -65,7 +65,7 @@ public class Fighter_ThousandFists : Skill, IChanneling {
             caster.AttackTarget(target, lastDmg);
             print("last punch!");
             
-            state = SkillState.OnCoolDown;
+			skillStatus = SkillStatus.OnCoolDownOn;
 
             // character inspect
             caster.RefreshStatus(CharacterStatus.Idle);
@@ -87,7 +87,7 @@ public class Fighter_ThousandFists : Skill, IChanneling {
             curHitCoutns = 0;
             timer_Channeling = 0;
 
-            state = SkillState.Ready;
+			skillStatus = SkillStatus.ReadyOn;
             timer_cooldown = 0f;
             TimeSystem.GetTimeSystem().DeleteTimer(this as ITimeHandler);
         }
@@ -138,7 +138,7 @@ public class Fighter_ThousandFists : Skill, IChanneling {
         
 
         // set Timer value
-        state = SkillState.Ready;
+        skillStatus = SkillStatus.ReadyOn;
         timer_cooldown = cooldown;
         timer_Channeling = 0f;
         isTargetInMeleeRange = false;

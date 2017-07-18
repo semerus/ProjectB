@@ -11,7 +11,7 @@ public class Fighter_Attack : Skill {
 
         if(isTargetInMeleeRange == true)
         {
-            if(state == SkillState.Ready)
+			if(skillStatus == SkillStatus.ReadyOn)
             {
                 caster.AttackTarget(target, dmg);
 
@@ -38,7 +38,7 @@ public class Fighter_Attack : Skill {
         dmg = 10;
 
         // set initial value
-        state = SkillState.Ready;
+		skillStatus = SkillStatus.ReadyOn;
         timer_cooldown = cooldown;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();

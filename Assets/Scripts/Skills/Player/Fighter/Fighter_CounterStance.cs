@@ -15,7 +15,7 @@ public class Fighter_CounterStance : Skill, IChanneling {
         }
 
         // skillState check
-        if (state != SkillState.Ready)
+		if (skillStatus != SkillStatus.ReadyOn)
         {
             print("skill not ready");
             return;
@@ -28,7 +28,7 @@ public class Fighter_CounterStance : Skill, IChanneling {
             caster.CurHP -= HPCost;
 
             // Change skill State
-            state = SkillState.Channeling;
+			skillStatus = SkillStatus.ChannelingOn;
 
             // Time system Check
             TimeSystem.GetTimeSystem().AddTimer(this);
@@ -86,7 +86,7 @@ public class Fighter_CounterStance : Skill, IChanneling {
         countableTime = 20f; // for check easily
 
         // set initial value
-        state = SkillState.Ready;
+		skillStatus = SkillStatus.ReadyOn;
         timer_cooldown = cooldown;
         Timer_Channeling = 0f;
         isTargetInMeleeRange = false;
