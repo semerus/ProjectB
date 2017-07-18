@@ -103,7 +103,7 @@ public class OgreFemale_AutoAttack : Skill {
 
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
-            caster.Move(this.gameObject.transform.position);
+			caster.StopMove ();
             AutoAttacking();
             Debug.Log("attack on");
         }
@@ -112,15 +112,15 @@ public class OgreFemale_AutoAttack : Skill {
             Debug.Log("no");
             if(this.gameObject.transform.position.x <= minC.transform.position.x)
             {
-                if ((caster.Status & CharacterStatus.IsMovingMask) == 0)
+				if (caster.Action != CharacterAction.Moving)
                 {
                     caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
                 }
-                caster.ChangeMoveTarget(minC.transform.position- new Vector3(2.5f,0,0));
+                caster.ChangeMoveTarget(minC.transform.position - new Vector3(2.5f,0,0));
             }
             else
             {
-                if ((caster.Status & CharacterStatus.IsMovingMask) == 0)
+				if (caster.Action != CharacterAction.Moving)
                 {
                     caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
                 }
@@ -147,7 +147,7 @@ public class OgreFemale_AutoAttack : Skill {
         }
     }
 
-    public void OnMoveComplete(object sender, EventArgs e)
+    protected void OnMoveComplete(object sender, EventArgs e)
     {
         MoveEventArgs m = e as MoveEventArgs;
         if(m != null)

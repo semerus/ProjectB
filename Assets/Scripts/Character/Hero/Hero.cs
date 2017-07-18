@@ -58,7 +58,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 					AutoAttack (b);
 				} else {
 					p = Camera.main.ScreenToWorldPoint (pixelPos);
-					Move(new Vector3(p.x, p.y, 0f));
+					BeginMove(new Vector3(p.x, p.y, 0f));
                     RemoveAttackTarget();
 				}
 				break;
@@ -67,7 +67,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		if (b == null) {
 			p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
-			Move (p);
+			BeginMove (p);
             RemoveAttackTarget();
 		}
 		Background.GetBackground ().DeactivatePointer (this);

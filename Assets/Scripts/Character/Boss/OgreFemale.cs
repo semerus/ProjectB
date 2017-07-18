@@ -11,9 +11,23 @@ public class OgreFemale : Enemy,ITimeHandler {
     public OgreFemale_Sk4 atk4;
     IBattleHandler[] friendlyNum;
 
+	private int pattern = 0;
+	private float pattern_timer = 5f;
+
     void OnSkillEnd(object sender, EventArgs e)
     {
-
+		switch (pattern) {
+		case 1:
+		case 3:
+		case 4:
+			pattern = 0;
+			break;
+		case 2:
+			pattern = 1;
+			break;
+		default:
+			break;
+		}
     }
     
     protected override void Start()
@@ -22,56 +36,77 @@ public class OgreFemale : Enemy,ITimeHandler {
 
 		maxHp = 3000;
 		hp = 3000;
-
-        speed_x = 1f;
+		speed_x = 1f;
         speed_y = 1f;
         atk1.SetSkill(this);
         atk2.SetSkill(this);
         atk3.SetSkill(this);
         atk4.SetSkill(this);
-        TimeSystem.GetTimeSystem().AddTimer(this);
         atk1.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         atk2.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         atk3.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         atk4.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
-        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-        atk2.OnCast();
+		friendlyNum = BattleManager.GetBattleManager ().GetEntities (Team.Friendly);
     }
 
-    public void RunTime()
+	public override void RunTime()
     {
+		base.RunTime ();
         InstructEnemyAI();
     }
 
+	public void SetPattern(int change) {
+		pattern = change;
+	}
+
     protected override void InstructEnemyAI()
     {
-        Debug.Log("adsfad:" + (status & CharacterStatus.NotOrderableMask));
-        if ((status & CharacterStatus.NotOrderableMask) > 0)
-            return;
-        Debug.Log("atk2 : "+atk2.CheckSkillState(SkillStatus.ReadyMask));
-
-        if (atk3.CheckSkillState(SkillStatus.ReadyMask) && Sk3())
-        {
-            StopMove();
-            atk3.OnCast();
-        }
-        else if (atk2.CheckSkillState(SkillStatus.ReadyMask))
-        {
-
-            StopMove();
-            atk2.OnCast();
-        }
-        else if (atk1.CheckSkillState(SkillStatus.ReadyMask))
-        {
-            atk1.OnCast();
-        }
+		switch (pattern) {
+		// idle
+		case 0:
+			if (atk2.CheckSkillState (SkillStatus.ReadyMask)) {
+				pattern = 2;
+				atk2.OnCast ();
+			}  else if (atk3.CheckSkillState (SkillStatus.ReadyMask) && Sk3 ()) {
+				pattern = 3;
+				StopMove ();
+				atk3.OnCast ();
+			} else if (atk1.CheckSkillState (SkillStatus.ReadyMask)) {
+				pattern = 1;
+				atk1.OnCast ();
+			}
+			break;
+		// autoattack
+		case 1:
+			if (atk1.CheckSkillState (SkillStatus.ReadyMask)) {
+				atk1.OnCast ();
+			}
+			break;
+		// jump skill
+		default:
+			break;
+		}
+//        Debug.Log("adsfad:" + (status & CharacterStatus.NotOrderableMask));
+//        if ((status & CharacterStatus.NotOrderableMask) > 0)
+//            return;
+//        Debug.Log("atk2 : "+atk2.CheckSkillState(SkillStatus.ReadyMask));
+//
+//        if (atk3.CheckSkillState(SkillStatus.ReadyMask) && Sk3())
+//        {
+//            StopMove();
+//            atk3.OnCast();
+//        }
+//        else if (atk2.CheckSkillState(SkillStatus.ReadyMask))
+//        {
+//
+//            StopMove();
+//            atk2.OnCast();
+//        }
+//        else if (atk1.CheckSkillState(SkillStatus.ReadyMask))
+//        {
+//            atk1.OnCast();
+//        }
     }
-    
-    public override void ReceiveHeal (int heal)
-	{
-		base.ReceiveHeal (heal);
-		Debug.Log ("Received heal : " + heal);
-	}
 
     private bool Sk3()
     {

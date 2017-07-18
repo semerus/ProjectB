@@ -27,7 +27,7 @@ public class Fighter_MeowPunch_FierceScratch : Skill {
         }
         else
         {
-            caster.Move(positionToMeleeAttack);
+            caster.BeginMove(positionToMeleeAttack);
         }
     }
 

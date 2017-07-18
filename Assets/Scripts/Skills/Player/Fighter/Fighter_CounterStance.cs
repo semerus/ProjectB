@@ -21,18 +21,18 @@ public class Fighter_CounterStance : Skill, IChanneling {
             return;
         }
         
-        if (caster.Status == 0 || caster.Status == CharacterStatus.Moving)
-        {
-            // Change character State
-            caster.RefreshStatus(CharacterStatus.Channeling);
-            caster.CurHP -= HPCost;
+		// Change character State
+		if (caster.ChangeAction (CharacterAction.Channeling)) {
+			caster.CurHP -= HPCost;
 
-            // Change skill State
+			// Change skill State
 			skillStatus = SkillStatus.ChannelingOn;
 
-            // Time system Check
-            TimeSystem.GetTimeSystem().AddTimer(this);
-        }
+			// Time system Check
+			TimeSystem.GetTimeSystem ().AddTimer (this);
+		} else {
+			// fails to channel
+		}
     }
 
     #endregion
@@ -66,7 +66,7 @@ public class Fighter_CounterStance : Skill, IChanneling {
             StartCoolDown();
 
             //character status
-            caster.RefreshStatus(CharacterStatus.Idle);
+			caster.ChangeAction(CharacterAction.Idle);
         }
     }
 
@@ -120,7 +120,7 @@ public class Fighter_CounterStance : Skill, IChanneling {
             StartCoolDown();
 
             // characterState
-            caster.RefreshStatus(CharacterStatus.Idle);
+			caster.ChangeAction(CharacterStatus.Idle);
             print("damage reflected!");
         }
     }

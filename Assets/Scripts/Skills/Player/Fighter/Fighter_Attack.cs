@@ -24,7 +24,7 @@ public class Fighter_Attack : Skill {
         }
         else
         {
-            caster.Move(positionToMeleeAttack);
+			caster.BeginMove(positionToMeleeAttack);
         }
 	}
 

@@ -8,7 +8,7 @@ public class MoveTest : Skill {
 	public override void Activate (IBattleHandler target)
 	{
 		caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
-		caster.Move (new Vector3 ());
+		caster.BeginMove (new Vector3 ());
 	}
 
 	#endregion

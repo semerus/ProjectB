@@ -22,26 +22,24 @@ public class Fighter_ThousandFists : Skill, IChanneling {
         }
         // should refine!!
         
-        if (caster.Status == 0 || caster.Status == CharacterStatus.Moving)
+        
+        CheckTargetRange(target);
+
+        if(isTargetInMeleeRange == true)
         {
-            CheckTargetRange(target);
+            // Change character State
+			caster.ChangeAction(CharacterAction.Channeling);
+            caster.CurHP -= HPCost;
 
-            if(isTargetInMeleeRange == true)
-            {
-                // Change character State
-                caster.RefreshStatus(CharacterStatus.Channeling);
-                caster.CurHP -= HPCost;
+            // Change skill State
+			skillStatus = SkillStatus.ChannelingOn;
 
-                // Change skill State
-				skillStatus = SkillStatus.ChannelingOn;
-
-                // Time system Check
-                TimeSystem.GetTimeSystem().AddTimer(this);
-            }
-            else
-            {
-                Debug.LogError("isTargetInMeleeRange is " + isTargetInMeleeRange);
-            }
+            // Time system Check
+            TimeSystem.GetTimeSystem().AddTimer(this);
+        }
+        else
+        {
+            Debug.LogError("isTargetInMeleeRange is " + isTargetInMeleeRange);
         }
     }
 
@@ -68,7 +66,7 @@ public class Fighter_ThousandFists : Skill, IChanneling {
 			skillStatus = SkillStatus.OnCoolDownOn;
 
             // character inspect
-            caster.RefreshStatus(CharacterStatus.Idle);
+			caster.ChangeAction(CharacterAction.Idle);
             // animation state
         }
         else

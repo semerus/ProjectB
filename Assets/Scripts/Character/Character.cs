@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Character : MonoBehaviour, IBattleHandler {
+public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	protected int id;
 	protected Team team;
@@ -14,10 +14,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     protected float customSpeed_x;
     protected float customSpeed_y;
 
-
 	protected List<Buff> buffs = new List<Buff>();
+	protected Skill[] skills;
 
     [SerializeField]
+	protected CharacterAction action = CharacterAction.Idle;
 	protected int status = CharacterStatus.Idle;
     protected MoveMethod moveMethod = MoveMethod.Normal;
 
@@ -37,15 +38,21 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		}
 	}
 
+	public Skill[] Skills {
+		get {
+			return skills;
+		}
+	}
+
 	public IBattleHandler Target {
 		get {
 			return target;
 		}
 	}
 
-	public int Status {
+	public AnimationController Anim {
 		get {
-			return status;
+			return anim;
 		}
 	}
 
@@ -64,11 +71,10 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		}
 	}
 
-	public int State {
+	public CharacterAction Action {
 		get {
-			return this.status;
+			return this.action;
 		}
-        set { this.status = value; }
 	}
 
 	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
@@ -93,7 +99,28 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
 	#endregion
 
-	public virtual void OnMoveComplete(MoveEventArgs e) {
+	#region ITimeHandler implementation
+
+	public virtual void RunTime ()
+	{
+		switch(action) {
+		case CharacterAction.Moving:
+		case CharacterAction.Jumping:
+			switch (moveMethod) {
+			case MoveMethod.Normal:
+				Move(moveTarget);
+				break;
+			case MoveMethod.CustomSpeed:
+				Move(moveTarget, customSpeed_x, customSpeed_y);
+				break;
+			}
+			break;
+		}
+	}
+
+	#endregion
+
+	protected virtual void OnMoveComplete(MoveEventArgs e) {
 		EventHandler<MoveEventArgs> moveComplete = MoveComplete;
 		if (moveComplete != null) {
 			moveComplete (this, e);
@@ -104,39 +131,45 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		Spawn ();
 	}
 
-	protected virtual void Update() {
-        switch (moveMethod)
-        {
-            case MoveMethod.Normal:
-                if ((status & CharacterStatus.IsMovingMask) > 0)
-                {
-                    Move(moveTarget);
-                }
-                break;
-            case MoveMethod.CustomSpeed:
-                if ((status & CharacterStatus.IsMovingMask) > 0)
-                {
-                    Move(moveTarget, customSpeed_x, customSpeed_y);
-                }
-                break;
-            default:
-                break;
-        }
-    }
+	/// <summary>
+	/// Things to happen at load
+	/// </summary>
+	public virtual void Spawn () {
+		// set team
+		if (this is Hero) {
+			team = Team.Friendly;
+		} else if (this is Enemy) {
+			team = Team.Hostile;
+		}
+
+		// add to entity list
+		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
+		TimeSystem.GetTimeSystem ().AddTimer (this);
+
+		// initialize animation status
+		anim = GetComponentInChildren<AnimationController> ();
+		anim.UpdateSortingLayer ();
+	}
 
 	/// <summary>
-	/// Refreshs the status.
+	/// Refreshes the buff (please run this after each add buff / delete buff)
 	/// </summary>
-	/// <param name="newAction">New action(Idle, Moving, Channeling)</param>
-	public virtual void RefreshStatus(int newAction) {
+	public void RefreshBuff() {
+		int change = CharacterStatus.Idle;
+
 		for (int i = 0; i < buffs.Count; i++) {
-            
             IStatusBuff buff = buffs [i] as IStatusBuff;
 			if (buff != null) {
-				newAction = newAction | buff.Status;
+				change |= buff.Status;
 			}
 		}
-		status = newAction;
+		status = change;
+
+		// immune
+
+		// on silence
+
+		// on rooted
 	}
 
 	// update hpBar for each character
@@ -182,51 +215,62 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		target.ReceiveHeal ((int) (heal * ratio));
 	}
 
-	public virtual void Spawn () {
-		// set team
-		if (this is Hero) {
-			team = Team.Friendly;
-		} else if (this is Enemy) {
-			team = Team.Hostile;
-		}
-
-		// things to happen at load
-		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
-
-		// place at the correct place
-		anim = GetComponentInChildren<AnimationController> ();
-		anim.UpdateSortingLayer ();
-	}
-
 	protected virtual void KillCharacter () {
-        status = CharacterStatus.Dead;
+		
 		gameObject.SetActive (false);
+		ChangeAction (CharacterAction.Dead);
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
 	}
 
-	public void Move (Vector3 target) {
-        // order matters
-		Move (target, this.speed_x, this.speed_y);
-        moveMethod = MoveMethod.Normal;
+	/// <summary>
+	/// Begins the move at normal speed
+	/// </summary>
+	/// <returns><c>true</c>, if move was begun, <c>false</c> otherwise.</returns>
+	/// <param name="target">Target.</param>
+	public bool BeginMove(Vector3 target) {
+		if (ChangeAction (CharacterAction.Moving)) {
+			moveMethod = MoveMethod.Normal;
+			Move (target);
+			return true;
+		} else
+			return false;
 	}
 
-	public void Move(Vector3 target, float speed_x, float speed_y) {
+	/// <summary>
+	/// Begins the move at custom speed
+	/// </summary>
+	/// <returns><c>true</c>, if move was begun, <c>false</c> otherwise.</returns>
+	/// <param name="target">Target.</param>
+	/// <param name="speed_x">Speed x.</param>
+	/// <param name="speed_y">Speed y.</param>
+	public bool BeginMove(Vector3 target, float speed_x, float speed_y) {
+		if (ChangeAction (CharacterAction.Moving)) {
+			moveMethod = MoveMethod.CustomSpeed;
+			Move (target, speed_x, speed_y);
+			return true;
+		} else
+			return false;
+	}
+
+	public bool BeginJumpTarget(Vector3 target, float speed_x, float speed_y) {
+		if (ChangeAction (CharacterAction.Jumping)) {
+			moveMethod = MoveMethod.CustomSpeed;
+			Move (target, speed_x, speed_y);
+			return true;
+		} else
+			return false;
+	}
+
+	protected void Move (Vector3 target) {
+		Move (target, this.speed_x, this.speed_y);
+	}
+
+	protected void Move(Vector3 target, float speed_x, float speed_y) {
 		float speed;
         customSpeed_x = speed_x;
         customSpeed_y = speed_y;
-        moveMethod = MoveMethod.CustomSpeed;
-
-		// do not move when rooted
-        // check status -- can moving or not( rooted +@  )
-		if ((status & CharacterStatus.IsRootedMask) > 0) {
-			RefreshStatus (CharacterStatus.Idle);
-			return;
-		}
-
-        int s = CharacterStatus.GetCurrentActionStatus(this) | CharacterStatus.Moving;
-		RefreshStatus (s);
 		moveTarget = target;
 
 		// calculate speed
@@ -238,7 +282,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
 		} else{
 			moveTarget = transform.position;
-			RefreshStatus (CharacterStatus.Idle);
+			ChangeAction (CharacterAction.Idle);
 
 			// send move complete(reached destination event)
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
@@ -249,39 +293,53 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		anim.UpdateSortingLayer ();
 	}
 
-    public void Move(Vector3 target, float sec)
+	public bool ChangeMoveTarget(Vector3 target)
     {
-        moveTarget = target;
-
-        int s = CharacterStatus.GetCurrentActionStatus(this) | CharacterStatus.Moving;
-        RefreshStatus(s);
-
-        if (Vector3.Distance(target, transform.position) > 0.01f)
-        {
-            this.gameObject.transform.position += Time.deltaTime * target / sec;
-        }
-
-        else
-        {
-            moveTarget = transform.position;
-            RefreshStatus(CharacterStatus.Idle);
-            // send move complete(reached destination event)
-            MoveEventArgs e = new MoveEventArgs(true, transform.position);
-            OnMoveComplete(e);
-        }
-    }
-
-    public void ChangeMoveTarget(Vector3 target)
-    {
-        moveMethod = MoveMethod.Normal;
-        moveTarget = target;
-        RefreshStatus(CharacterStatus.Moving);
+		if (action == CharacterAction.Moving) {
+			moveTarget = target;
+			return true;
+		} else if (ChangeAction (CharacterAction.Moving)) {
+			BeginMove (target);
+			return true;
+		}
+		return false;
     }
 
 	public void StopMove() {
-		RefreshStatus (CharacterStatus.Idle);
+		ChangeAction (CharacterStatus.Idle);
 		MoveEventArgs e = new MoveEventArgs (false, transform.position);
 		OnMoveComplete (e);
+	}
+
+	public bool ChangeAction(CharacterAction action) {
+		// changed successfully return true
+		// else return false
+		switch (action) {
+		case CharacterAction.Idle:
+		case CharacterAction.Attacking:
+		case CharacterAction.Dead:
+			break;
+		case CharacterAction.Jumping:
+		case CharacterAction.Moving:
+			if (CheckCharacterStatus (CharacterStatus.IsRootedMask))
+				return false;
+			break;
+		case CharacterAction.Channeling:
+			if (CheckCharacterStatus (CharacterStatus.IsSilencedMask))
+				return false;
+			break;
+		}
+
+		this.action = action;
+		this.anim.UpdateAnimation ();
+		return true;
+	}
+
+	protected bool CheckCharacterStatus(int mask) {
+		if ((status & mask) > 0)
+			return true;
+		else
+			return false;
 	}
 }
 

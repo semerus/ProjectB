@@ -54,49 +54,30 @@ public class Fighter : Hero {
                 hp = 0;
                 KillCharacter();
             }
-            Debug.Log(transform.name + "Received Damage: " + damage);
+           // Debug.Log(transform.name + "Received Damage: " + damage);
             UpdateHpUI();
         }
 
     }
 
-    protected override void Update()
-    {
-        // for debugging skill
-        if (Input.GetKeyDown(KeyCode.A))
-            activeSkills[0].Activate(target);
-        else if (Input.GetKeyDown(KeyCode.S))
-            activeSkills[1].Activate(target);
-        else if (Input.GetKeyDown(KeyCode.D))
-            activeSkills[2].Activate(target);
+	public override void RunTime ()
+	{
+		base.RunTime ();
+		// for debugging skill
+		if (Input.GetKeyDown(KeyCode.A))
+			activeSkills[0].Activate(target);
+		else if (Input.GetKeyDown(KeyCode.S))
+			activeSkills[1].Activate(target);
+		else if (Input.GetKeyDown(KeyCode.D))
+			activeSkills[2].Activate(target);
 
-        if (status == CharacterStatus.Idle)
-        {
-            if (this.target != null)
-            {
-                if (this.target.Team == Team.Hostile)
-                    AutoAttack(target);
-            }
-        }
-        else if ((status & CharacterStatus.IsMovingMask) > 0)
-        {
-            Move(moveTarget);
-        }
-        else if ((status & CharacterStatus.IsChannelingMask) > 0)
-        {
-            // Do Channelling Things
-            // 0) AutoAttack
-
-            // 1) Hit
-
-            // 2) Meow Attack
-            
-            // 3) ThousandFist
-            if (activeSkills[2].State == SkillStatus.ChannelingOn)
-            {
-                (activeSkills[2] as Fighter_ThousandFists).TryAttack(target);
-            }
-        }
-
-    }
+		if (status == CharacterStatus.Idle)
+		{
+			if (this.target != null)
+			{
+				if (this.target.Team == Team.Hostile)
+					AutoAttack(target);
+			}
+		}
+	}
 }

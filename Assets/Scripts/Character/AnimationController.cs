@@ -20,4 +20,18 @@ public class AnimationController : MonoBehaviour {
 			n.sortingOrder = -(int)(transform.root.position.y * 100f);
 		}
 	}
+
+	// call on change state
+	public void UpdateAnimation() {
+		// uses character state
+		// idle
+		// attack
+		// channeling
+		// run
+		// dead
+
+		// special occasions
+		// jump
+		// used by skills
+	}
 }

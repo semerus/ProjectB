@@ -29,7 +29,7 @@ public class Fighter_MeowPunch_ForePaw : Skill {
         }
         else
         {
-            caster.Move(positionToMeleeAttack);
+            caster.BeginMove(positionToMeleeAttack);
         }
     }
 
