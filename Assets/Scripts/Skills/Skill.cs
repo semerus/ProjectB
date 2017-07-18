@@ -51,20 +51,19 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		this.caster = caster;
 	}
 
-    // when ui button is clicked
-    public virtual void OnClick()
-    {
-        IChanneling ch = this as IChanneling;
-        if (ch != null)
-        {
-            // start channeling
-            ch.OnChanneling();
-        }
-        else
-        {
-            Activate(caster.Target);
-        }
-    }
+	// when ui button is clicked
+	public virtual void OnCast() {
+		// check state
+
+		// states when skill can be used
+		IChanneling ch = this as IChanneling;
+		if (ch != null) {
+			// start channeling
+			ch.OnChanneling ();
+		} else {
+			Activate (caster.Target);
+		}
+	}
 
 	// activate skill (launch projectile, area etc)
 	// run cooldown

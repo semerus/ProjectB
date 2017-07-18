@@ -30,17 +30,9 @@ public class OgreFemale_AutoAttack : Skill {
             bool hitCheck = EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
             if (hitCheck == true)
             {
-                if (OgreFemale_Sk5.rageOn == true)
-                {
-                    IBattleHandler ch = c as IBattleHandler;
-                    caster.AttackTarget(c, 100);
-                }
-                else
-                {
-                    Debug.Log("Auto Attack => " + c.gameObject.transform.name);
-                    IBattleHandler ch = c as IBattleHandler;
-                    caster.AttackTarget(c, 0);
-                }
+                Debug.Log("Auto Attack => " + c.gameObject.transform.name);
+                IBattleHandler ch = c as IBattleHandler;
+                caster.AttackTarget(c, 0);
             }
         }
         SkillEventArgs s = new SkillEventArgs(this.name, true);
@@ -70,7 +62,6 @@ public class OgreFemale_AutoAttack : Skill {
             }
         }
         minC = minNum as Character;
-        Debug.Log(minC);
     }
 
     private void CheckTargetRange()
@@ -96,9 +87,8 @@ public class OgreFemale_AutoAttack : Skill {
 
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
-            //aster.Move(this.gameObject.transform.position);
+            caster.Move(this.gameObject.transform.position);
             AutoAttacking();
-            TimeSystem.GetTimeSystem().DeleteTimer(this);
             Debug.Log("attack on");
         }
         else
@@ -150,9 +140,7 @@ public class OgreFemale_AutoAttack : Skill {
             {
                 TimeSystem.GetTimeSystem().DeleteTimer(this);
                 SkillEventArgs s = new SkillEventArgs(this.name, true);
-                OnEndSkill(s);
-                TimeSystem.GetTimeSystem().DeleteTimer(this);
-                
+                OnEndSkill(s);             
                 caster.MoveComplete -= OnMoveComplete;
             }
         }

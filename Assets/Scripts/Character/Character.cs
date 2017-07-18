@@ -24,6 +24,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     [SerializeField]
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
+	protected bool isFacingLeft = true;
+	protected AnimationController anim;
 
 	public event EventHandler<MoveEventArgs> MoveComplete;
 
@@ -96,6 +98,10 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		if (moveComplete != null) {
 			moveComplete (this, e);
 		}
+	}
+
+	protected virtual void Start() {
+		Spawn ();
 	}
 
 	protected virtual void Update() {
@@ -181,6 +187,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
 
 		// place at the correct place
+		anim = GetComponentInChildren<AnimationController> ();
+		anim.UpdateSortingLayer ();
 	}
 
 	protected virtual void KillCharacter () {
@@ -227,6 +235,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
 			OnMoveComplete (e);
 		}
+
+		// update sorting layer order by y axis
+		anim.UpdateSortingLayer ();
 	}
 
     public void Move(Vector3 target, float sec)

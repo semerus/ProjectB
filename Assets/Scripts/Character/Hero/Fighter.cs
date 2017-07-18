@@ -12,9 +12,6 @@ public class Fighter : Hero {
 		speed_x = 2.57f;
 		speed_y = 1.4f;
 
-		// temporary spawning -> should be moved to BattleManager
-		Spawn();
-
         // for Skill debugging
         autoAttack = gameObject.AddComponent<Fighter_Attack>();
         autoAttack.SetSkill(this);

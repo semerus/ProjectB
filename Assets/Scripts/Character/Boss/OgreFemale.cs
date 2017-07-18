@@ -11,51 +11,15 @@ public class OgreFemale : Enemy,ITimeHandler {
     public OgreFemale_Sk4 atk4;
     IBattleHandler[] friendlyNum;
 
-    float ctime = 0;
-    bool cool = false;
-    bool autoAtk = false;
-    float btime = 10;
-
     void OnSkillEnd(object sender, EventArgs e)
     {
-        SkillEventArgs s = e as SkillEventArgs;
-        //StopMove();
-        if (Sk3() == true)
-        {
-            atk3.OnClick();
-        }
-        else if (ctime >= 5 && cool == false)
-        {
-            atk2.OnClick();
-            cool = true;
-            btime = 10;
-        }
-        else
-        {
-           atk1.OnClick();
-        }
-    }
-
-    void CheckAuttoAtaack()
-    {
-        if (Sk3() == true)
-        {
-            StopMove();
-            atk3.OnClick();
-            autoAtk = false;
-        }
-        else if (ctime >= 5 && cool == false)
-        {
-            StopMove();
-            atk2.OnClick();
-            cool = true;
-            btime = 10;
-            autoAtk = false;
-        }
+        TimeSystem.GetTimeSystem().AddTimer(this);
     }
     
-    void Start()
+    protected override void Start()
     {
+		base.Start ();
+
         speed_x = 1f;
         speed_y = 1f;
         atk1.SetSkill(this);
@@ -68,27 +32,31 @@ public class OgreFemale : Enemy,ITimeHandler {
         atk3.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         atk4.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-        ctime = 0;
-        atk1.OnClick();
+        atk2.OnCast();
     }
 
     public void RunTime()
     {
-        ctime += Time.deltaTime;
-        if(cool==true)
-        {
-            btime -= Time.deltaTime;
-            if(btime<=0)
-            {
-                cool = false;
-            }
-        }
         InstructEnemyAI();
     }
 
     protected override void InstructEnemyAI()
     {
-        base.InstructEnemyAI();
+        if (atk3.State == SkillState.Ready && Sk3() == true)
+        {
+            atk3.OnCast();
+            TimeSystem.GetTimeSystem().DeleteTimer(this);
+        }
+        else if (atk2.State == SkillState.Ready)
+        {
+            atk2.OnCast();
+            TimeSystem.GetTimeSystem().DeleteTimer(this);
+        }
+        else if(atk1.State == SkillState.Ready)
+        {
+            atk1.OnCast();
+            TimeSystem.GetTimeSystem().DeleteTimer(this);
+        }
     }
     
     public override void ReceiveHeal (int heal)
@@ -140,6 +108,4 @@ public class OgreFemale : Enemy,ITimeHandler {
             return false;
         }
     }
-
-
 }
