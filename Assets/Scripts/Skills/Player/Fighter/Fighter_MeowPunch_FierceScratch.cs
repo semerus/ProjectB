@@ -11,7 +11,7 @@ public class Fighter_MeowPunch_FierceScratch : Skill {
 
         if (isTargetInMeleeRange == true && caster.CurHP > HPCost)
         {
-            if (state == SkillState.Ready)
+			if (skillStatus == SkillStatus.ReadyOn)
             {
                 caster.AttackTarget(target, dmg);
                 // Buffs(Caster, target)
@@ -42,7 +42,7 @@ public class Fighter_MeowPunch_FierceScratch : Skill {
         HPCost = 50;
 
         // set initial value
-        state = SkillState.Ready;
+		skillStatus = SkillStatus.ReadyOn;
         timer_cooldown = cooldown;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();

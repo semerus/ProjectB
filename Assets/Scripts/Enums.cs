@@ -1,12 +1,5 @@
 ﻿using System;
 
-public enum SkillState {
-	Ready,
-	Channeling,
-	InProgress,
-	OnCoolDown
-}
-
 public enum Team {
 	Hostile,
 	Neutral,

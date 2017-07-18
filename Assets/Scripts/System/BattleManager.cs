@@ -67,7 +67,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			break;
 		case Team.Hostile:
 			if (!hostile.Contains (entity))
-				neutral.Add (entity);
+				hostile.Add (entity);
 			break;
 		}
 	}
@@ -122,6 +122,8 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	// check game
 	public void CheckGame() {
 		bool classifier = true;
+
+		Debug.Log ("sss: " + hostile.Count);
 		// win scenario
 		for (int i = 0; i < hostile.Count; i++) {
 			classifier = classifier && ((hostile [i].Status & CharacterStatus.Dead) > 0); 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class OgreSetFire : Skill {
-	
+
 	#region implemented abstract members of Skill
 	public override void Activate (IBattleHandler target)
 	{
@@ -12,7 +12,7 @@ public class OgreSetFire : Skill {
 				f.atk4.OnCast ();
 			} else {
 				Debug.LogError("Wrong OgreSetFire implementation");
-			}	
+			}
 		}
 	}
 	#endregion

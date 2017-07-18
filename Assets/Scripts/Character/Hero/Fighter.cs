@@ -39,7 +39,7 @@ public class Fighter : Hero {
 
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
-        if(activeSkills[1].State == SkillState.Channeling)
+        if(activeSkills[1].State == SkillStatus.ChannelingOn)
         {
             (activeSkills[1] as Fighter_CounterStance).ReflectDamage(attacker);
 
@@ -92,7 +92,7 @@ public class Fighter : Hero {
             // 2) Meow Attack
             
             // 3) ThousandFist
-            if (activeSkills[2].State == SkillState.Channeling)
+            if (activeSkills[2].State == SkillStatus.ChannelingOn)
             {
                 (activeSkills[2] as Fighter_ThousandFists).TryAttack(target);
             }

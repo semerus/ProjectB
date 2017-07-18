@@ -183,6 +183,13 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	public virtual void Spawn () {
+		// set team
+		if (this is Hero) {
+			team = Team.Friendly;
+		} else if (this is Enemy) {
+			team = Team.Hostile;
+		}
+
 		// things to happen at load
 		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
 
@@ -193,6 +200,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
 	protected virtual void KillCharacter () {
         status = CharacterStatus.Dead;
+		gameObject.SetActive (false);
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
