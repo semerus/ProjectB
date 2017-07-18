@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class OgreFemale_Sk2 : Skill {
 
+    protected Skill skill;
     IBattleHandler[] friendlyNum;
     int startNum = 0;
     float max = 0;
@@ -16,76 +17,93 @@ public class OgreFemale_Sk2 : Skill {
     float jumptime = 1;
     Character maxC;
     IBattleHandler maxNum = null;
-    OgreFemale_AutoAttack atk;
 
-    // Use this for initialization
+    public override void Activate(IBattleHandler target)
+    {
+        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+        JumpAttackTargetting();
+        JumpAttack();
+    }
+
     void Start () {
         adjustpoint = this.gameObject.transform.position+ Vector3.down;
-        //cooldown = 10;
-        //timer_cooldown = 0;
     }
 
     public override void RunTime()
-    {
-        of2Time += Time.deltaTime;
-        base.RunTime();
+    {    
+        //if (jumpTargettingOn == false)
+        //{
+        //    JumpAttackTargetting();
+        //}
+        //JumpAttack();
+        //base.RunTime();
     }
 
-    public void JumpAttack()
+    void JumpAttack()
     {
-        if(jumpTargettingOn==true)
-        {
-            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
-            {
-                TimeSystem.GetTimeSystem().AddTimer(this);
-                of2Time = 0;
-            }
-
-            if (of2Time < 1 && jumpTargettingOn == true)
-            {
-                caster.Move(jumpdistance, jumptime);
-            }
-            if(of2Time>=1 && of2Time>1.99f)
-            {
-                // 준비동작
-            }
-            if (of2Time <= 2.0 && of2Time >= 1.99)
-            {
-                Debug.Log("auto attack sk2 on");
-                for (int i = 0; i < friendlyNum.Length; i++)
-                {
-                    Character c = friendlyNum[i] as Character;
-                    bool hitCheck = EllipseScanner(2, 1.4f, maxC.gameObject.transform.position, c.gameObject.transform.position);
-                    if (hitCheck == true)
-                    {
-                        if (OgreFemale_Sk5.rageOn == true)
-                        {
-                            IBattleHandler ch = c as IBattleHandler;
-                            caster.AttackTarget(c, 100);
-                        }
-                        else
-                        {
-                            Debug.Log("Auto Attack => " + c.gameObject.transform.name);
-                            IBattleHandler ch = c as IBattleHandler;
-                            caster.AttackTarget(c, 50);
-                        }
-                    }
-                }
-            }
-            if(of2Time>2 && of2Time<=2.5)
-            {
-                //마무리 동작
-            }
-            if(of2Time>2.5)
-            {
-                jumpTargettingOn = false;
-                if (TimeSystem.GetTimeSystem().CheckTimer(this))
-                {
-                    TimeSystem.GetTimeSystem().DeleteTimer(this);
-                }
-            }
-        }
+        // jump(move)
+        float x = Mathf.Abs(adjustpoint.x - this.gameObject.transform.position.x);
+        float y = Mathf.Abs(adjustpoint.y - this.gameObject.transform.position.y);
+        Vector3 s = new Vector3(x, y);
+        caster.Move(adjustpoint, s.x, s.y);
+        caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
     }
+
+    //public void JumpAttack()
+    //{
+    //    if(jumpTargettingOn==true)
+    //    {
+    //        of2Time += Time.deltaTime;
+
+    //        if (of2Time < 1 && jumpTargettingOn == true)
+    //        {
+    //            caster.Move(jumpdistance, jumptime);
+    //        }
+    //        if(of2Time>=1 && of2Time>1.99f)
+    //        {
+    //            // 준비동작
+    //        }
+    //        if (of2Time <= 2.0 && of2Time >= 1.99)
+    //        {
+    //            Debug.Log("auto attack sk2 on");
+    //            for (int i = 0; i < friendlyNum.Length; i++)
+    //            {
+    //                Character c = friendlyNum[i] as Character;
+    //                bool hitCheck = EllipseScanner(2, 1.4f, maxC.gameObject.transform.position, c.gameObject.transform.position);
+    //                if (hitCheck == true)
+    //                {
+    //                    if (OgreFemale_Sk5.rageOn == true)
+    //                    {
+    //                        IBattleHandler ch = c as IBattleHandler;
+    //                        caster.AttackTarget(c, 100);
+    //                    }
+    //                    else
+    //                    {
+    //                        Debug.Log("Auto Attack => " + c.gameObject.transform.name);
+    //                        IBattleHandler ch = c as IBattleHandler;
+    //                        caster.AttackTarget(c, 50);
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        if(of2Time>2 && of2Time<=2.5)
+    //        {
+    //            //마무리 동작
+    //        }
+    //        if(of2Time>2.5)
+    //        {
+    //            jumpTargettingOn = false;
+    //            of2Time = 0;
+    //            Debug.Log("asdasdasdsadasdasdasdsadasdasdasdasdasdsadasdasdsad");
+    //            if (TimeSystem.GetTimeSystem().CheckTimer(this))
+    //            {
+    //                TimeSystem.GetTimeSystem().DeleteTimer(this);
+    //            }
+    //            SkillEventArgs s = new SkillEventArgs(this.name,true);
+    //            OnEndSkill(s);
+    //        }
+    //    }
+    //}
 
     public void JumpAttackTargetting()
     {
@@ -127,22 +145,6 @@ public class OgreFemale_Sk2 : Skill {
         jumpTargettingOn = true;
     }
 
-    public override void Activate(IBattleHandler target)
-    {
-        if (startNum == 0)
-        {
-            friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-            Debug.Log(friendlyNum.Length);
-            startNum = 1;
-        }
-
-        if (jumpTargettingOn == false)
-        {
-            JumpAttackTargetting();
-        }
-        JumpAttack();
-    }
-
     private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
     {
         float dx = targetPosition.x - center.x;
@@ -158,6 +160,39 @@ public class OgreFemale_Sk2 : Skill {
         else
         {
             return false;
+        }
+    }
+
+    void OnMoveComplete(object sender, EventArgs e)
+    {
+        MoveEventArgs m = e as MoveEventArgs;
+        if (m != null)
+        {
+            if(m.result)
+            {
+                for (int i = 0; i < friendlyNum.Length; i++)
+                {
+                    Character c = friendlyNum[i] as Character;
+                    bool hitCheck = EllipseScanner(2, 1.4f, maxC.gameObject.transform.position, c.gameObject.transform.position);
+                    if (hitCheck == true)
+                    {
+                        if (OgreFemale_Sk5.rageOn == true)
+                        {
+                            IBattleHandler ch = c as IBattleHandler;
+                            caster.AttackTarget(c, 100);
+                        }
+                        else
+                        {
+                            Debug.Log("Auto Attack => " + c.gameObject.transform.name);
+                            IBattleHandler ch = c as IBattleHandler;
+                            caster.AttackTarget(c, 50);
+                        }
+                    }
+                }
+                SkillEventArgs s = new SkillEventArgs(this.name, true);
+                OnEndSkill(s);
+            }
+            caster.MoveComplete -= OnMoveComplete;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public abstract class Skill : MonoBehaviour, ITimeHandler {
 
@@ -11,6 +12,8 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
     [SerializeField]
 	protected float timer_cooldown;
 
+	public event EventHandler<SkillEventArgs> EndSkill;
+
 	#region ITimeHandler implementation
 
 	public virtual void RunTime ()
@@ -22,7 +25,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		case SkillState.Channeling:
 			IChanneling ch = this as IChanneling;
 			ch.OnChanneling ();
-			break;
+			break; 
 		default:
 			break;
 		}
@@ -30,6 +33,13 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
     #endregion
     
+	public void OnEndSkill(SkillEventArgs e) {
+		EventHandler<SkillEventArgs> endSkill = EndSkill;
+		if (endSkill != null) {
+			endSkill (this, e);
+		}
+	}
+
     public void SetSkill(Character caster) {
 		this.caster = caster;
 	}

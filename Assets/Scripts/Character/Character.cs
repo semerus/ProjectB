@@ -11,9 +11,14 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
+    protected float customSpeed_x;
+    protected float customSpeed_y;
+
+
 	protected List<Buff> buffs = new List<Buff>();
 
 	protected int status = CharacterStatus.Idle;
+    protected MoveMethod moveMethod = MoveMethod.Normal;
 
     [SerializeField]
     protected CharacterState state;
@@ -97,20 +102,23 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	protected virtual void Update() {
-		if ((status & CharacterStatus.IsMovingMask) > 0) {
-			Move (moveTarget);
-		}
-
-
-//		switch (state) {
-//		case CharacterState.Idle:
-//			break;
-//		case CharacterState.Moving:
-//			Move (moveTarget);
-//			break;
-//		default:
-//			break;
-//		}
+        switch (moveMethod)
+        {
+            case MoveMethod.Normal:
+                if ((status & CharacterStatus.IsMovingMask) > 0)
+                {
+                    Move(moveTarget);
+                }
+                break;
+            case MoveMethod.CustomSpeed:
+                if ((status & CharacterStatus.IsMovingMask) > 0)
+                {
+                    Move(moveTarget, customSpeed_x, customSpeed_y);
+                }
+                break;
+            default:
+                break;
+        }
 	}
 
 	/// <summary>
@@ -172,11 +180,17 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	public void Move (Vector3 target) {
+        // order matters
 		Move (target, this.speed_x, this.speed_y);
+        moveMethod = MoveMethod.Normal;
 	}
 
 	public void Move(Vector3 target, float speed_x, float speed_y) {
 		float speed;
+
+        customSpeed_x = speed_x;
+        customSpeed_y = speed_y;
+        moveMethod = MoveMethod.CustomSpeed;
 
 		// do not move when rooted
 		if ((status & CharacterStatus.IsRootedMask) > 0) {
@@ -207,7 +221,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     public void Move(Vector3 target, float sec)
     {
         moveTarget = target;
-        state = CharacterState.Moving;
+
+        RefreshStatus(CharacterStatus.Moving);
         if (Vector3.Distance(target, transform.position) > 0.01f)
         {
             this.gameObject.transform.position += Time.deltaTime * target / sec;
@@ -216,21 +231,17 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
         else
         {
             moveTarget = transform.position;
-            state = CharacterState.Idle;
-
+            RefreshStatus(CharacterStatus.Idle);
             // send move complete(reached destination event)
             MoveEventArgs e = new MoveEventArgs(true, transform.position);
             OnMoveComplete(e);
         }
-
     }
-
 
     public void ChangeMoveTarget(Vector3 target)
     {
         moveTarget = target;
         RefreshStatus(CharacterStatus.Moving);
-
     }
 
 	public void StopMove() {
@@ -238,4 +249,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		MoveEventArgs e = new MoveEventArgs (false, transform.position);
 		OnMoveComplete (e);
 	}
+}
+
+
+public enum MoveMethod
+{
+    Normal,
+    CustomSpeed
 }

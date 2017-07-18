@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class OgreFemale_AutoAttack : Skill {
 
     IBattleHandler[] friendlyNum;
-    float x;
-    float y;
     float min = 1000000000000;
     float ofTime = 0f;
     bool attackOn = false;
@@ -15,31 +14,40 @@ public class OgreFemale_AutoAttack : Skill {
 
     public override void RunTime()
     {
-        ofTime += Time.deltaTime;
+        AutoAttack();
+        AutoAttacking();
         base.RunTime();
+    }
+
+    public override void Activate(IBattleHandler target)
+    {
+        Debug.Log(TimeSystem.GetTimeSystem().CheckTimer(this));
+        if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+        {
+            //TimeSystem.GetTimeSystem().AddTimer(this);
+            attackOn = false;
+            min = 1000000000000;
+            ofTime = 0f;
+        }
     }
 
     // Use this for initialization
     void Start()
     {
        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-       Debug.Log(friendlyNum.Length);
     }
 
     private void AutoAttacking()
     {
         if (attackOn == true)
         {
-            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
-            {
-                TimeSystem.GetTimeSystem().AddTimer(this);
-                ofTime = 0;
-            }
+            ofTime += Time.deltaTime;
+
             if (ofTime < 1)
             {
                 // 준비동작
             }
-            if (ofTime <= 1.0 && ofTime >= 0.99)
+            if (ofTime <= 1.01 && ofTime >= 0.99)
             {
                 for (int i = 0; i < friendlyNum.Length; i++)
                 {
@@ -67,12 +75,11 @@ public class OgreFemale_AutoAttack : Skill {
             }
             if (ofTime > 1.5)
             {
-                if (TimeSystem.GetTimeSystem().CheckTimer(this))
-                {
-                    TimeSystem.GetTimeSystem().DeleteTimer(this);
-                }
                 attackOn = false;
                 ofTime = 0;
+                SkillEventArgs s = new SkillEventArgs(this.name, true);
+                TimeSystem.GetTimeSystem().DeleteTimer(this);
+                OnEndSkill(s);
             }
         }
     }
@@ -91,8 +98,8 @@ public class OgreFemale_AutoAttack : Skill {
         for (int i = 0; i < friendlyNum.Length; i++)
         {
             Character c = friendlyNum[i] as Character;
-            x = this.gameObject.transform.position.x - c.transform.position.x;
-            y = this.gameObject.transform.position.y - c.transform.position.y;
+            float x = this.gameObject.transform.position.x - c.transform.position.x;
+            float y = this.gameObject.transform.position.y - c.transform.position.y;
 
             float distance = x * x + y * y;
             
@@ -103,6 +110,7 @@ public class OgreFemale_AutoAttack : Skill {
             }
         }
         minC = minNum as Character;
+        Debug.Log(minC);
     }
 
     private void CheckTargetRange()
@@ -138,20 +146,19 @@ public class OgreFemale_AutoAttack : Skill {
             attackOn = false;
             if(this.gameObject.transform.position.x <= minC.transform.position.x)
             {
+                if ((caster.Status & CharacterStatus.IsMovingMask) == 0)
+                {
+                    caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
+                }
                 caster.ChangeMoveTarget(minC.transform.position- new Vector3(2.5f,0,0));
-                
-                //if(true)
-                //{
-                //    caster.StopMove();
-                //}
             }
             else
             {
+                if ((caster.Status & CharacterStatus.IsMovingMask) == 0)
+                {
+                    caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
+                }
                 caster.ChangeMoveTarget(minC.transform.position + new Vector3(2.5f, 0, 0));
-                //if (true)
-                //{
-                //    caster.StopMove();
-                //}
             }
         }
     }
@@ -174,9 +181,18 @@ public class OgreFemale_AutoAttack : Skill {
         }
     }
 
-    public override void Activate(IBattleHandler target)
+    public void OnMoveComplete(object sender, EventArgs e)
     {
-        AutoAttack();
-        AutoAttacking();
+        MoveEventArgs m = e as MoveEventArgs;
+        if(m != null)
+        {
+            if(!m.result)
+            {
+                TimeSystem.GetTimeSystem().DeleteTimer(this);
+                SkillEventArgs s = new SkillEventArgs(this.name, true);
+                OnEndSkill(s);
+                caster.MoveComplete -= OnMoveComplete;
+            }
+        }
     }
 }

@@ -11,11 +11,13 @@ public class OgreFemale_Sk4 : Skill
     bool sk4_On = false;
     IBattleHandler[] friendlyNum;
 
-    //public override void RunTime()
-    //{
-    //    base.RunTime();
-    //    Sk4();
-    //}
+    public override void RunTime()
+    {
+        base.RunTime();
+        Sk4();
+        Debug.Log(sk4_On);
+
+    }
 
     public override void Activate(IBattleHandler target)
     {
@@ -24,14 +26,13 @@ public class OgreFemale_Sk4 : Skill
             friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
             Debug.Log(friendlyNum.Length);
             startNum = 1;
-            sk4_On = true;
 
-            //if (!TimeSystem.GetTimeSystem().CheckTimer(this))
-            //{
-            //    TimeSystem.GetTimeSystem().AddTimer(this);
-            //}
+            sk4_On = true;
+            if (!TimeSystem.GetTimeSystem().CheckTimer(this))
+            {
+                TimeSystem.GetTimeSystem().AddTimer(this);
+            }
         }
-        Sk4();
     }
 
     private void Sk4()
@@ -70,6 +71,8 @@ public class OgreFemale_Sk4 : Skill
             sk4_On = false;
             count = 0;
             Debug.Log(target);
+            SkillEventArgs s = new SkillEventArgs(this.name, true);
+            OnEndSkill(s);
         }
     }
 
@@ -110,11 +113,9 @@ public class OgreFemale_Sk4 : Skill
                 }
 
             case 3:
-                Debug.Log("ssss");
                 Debug.Log(mod);
                 if (cPosition.y+3.14f <= cPosition.x+9)
                 {
-                    Debug.Log("bbbbb");
                     target.y = -3.4f;
                     target.x = cPosition.x - (cPosition.y + 3.4f);
                     return target;

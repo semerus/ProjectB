@@ -7,7 +7,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
     public Skill[] activeSkills;
 
     protected HeroUI heroUI; // load it from spawn
-    
+	protected int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
+
 	#region implemented abstract members of Character
 
 	protected override void UpdateHpUI ()
@@ -39,7 +40,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		Vector3 p = Camera.main.ScreenToWorldPoint (pixelPos);
 		p = new Vector3 (p.x, p.y, 0f);
 
-		Background.GetBackground ().pointer.PositionPointer (p, transform.position);
+		Background.GetBackground ().PositionPointer (p, this);
 	}
 
 	// receives pixel coordinates
@@ -48,31 +49,36 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		// move only if it is moveable state
 		Vector3 p = new Vector3();
 		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
-		RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray);
-		if (hitInfo.collider != null) {
-			IBattleHandler target = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
-			if (target != null && target.Team != Team.Friendly) {
-                print("autoAttack case");
-                queueState = CharacterState.AutoAttaking;
-                AutoAttack (target);
-			} else {
-                p = Camera.main.ScreenToWorldPoint (pixelPos);
-                queueState = CharacterState.None;
-                Move(new Vector3(p.x, p.y, 0f));
+		IBattleHandler b = null;
+		for (int i = 0; i < masks.Length; i++) {
+			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[i]);
+			if (hitInfo.collider != null) {
+				b = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
+				if (b != null && b.Team != Team.Friendly) {
+					print("autoAttack case");
+					queueState = CharacterState.AutoAttaking;
+					AutoAttack (b);
+				} else {
+					p = Camera.main.ScreenToWorldPoint (pixelPos);
+					queueState = CharacterState.None;
+					Move(new Vector3(p.x, p.y, 0f));
+				}
+				break;
 			}
-		} else {
-            p = Camera.main.ScreenToWorldPoint (pixelPos);
-			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
-            queueState = CharacterState.None;
-            Move (p);
 		}
-
-		Background.GetBackground ().pointer.DeactivatePointer ();
+		if (b == null) {
+			p = Camera.main.ScreenToWorldPoint (pixelPos);
+			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
+			queueState = CharacterState.None;
+			Move (p);
+		}
+		Background.GetBackground ().DeactivatePointer (this);
 	}
 
 	#endregion
     
 	public virtual void SetSkill(Skill[] skills) {
+		
 	}
 
 	public override void Spawn ()

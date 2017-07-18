@@ -20,7 +20,5 @@ public class MoveTest : Skill {
 			Debug.Log ("Move Successful");
 
 		caster.MoveComplete -= OnMoveComplete;
-
-        
 	}
 }
