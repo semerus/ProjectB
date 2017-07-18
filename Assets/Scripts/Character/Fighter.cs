@@ -6,10 +6,9 @@ public class Fighter : Hero {
 		// temporary value given
 		id = 1;
 		team = Team.Friendly;
-        state = CharacterState.Idle;
-        queueState = CharacterState.None;
-        maxHp = 1000;
-		hp = 1000;
+        status = CharacterStatus.Idle;
+        maxHp = 300;
+        hp = maxHp;
 		speed_x = 2.57f;
 		speed_y = 1.4f;
 
@@ -22,53 +21,85 @@ public class Fighter : Hero {
 
         passiveSkill = gameObject.AddComponent<Fighter_Passive>();
         passiveSkill.SetSkill(this);
+        passiveSkill.Activate(this);
 
         activeSkills = new Skill[3];
-        activeSkills[0] = gameObject.AddComponent<Fighter_MeowPunch>();
+        activeSkills[0] = gameObject.AddComponent<Fighter_MeowPunch_FierceScratch>();
         activeSkills[1] = gameObject.AddComponent<Fighter_CounterStance>();
-        activeSkills[2] = gameObject.AddComponent<Fighter_WarCry>();
+        activeSkills[2] = gameObject.AddComponent<Fighter_ThousandFists>();
         foreach(Skill eachSkill in activeSkills)
         {
             eachSkill.SetSkill(this);
         }
         
     }
+    
+    public override void AutoAttack(IBattleHandler target)
+    {
+        this.target = target;
+        autoAttack.Activate(target);
+    }
+
+    public override void ReceiveDamage(IBattleHandler attacker, int damage)
+    {
+        if(activeSkills[1].State == SkillState.Channeling)
+        {
+            (activeSkills[1] as Fighter_CounterStance).ReflectDamage(attacker);
+
+            Debug.Log("CounterAttack Activate");
+            UpdateHpUI();
+        }
+        else
+        {
+            hp -= damage;
+            if (hp <= 0)
+            {
+                hp = 0;
+                KillCharacter();
+            }
+            Debug.Log(transform.name + "Received Damage: " + damage);
+            UpdateHpUI();
+        }
+
+    }
 
     protected override void Update()
     {
-		base.Update ();
-        switch(queueState)
+        // for debugging skill
+        if (Input.GetKeyDown(KeyCode.A))
+            activeSkills[0].Activate(target);
+        else if (Input.GetKeyDown(KeyCode.S))
+            activeSkills[1].Activate(target);
+        else if (Input.GetKeyDown(KeyCode.D))
+            activeSkills[2].Activate(target);
+
+        if (status == CharacterStatus.Idle)
         {
-            case CharacterState.None:
-            case CharacterState.Idle:
-            case CharacterState.Moving:
-            case CharacterState.Dead:
-            case CharacterState.Channeling:
-                break;
+            if (this.target != null)
+            {
+                if (this.target.Team == Team.Hostile)
+                    AutoAttack(target);
+            }
+        }
+        else if ((status & CharacterStatus.IsMovingMask) > 0)
+        {
+            Move(moveTarget);
+        }
+        else if ((status & CharacterStatus.IsChannelingMask) > 0)
+        {
+            // Do Channelling Things
+            // 0) AutoAttack
 
-            case CharacterState.AutoAttaking:
-                state = queueState;
-                break;
+            // 1) Hit
 
-            default:
-                Debug.LogError("Set type of queue State!");
-                break;
+            // 2) Meow Attack
             
+            // 3) ThousandFist
+            if (activeSkills[2].State == SkillState.Channeling)
+            {
+                (activeSkills[2] as Fighter_ThousandFists).TryAttack(target);
+            }
         }
 
-        switch (state)
-        {
-            case CharacterState.Idle:
-                // if range hero search auto target
-                break;
-            case CharacterState.Moving:
-                Move(moveTarget);
-                break;
-            case CharacterState.AutoAttaking:
-                autoAttack.Activate(target);
-                break;
-            default:
-                break;
-        }
     }
 }

@@ -62,7 +62,8 @@ public class OgreFemale_Sk4 : Skill
 
     private void BurnRun()
     {
-        float speed = 3 * Mathf.Sqrt(2);
+        Debug.Log("sdsdsdddsd");
+        float speed = Mathf.Sqrt(2);
         Vector3 target = FindTarget();
         caster.Move(target, speed, speed);
         if(count>=6)
@@ -94,7 +95,7 @@ public class OgreFemale_Sk4 : Skill
                 else
                 {
                     target.x = 9f;
-                    target.y = cPosition.x + (9f - cPosition.x);
+                    target.y = cPosition.y + (9f - cPosition.x);
                     return target;
                 }
 
@@ -102,7 +103,7 @@ public class OgreFemale_Sk4 : Skill
                 if (9 - cPosition.x <= cPosition.y + 3.4f)
                 {
                     target.x = 9f;
-                    target.y = cPosition.y - (9 - cPosition.x);
+                    target.y = -cPosition.y + (9 - cPosition.x);
                     return target;
                 }
                 else

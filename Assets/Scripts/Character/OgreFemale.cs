@@ -19,7 +19,6 @@ public class OgreFemale : Enemy,ITimeHandler {
     void OnSkillEnd(object sender, EventArgs e)
     {
         SkillEventArgs s = e as SkillEventArgs;
-
         if (Sk3() == true)
         {
             atk3.OnClick();
@@ -67,7 +66,7 @@ public class OgreFemale : Enemy,ITimeHandler {
         atk1.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         atk2.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         atk3.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
-        atk3.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
+        atk4.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
         ctime = 0;
         atk2.OnClick();

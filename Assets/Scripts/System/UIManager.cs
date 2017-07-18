@@ -25,5 +25,32 @@ public sealed class UIManager : MonoBehaviour {
 		string seconds = ((int)(time % 60f)).ToString("D2");
 		string temp = minutes + ":" + seconds;
 		text.text = temp;
-	}
+    }
+
+    public void ResizeUI(bool isFixed, int sizeRatio)
+    {
+        ResizeUI_ItemButton(isFixed, sizeRatio);
+        ResizeUI_SkillButton(isFixed, sizeRatio);
+        ResizeUI_Timer(isFixed, sizeRatio);
+        ResizeUI_PauseButton(isFixed, sizeRatio);
+    }
+
+    public void ResizeUI_Timer(bool isFixed, int ratio)
+    {
+        
+    }
+
+    public void ResizeUI_PauseButton(bool isFixed, int ratio)
+    {
+
+    }
+
+    public void ResizeUI_SkillButton(bool isFixed, int ratio)
+    {
+
+    }
+
+    public void ResizeUI_ItemButton(bool isFixed, int ratio)
+    {
+    }
 }
