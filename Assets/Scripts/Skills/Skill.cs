@@ -6,7 +6,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// gameUI prefab
 	protected int id;
 	protected Character caster;
-    [SerializeField]
+	[SerializeField]
 	protected int skillStatus = SkillStatus.ReadyOn;
 	protected float cooldown;
     [SerializeField]
@@ -33,7 +33,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
     #endregion
 
     #region Getters and Setters
-	public int State
+	public int Status
     {
 		get { return skillStatus; }
     }

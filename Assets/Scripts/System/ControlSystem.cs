@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 
 public sealed class ControlSystem : MonoBehaviour {
-	#if UNITY_EDITOR
-	// use mouse click
-	#endif
 
 	Transform[] target = new Transform[2];
 	int[] touchId = new int[2]{ -1, -1 };
@@ -15,31 +12,10 @@ public sealed class ControlSystem : MonoBehaviour {
 
 	int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
 
-	#if UNITY_ANDROID
-	// use touch
-		
-	#endif
-	// singleton
-	// active during battlescene
-
-	// touch time analysis
-
-	// Tap
-
-	// DoubleTap
-
-	// Drag and drop
-
-	// Disable input
-
-
 	void Update() {
 		#if UNITY_EDITOR
-		// use mouse click
 		ProcessClick ();
 		#endif
-
-
 
 		#if UNITY_ANDROID
 		ProcessTouch();
@@ -47,8 +23,6 @@ public sealed class ControlSystem : MonoBehaviour {
 	}
 
 	#if UNITY_EDITOR
-	// use mouse click
-	#endif
 
 	private void ProcessClick() {
 		if (Input.GetMouseButtonDown (0)) {
@@ -59,45 +33,51 @@ public sealed class ControlSystem : MonoBehaviour {
 				RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[i]);
 				if (hitInfo.collider != null) {
 					target [0] = hitInfo.collider.transform.root;
+					IDragDropHandler beginDrag = target [0].GetComponent<IDragDropHandler> ();
+					if (beginDrag != null) {
+						beginDrag.OnBeginDrag ();
+					}
 					break;
 				}
 			}
 		} else if (Input.GetMouseButtonUp (0)) {
 			if (target [0] == null)
 				return;
-			// tap
 			if (Vector3.Distance (Input.mousePosition, startPos [0]) < 0.1f) {
 				if (!oneClick[0]) {
 					oneClick[0] = true;
 					lastClickTime[0] = Time.time;
 				} else {
-					// double tap
+			// double tap
 					IDoubleTapHandler doubleTap = target [0].GetComponent<IDoubleTapHandler> ();
 					if (doubleTap != null) {
 						doubleTap.OnDoubleTap (Input.mousePosition);
 					}
 					oneClick[0] = false;
 				}
-			} else { // drop
+			} else { 
+			// drop
 				IDragDropHandler drop = target [0].GetComponent<IDragDropHandler> ();
 				if (drop != null) {
 					drop.OnDrop (Input.mousePosition);
+					oneClick[0] = false;
+					target [0] = null;
 				}
 			}
 		} else if (Input.GetMouseButton (0)) {
 			// on drag
 			if (target[0] != null) {
-                if (Vector3.Distance(Input.mousePosition, startPos[0]) > 0.1f) {
+				if (Vector3.Distance(Input.mousePosition, startPos[0]) > 0.1f) {
 					IDragDropHandler drag = target [0].GetComponent<IDragDropHandler> ();
-                    if (drag != null) {
-                        drag.OnDrag (Input.mousePosition);
+					if (drag != null) {
+						drag.OnDrag (Input.mousePosition);
 					}
 				}
 			}
 		}
 		if (oneClick[0]) {
 			if (Time.time - lastClickTime[0] > clickDelay) {
-				// tap
+			// tap
 				ITapHandler tap = target [0].GetComponent<ITapHandler> ();
 				if (tap != null) {
 					tap.OnTap ();
@@ -108,7 +88,10 @@ public sealed class ControlSystem : MonoBehaviour {
 		}
 	}
 
-	// need fixing on touch
+	#endif
+
+	#if UNITY_ANDROID
+
 	private void ProcessTouch() {
 		for (int i = 0; i < Input.touchCount; i++) {
 			switch (Input.GetTouch (i).phase) {
@@ -148,6 +131,10 @@ public sealed class ControlSystem : MonoBehaviour {
 					RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[j]);
 					if (hitInfo.collider != null) {
 						target [i] = hitInfo.collider.transform.root;
+						IDragDropHandler beginDrag = target [0].GetComponent<IDragDropHandler> ();
+						if (beginDrag != null) {
+							beginDrag.OnBeginDrag ();
+						}
 						break;
 					}
 				}
@@ -182,11 +169,14 @@ public sealed class ControlSystem : MonoBehaviour {
 							doubleTap.OnDoubleTap (Input.mousePosition);
 						}
 						oneClick [i] = false;
+						target [i] = null;
 					}
 				} else {
 					IDragDropHandler drop = target [i].GetComponent<IDragDropHandler> ();
 					if (drop != null) {
 						drop.OnDrop (Input.GetTouch(index).position);
+						oneClick [i] = false;
+						target [i] = null;
 					}
 				}
 				target [i] = null;
@@ -196,4 +186,7 @@ public sealed class ControlSystem : MonoBehaviour {
 			}
 		}
 	}
+	#endif
+
+
 }

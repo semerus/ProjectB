@@ -109,7 +109,6 @@ public class OgreFemale_AutoAttack : Skill {
         }
         else
         {
-            Debug.Log("no");
             if(this.gameObject.transform.position.x <= minC.transform.position.x)
             {
 				if (caster.Action != CharacterAction.Moving)

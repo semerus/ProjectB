@@ -21,4 +21,8 @@ public class MoveTest : Skill {
 
 		caster.MoveComplete -= OnMoveComplete;
 	}
+
+	void Example() {
+		Type temp = Type.GetType ("MoveTest");
+	}
 }

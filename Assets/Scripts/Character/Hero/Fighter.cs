@@ -20,7 +20,7 @@ public class Fighter : Hero {
         passiveSkill.SetSkill(this);
         passiveSkill.Activate(this);
 
-        activeSkills = new Skill[3];
+		activeSkills = new HeroActive[3];
         activeSkills[0] = gameObject.AddComponent<Fighter_MeowPunch_FierceScratch>();
         activeSkills[1] = gameObject.AddComponent<Fighter_CounterStance>();
         activeSkills[2] = gameObject.AddComponent<Fighter_ThousandFists>();
@@ -39,7 +39,7 @@ public class Fighter : Hero {
 
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
-        if(activeSkills[1].State == SkillStatus.ChannelingOn)
+        if(activeSkills[1].Status == SkillStatus.ChannelingOn)
         {
             (activeSkills[1] as Fighter_CounterStance).ReflectDamage(attacker);
 

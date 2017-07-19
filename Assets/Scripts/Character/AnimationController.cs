@@ -2,13 +2,19 @@
 
 public class AnimationController : MonoBehaviour {
 	protected SpriteRenderer[] rends;
+	protected bool isAnimFacingLeft = true;
 
 	void Awake() {
 		rends = GetComponentsInChildren<SpriteRenderer> ();
 	}
 
 	public void UpdateFacing(bool isFacingLeft) {
-		if (isFacingLeft) {
+		if (isFacingLeft == isAnimFacingLeft) {
+			return;
+		}
+		isAnimFacingLeft = isFacingLeft;
+
+		if (isAnimFacingLeft) {
 			transform.rotation = Quaternion.identity;
 		} else {
 			transform.rotation = Quaternion.Euler(new Vector3(0f, 180f, 0f));

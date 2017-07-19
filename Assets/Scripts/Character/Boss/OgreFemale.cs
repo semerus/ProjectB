@@ -5,17 +5,35 @@ using UnityEngine;
 
 public class OgreFemale : Enemy,ITimeHandler {
 
-    public OgreFemale_AutoAttack atk1;
-    public OgreFemale_Sk2 atk2;
-    public OgreFemale_Sk3 atk3;
-    public OgreFemale_Sk4 atk4;
     IBattleHandler[] friendlyNum;
+	[SerializeField]
+	int pattern = 0;
+	float pattern_timer = 5f;
 
-	private int pattern = 0;
-	private float pattern_timer = 5f;
-
-    void OnSkillEnd(object sender, EventArgs e)
+    protected override void Start()
     {
+		base.Start ();
+
+		maxHp = 500;
+		hp = 500;
+		speed_x = 1f;
+        speed_y = 1f;
+
+		skills = new Skill[4];
+		skills [0] = gameObject.AddComponent<OgreFemale_AutoAttack> ();
+		skills [1] = gameObject.AddComponent<OgreFemale_Sk2> ();
+		skills [2] = gameObject.AddComponent<OgreFemale_Sk3> ();
+		skills [3] = gameObject.AddComponent<OgreFemale_Sk4> ();
+
+		for (int i = 0; i < skills.Length; i++) {
+			skills [i].SetSkill (this);
+			skills [i].EndSkill += new EventHandler<SkillEventArgs> (OnSkillEnd);
+		}
+		friendlyNum = BattleManager.GetBattleManager ().GetEntities (Team.Friendly);
+    }
+
+	void OnSkillEnd(object sender, EventArgs e)
+	{
 		switch (pattern) {
 		case 1:
 		case 3:
@@ -28,26 +46,7 @@ public class OgreFemale : Enemy,ITimeHandler {
 		default:
 			break;
 		}
-    }
-    
-    protected override void Start()
-    {
-		base.Start ();
-
-		maxHp = 3000;
-		hp = 3000;
-		speed_x = 1f;
-        speed_y = 1f;
-        atk1.SetSkill(this);
-        atk2.SetSkill(this);
-        atk3.SetSkill(this);
-        atk4.SetSkill(this);
-        atk1.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
-        atk2.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
-        atk3.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
-        atk4.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
-		friendlyNum = BattleManager.GetBattleManager ().GetEntities (Team.Friendly);
-    }
+	}
 
 	public override void RunTime()
     {
@@ -61,51 +60,40 @@ public class OgreFemale : Enemy,ITimeHandler {
 
     protected override void InstructEnemyAI()
     {
+		if (CheckCharacterStatus (CharacterStatus.NotOrderableMask))
+			return;
 		switch (pattern) {
 		// idle
 		case 0:
-			if (atk2.CheckSkillState (SkillStatus.ReadyMask)) {
+			if (skills[1].CheckSkillState (SkillStatus.ReadyMask)) {
 				pattern = 2;
-				atk2.OnCast ();
-			}  else if (atk3.CheckSkillState (SkillStatus.ReadyMask) && Sk3 ()) {
+				skills[1].OnCast ();
+			}  else if (skills[2].CheckSkillState (SkillStatus.ReadyMask) && Sk3 ()) {
 				pattern = 3;
-				StopMove ();
-				atk3.OnCast ();
-			} else if (atk1.CheckSkillState (SkillStatus.ReadyMask)) {
+				skills[2].OnCast ();
+			} else if (skills[0].CheckSkillState (SkillStatus.ReadyMask)) {
 				pattern = 1;
-				atk1.OnCast ();
+				skills[0].OnCast ();
 			}
 			break;
 		// autoattack
 		case 1:
-			if (atk1.CheckSkillState (SkillStatus.ReadyMask)) {
-				atk1.OnCast ();
+			if (skills[1].CheckSkillState (SkillStatus.ReadyMask)) {
+				StopMove ();
+				pattern = 2;
+				skills[1].OnCast ();
+			} else if (skills[2].CheckSkillState (SkillStatus.ReadyMask) && Sk3 ()) {
+				StopMove ();
+				pattern = 3;
+				skills[2].OnCast (); 
+			}
+			else if (skills[0].CheckSkillState (SkillStatus.ReadyMask)) {
+				skills[0].OnCast ();
 			}
 			break;
-		// jump skill
 		default:
 			break;
 		}
-//        Debug.Log("adsfad:" + (status & CharacterStatus.NotOrderableMask));
-//        if ((status & CharacterStatus.NotOrderableMask) > 0)
-//            return;
-//        Debug.Log("atk2 : "+atk2.CheckSkillState(SkillStatus.ReadyMask));
-//
-//        if (atk3.CheckSkillState(SkillStatus.ReadyMask) && Sk3())
-//        {
-//            StopMove();
-//            atk3.OnCast();
-//        }
-//        else if (atk2.CheckSkillState(SkillStatus.ReadyMask))
-//        {
-//
-//            StopMove();
-//            atk2.OnCast();
-//        }
-//        else if (atk1.CheckSkillState(SkillStatus.ReadyMask))
-//        {
-//            atk1.OnCast();
-//        }
     }
 
     private bool Sk3()

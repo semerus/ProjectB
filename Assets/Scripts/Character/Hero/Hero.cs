@@ -4,7 +4,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	protected Skill autoAttack;
     protected Skill passiveSkill;
-    protected Skill[] activeSkills;
+	protected HeroActive[] activeSkills;
 
     protected HeroUI heroUI; // load it from spawn
 	protected int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
@@ -22,8 +22,6 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	#region ITapHandler implementation
 	public void OnTap ()
 	{
-		//Debugging.DebugWindow ("ontap");
-		Debug.Log("on tap");
 		DisplaySkill ();
 	}
 	#endregion
@@ -32,7 +30,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	public void OnBeginDrag ()
 	{
-		throw new System.NotImplementedException ();
+		OnTap ();
 	}
 
 	public void OnDrag (Vector3 pixelPos)
@@ -94,7 +92,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
     }
 
     protected void DisplaySkill(){
-		// display skill hud
+		UIManager.GetUIManager ().SkillPanel.OpenSkills (activeSkills);
 	}
 
 	private Vector3 CalculatePosition(Vector3 target) {

@@ -5,9 +5,13 @@ public sealed class UIManager : MonoBehaviour {
 
 	private static UIManager instance;
 	public GameObject timer;
-	public GameObject skillPanel;
+	private SkillUI skillPanel;
 
-	private SkillButton[] skills;
+	public SkillUI SkillPanel {
+		get {
+			return skillPanel;
+		}
+	}
 
 	public static UIManager GetUIManager() {
 		if (!instance) {
@@ -20,7 +24,7 @@ public sealed class UIManager : MonoBehaviour {
 
 	void Awake() {
 		GetUIManager ();
-		skills = skillPanel.GetComponentsInChildren<SkillButton> ();
+		skillPanel = SkillUI.GetSkillUI ();
 	}
 
 	// update timer
@@ -30,22 +34,5 @@ public sealed class UIManager : MonoBehaviour {
 		string seconds = ((int)(time % 60f)).ToString("D2");
 		string temp = minutes + ":" + seconds;
 		text.text = temp;
-	}
-
-	public void SetSkills(IInGameUI[] uis) {
-		for (int i = 0; i < skills.Length; i++) {
-			skills [i].button.image.sprite = uis [i].InGameUI;
-			skills [i].OnReady ();
-		}
-	}
-
-	// update skill cooldowns using IInGameUI[]
-	public void UpdateSkills(IInGameUI[] uis) {
-		for (int i = 0; i < skills.Length; i++) {
-			if (uis [i].CurCoolDown == 0)
-				skills [i].OnReady ();
-			else
-				skills [i].UpdateCooldown (uis [i].CurCoolDown / uis [i].MaxCoolDown, (int)uis [i].CurCoolDown);
-		}
 	}
 }

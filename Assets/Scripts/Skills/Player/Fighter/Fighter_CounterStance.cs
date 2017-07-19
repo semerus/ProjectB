@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_CounterStance : Skill, IChanneling {
+public class Fighter_CounterStance : HeroActive, IChanneling {
     #region implemented abstract members of Skill
 
     public override void Activate(IBattleHandler target)
@@ -91,6 +91,8 @@ public class Fighter_CounterStance : Skill, IChanneling {
         Timer_Channeling = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
+
+		button = Resources.Load<Sprite> ("Skills/0709/Shield");
     }
 
     #endregion

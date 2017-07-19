@@ -203,7 +203,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         lifeStealSum = (damage * dmgRatio * lifeStealRatio) + lifeStealAbs;
 
 		target.ReceiveDamage(this, (int) (damage * dmgRatio));
-        target.ReceiveHeal((int)lifeStealSum);
+        ReceiveHeal((int)lifeStealSum);
 	}
 
 	public virtual void HealTarget(int heal, IBattleHandler target) {
@@ -287,6 +287,15 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 			// send move complete(reached destination event)
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
 			OnMoveComplete (e);
+		}
+
+		// update facing
+		if (transform.position.x - target.x >= 0f) {
+			isFacingLeft = true;
+			anim.UpdateFacing (isFacingLeft);
+		} else {
+			isFacingLeft = false;
+			anim.UpdateFacing (isFacingLeft);
 		}
 
 		// update sorting layer order by y axis

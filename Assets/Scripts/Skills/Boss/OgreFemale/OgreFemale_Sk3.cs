@@ -12,6 +12,7 @@ public class OgreFemale_Sk3 : Skill {
         cooldown = 10f;
         StartCoolDown();
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+		Sk3On ();
     }
 
     private void Sk3On()
