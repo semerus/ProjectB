@@ -11,47 +11,9 @@ public class OgreFemale : Enemy,ITimeHandler {
     public OgreFemale_Sk4 atk4;
     IBattleHandler[] friendlyNum;
 
-    float ctime = 0;
-    bool cool = false;
-    bool autoAtk = false;
-    float btime = 10;
-
     void OnSkillEnd(object sender, EventArgs e)
     {
-        SkillEventArgs s = e as SkillEventArgs;
-        if (Sk3() == true)
-        {
-			atk3.OnCast();
-        }
-        else if (ctime >= 5 && cool == false)
-        {
-            atk2.OnCast();
-            cool = true;
-            btime = 10;
-        }
-        else
-        {
-        //    atk1.OnClick();
-        //    autoAtk = true;
-        }
-    }
 
-    void CheckAuttoAtaack()
-    {
-        if (Sk3() == true)
-        {
-            StopMove();
-			atk3.OnCast();
-            autoAtk = false;
-        }
-        else if (ctime >= 5 && cool == false)
-        {
-            StopMove();
-			atk2.OnCast();
-            cool = true;
-            btime = 10;
-            autoAtk = false;
-        }
     }
     
     protected override void Start()
@@ -73,32 +35,33 @@ public class OgreFemale : Enemy,ITimeHandler {
         atk3.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         atk4.EndSkill += new EventHandler<SkillEventArgs>(OnSkillEnd);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
-        ctime = 0;
-		atk2.OnCast();
+        atk2.OnCast();
     }
 
     public void RunTime()
     {
-        ctime += Time.deltaTime;
-        if(cool==true)
-        {
-            btime -= Time.deltaTime;
-            if(btime<=0)
-            {
-                cool = false;
-            }
-        }
         InstructEnemyAI();
-
-        if(autoAtk==true)
-        {
-            CheckAuttoAtaack();
-        }
     }
 
     protected override void InstructEnemyAI()
     {
-        base.InstructEnemyAI();
+        if ((status & CharacterStatus.NotOrderableMask) > 0)
+            return;
+
+        if (atk3.CheckSkillState(SkillStatus.ReadyMask) && Sk3())
+        {
+            StopMove();
+            atk3.OnCast();
+        }
+        else if (atk2.CheckSkillState(SkillStatus.ReadyMask))
+        {
+            StopMove();
+            atk2.OnCast();
+        }
+        else if (atk1.CheckSkillState(SkillStatus.ReadyMask))
+        {
+            atk1.OnCast();
+        }
     }
     
     public override void ReceiveHeal (int heal)

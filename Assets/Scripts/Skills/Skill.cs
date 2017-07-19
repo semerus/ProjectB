@@ -23,7 +23,10 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		}
 		if (CheckSkillState(SkillStatus.ChannelingMask)) {
 			IChanneling ch = this as IChanneling;
-			ch.OnChanneling ();
+            if(ch != null)
+            {
+                ch.OnChanneling();
+            }
 		}
 	}
 
@@ -82,9 +85,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 	protected virtual void StartCoolDown() {
 		UpdateSkillState (SkillStatus.OnCoolDownOn);
-		if (!TimeSystem.GetTimeSystem ().CheckTimer (this as ITimeHandler)) {
-			TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
-		}
+		TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
 	}
 
 	public bool CheckSkillState(int mask){
@@ -96,7 +97,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	}
 
 	protected void UpdateSkillState(int change) {
-		skillStatus = change & SkillStatus.All;
+		skillStatus &= SkillStatus.All;
 
 		if (change == SkillStatus.ChannelingOn || change == SkillStatus.ProcessOn || change == SkillStatus.OnCoolDownOn) {
 			skillStatus = skillStatus | change;

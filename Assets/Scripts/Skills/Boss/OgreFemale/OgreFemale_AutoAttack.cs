@@ -6,95 +6,62 @@ using UnityEngine;
 public class OgreFemale_AutoAttack : Skill {
 
     IBattleHandler[] friendlyNum;
-    float min = 1000000000000;
-    float ofTime = 0f;
-    bool attackOn = false;
-    IBattleHandler minNum = null;
     Character minC;
 
     public override void RunTime()
     {
-        AutoAttack();
-        AutoAttacking();
         base.RunTime();
+        if (CheckSkillState(SkillStatus.ProcessMask))
+            AutoAttack();
+    }
+
+    protected override void OnCoolDown()
+    {
+        base.OnCoolDown();
+        if(CheckSkillState(SkillStatus.ProcessMask))
+        {
+            TimeSystem.GetTimeSystem().AddTimer(this);
+        }
     }
 
     public override void Activate(IBattleHandler target)
     {
-        Debug.Log(TimeSystem.GetTimeSystem().CheckTimer(this));
-        if (!TimeSystem.GetTimeSystem().CheckTimer(this))
-        {
-            //TimeSystem.GetTimeSystem().AddTimer(this);
-            attackOn = false;
-            min = 1000000000000;
-            ofTime = 0f;
-        }
-    }
-
-    // Use this for initialization
-    void Start()
-    {
-       friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
+        cooldown = 3;
+        UpdateSkillState(SkillStatus.ProcessOn);
+        TimeSystem.GetTimeSystem().AddTimer(this);
+        friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
     }
 
     private void AutoAttacking()
     {
-        if (attackOn == true)
+        StartCoolDown();
+        for (int i = 0; i < friendlyNum.Length; i++)
         {
-            ofTime += Time.deltaTime;
-
-            if (ofTime < 1)
+            Character c = friendlyNum[i] as Character;
+            bool hitCheck = EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
+            if (hitCheck == true)
             {
-                // 준비동작
-            }
-            if (ofTime <= 1.01 && ofTime >= 0.99)
-            {
-                for (int i = 0; i < friendlyNum.Length; i++)
-                {
-                    Character c = friendlyNum[i] as Character;
-                    bool hitCheck = EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
-                    if (hitCheck == true)
-                    {
-                        if (OgreFemale_Sk5.rageOn == true)
-                        {
-                            IBattleHandler ch = c as IBattleHandler;
-                            caster.AttackTarget(c, 100);
-                        }
-                        else
-                        {
-                            Debug.Log("Auto Attack => " + c.gameObject.transform.name);
-                            IBattleHandler ch = c as IBattleHandler;
-                            caster.AttackTarget(c, 50);
-                        }
-                    }
-                }
-            }
-            if (ofTime > 1 && ofTime <= 1.5)
-            {
-                // 마무리 동작
-            }
-            if (ofTime > 1.5)
-            {
-                attackOn = false;
-                ofTime = 0;
-                SkillEventArgs s = new SkillEventArgs(this.name, true);
-                TimeSystem.GetTimeSystem().DeleteTimer(this);
-                OnEndSkill(s);
+                Debug.Log("Auto Attack => " + c.gameObject.transform.name);
+                IBattleHandler ch = c as IBattleHandler;
+                caster.AttackTarget(c, 0);
             }
         }
+        UpdateSkillState(SkillStatus.ProcessOff);
+        SkillEventArgs s = new SkillEventArgs(this.name, true);
+        OnEndSkill(s);
     }
 
     public void AutoAttack()
     {
-        if (attackOn == false)
-        {
-            AutoAttackTargetting();
-            CheckTargetRange();
-        }
+        AutoAttackTargetting();
+        CheckTargetRange();
     }
 
     private void AutoAttackTargetting()
     {
+        IBattleHandler minNum=null;
+        float temp = Mathf.Infinity;
+
         for (int i = 0; i < friendlyNum.Length; i++)
         {
             Character c = friendlyNum[i] as Character;
@@ -103,14 +70,13 @@ public class OgreFemale_AutoAttack : Skill {
 
             float distance = x * x + y * y;
             
-            if (distance <= min)
+            if (distance <= temp)
             {
-                min = distance;
+                temp = distance;
                 minNum = friendlyNum[i];
             }
         }
         minC = minNum as Character;
-        Debug.Log(minC);
     }
 
     private void CheckTargetRange()
@@ -137,13 +103,12 @@ public class OgreFemale_AutoAttack : Skill {
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
             caster.Move(this.gameObject.transform.position);
+            AutoAttacking();
             Debug.Log("attack on");
-            attackOn = true;
         }
         else
         {
             Debug.Log("no");
-            attackOn = false;
             if(this.gameObject.transform.position.x <= minC.transform.position.x)
             {
                 if ((caster.Status & CharacterStatus.IsMovingMask) == 0)
@@ -188,9 +153,9 @@ public class OgreFemale_AutoAttack : Skill {
         {
             if(!m.result)
             {
-                TimeSystem.GetTimeSystem().DeleteTimer(this);
+                UpdateSkillState(SkillStatus.ProcessOff);
                 SkillEventArgs s = new SkillEventArgs(this.name, true);
-                OnEndSkill(s);
+                OnEndSkill(s);             
                 caster.MoveComplete -= OnMoveComplete;
             }
         }
