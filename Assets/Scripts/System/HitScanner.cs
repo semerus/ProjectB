@@ -9,8 +9,7 @@ public class HitScanner : MonoBehaviour
     protected void Update()
     {
         ScanColliders();
-        print(friendlyBattleHandler.Count + "friendly List");
-        print(hostileBattleHandler.Count + "enemey List");
+        print(this.gameObject.name + friendlyBattleHandler.Count + "friendly List");
     }
 
     protected virtual void Awake()

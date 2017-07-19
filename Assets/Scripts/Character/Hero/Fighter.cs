@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class Fighter : Hero {
-
+    
 	void Awake() {
 		// temporary value given
 		id = 1;
@@ -11,14 +11,13 @@ public class Fighter : Hero {
         hp = maxHp;
 		speed_x = 2.57f;
 		speed_y = 1.4f;
-
+        
         // for Skill debugging
         autoAttack = gameObject.AddComponent<Fighter_Attack>();
         autoAttack.SetSkill(this);
 
-        passiveSkill = gameObject.AddComponent<Fighter_Passive>();
+        passiveSkill = gameObject.AddComponent<Fighter_Passive_LifeSteal_AutoAttack>();
         passiveSkill.SetSkill(this);
-        passiveSkill.Activate(this);
 
         activeSkills = new Skill[3];
         activeSkills[0] = gameObject.AddComponent<Fighter_MeowPunch_FierceScratch>();
@@ -48,13 +47,15 @@ public class Fighter : Hero {
         }
         else
         {
-            hp -= damage;
+            int receivedDamage = Calculator.ReceiveDamage(this, damage);
+
+            hp -= receivedDamage;
             if (hp <= 0)
             {
                 hp = 0;
                 KillCharacter();
             }
-            Debug.Log(transform.name + "Received Damage: " + damage);
+            Debug.Log(transform.name + "Received Damage: " + receivedDamage);
             UpdateHpUI();
         }
 
@@ -69,6 +70,10 @@ public class Fighter : Hero {
             activeSkills[1].Activate(target);
         else if (Input.GetKeyDown(KeyCode.D))
             activeSkills[2].Activate(target);
+        else if (Input.GetKeyDown(KeyCode.F))
+        {
+            Buff_ReceiveDmg_Ratio ToMe_Debuff = new Buff_ReceiveDmg_Ratio(this, this, false, 10f, 30f, "Rdmg +1000% 30sec");
+        }
 
         if (status == CharacterStatus.Idle)
         {

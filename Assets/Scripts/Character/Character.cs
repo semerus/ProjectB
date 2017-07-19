@@ -14,7 +14,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
     protected float customSpeed_x;
     protected float customSpeed_y;
 
-
+    [SerializeField]
 	protected List<Buff> buffs = new List<Buff>();
 
     [SerializeField]
@@ -73,12 +73,15 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 
 	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
-		hp -= damage;
-		if (hp <= 0) {
+        int receivedDamage = Calculator.ReceiveDamage(this, damage);
+
+        hp -= receivedDamage;
+        //hp -= damage;
+        if (hp <= 0) {
 			hp = 0;
 			KillCharacter ();
 		}
-		Debug.Log (transform.name + "Received Damage: " + damage);
+		Debug.Log (transform.name + "Received Damage: " + receivedDamage);
 		UpdateHpUI ();
 	}
 
@@ -91,9 +94,24 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		UpdateHpUI ();
 	}
 
-	#endregion
+    #endregion
 
-	public virtual void OnMoveComplete(MoveEventArgs e) {
+    #region Debugging Field & Method
+    public List<string> BuffList;
+    public void UpdateBuffList()
+    {
+        if(buffs != null)
+        {
+            BuffList.Clear();
+            foreach(Buff eachBuff in buffs)
+            {
+                BuffList.Add(eachBuff.BuffName);
+            }
+        }
+    }
+    #endregion
+
+    public virtual void OnMoveComplete(MoveEventArgs e) {
 		EventHandler<MoveEventArgs> moveComplete = MoveComplete;
 		if (moveComplete != null) {
 			moveComplete (this, e);
@@ -142,21 +160,13 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	// update hpBar for each character
 	protected abstract void UpdateHpUI ();
 
-	public void AttackTarget(IBattleHandler target, int damage) {
+	public virtual void AttackTarget(IBattleHandler target, int damage) {
 		// check for buffs
 		float dmgRatio = 1f;
 		float lifeStealRatio = 0f;
         float lifeStealAbs = 0f;
         float lifeStealSum = 0f;
-
-		for (int i = 0; i < buffs.Count; i++) {
-            IDamageBuff buff = buffs [i] as IDamageBuff;
-			if (buff != null) {
-				// change this formula later
-				dmgRatio = dmgRatio * buff.DamageRatio;
-			}
-		}
-
+        
         for (int i = 0; i < buffs.Count; i++)
         {
             ILifeStealAbsBuff buff = buffs[i] as ILifeStealAbsBuff;
@@ -199,8 +209,20 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 	}
 
 	protected virtual void KillCharacter () {
+        //for time System Off
+        if(buffs != null)
+        {
+            foreach(Buff eachBuff in buffs)
+            {
+                ITimeHandler eachBuffTime = eachBuff as ITimeHandler;
+                if (eachBuffTime != null)
+                    TimeSystem.GetTimeSystem().DeleteTimer(eachBuffTime);
+            }
+        }
+
         status = CharacterStatus.Dead;
 		gameObject.SetActive (false);
+
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();

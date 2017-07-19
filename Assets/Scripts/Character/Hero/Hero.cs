@@ -9,9 +9,16 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
     protected HeroUI heroUI; // load it from spawn
 	protected int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
 
-	#region implemented abstract members of Character
+    #region Getters and Setter
+    public Skill[] ActiveSkills
+    {
+        get { return activeSkills; }
+    }
+    #endregion
 
-	protected override void UpdateHpUI ()
+    #region implemented abstract members of Character
+
+    protected override void UpdateHpUI ()
 	{
 		float percent = (float)hp / (float)maxHp;
 		heroUI.UpdateHp (percent);

@@ -10,6 +10,11 @@ public class Debugging : MonoBehaviour {
 		window = GameObject.Find ("Debugging").GetComponent<Text> ();
 	}
 
+    public static void ConsolePrint(string log)
+    {
+        print(log);
+    }
+
 	public static void DebugWindow(string log) {
 		window.text = log;
 	}

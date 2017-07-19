@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TempTesting : MonoBehaviour {
 
-	void Start () {
-
-	}
+    void Start()
+    {
+    }
 
 }

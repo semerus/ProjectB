@@ -2,31 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_Attack : Skill, ITimeHandler {
-	#region implemented abstract members of Skill
+public abstract class Fighter_MeowPunch : Skill {
+    #region implemented abstract members of Skill
 
-	public override void Activate (IBattleHandler target)
-	{
+    public override void Activate(IBattleHandler target)
+    {
         CheckTargetRange(target);
 
-        if(isTargetInMeleeRange == true)
+        if (isTargetInMeleeRange == true && caster.CurHP > HPCost)
         {
-			if(skillStatus == SkillStatus.ReadyOn)
+            if (skillStatus == SkillStatus.ReadyOn)
             {
-                if ((caster.Status & CharacterStatus.IsBlindMask) > 0)
-                {
-                    StartCoolDown();
-                }
-                else
-                {
-                    int attackDmg = Calculator.AttackDamage(caster, dmg);
-                    target.ReceiveDamage(caster, attackDmg);
+                Character tarChraracter = target as Character;
+                tarChraracter.ReceiveDamage(caster, Calculator.SkillDamage(caster, dmg));
 
-                    //LifeStealValue;
-                    caster.ReceiveHeal(10);
+                TraitBuffCasting(caster, tarChraracter);
 
-                    StartCoolDown();
-                }
+                caster.ReceiveDamage(caster, HPCost);
+                StartCoolDown();
             }
             else
             {
@@ -37,19 +30,23 @@ public class Fighter_Attack : Skill, ITimeHandler {
         {
             caster.Move(positionToMeleeAttack);
         }
-	}
+    }
 
     #endregion
 
+    #region TraitChanges
+    protected abstract void TraitBuffCasting(Character caster, Character tarCharacter);
+    protected abstract void TraitSetValue();
+    #endregion
+
     #region MonoBehaviours
-    void Awake()
+    protected void Awake()
     {
         // set original value
-        cooldown = 0.9f;
-        dmg = 10;
-
+        TraitSetValue();
+        
         // set initial value
-		skillStatus = SkillStatus.ReadyOn;
+        skillStatus = SkillStatus.ReadyOn;
         timer_cooldown = cooldown;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
@@ -58,6 +55,10 @@ public class Fighter_Attack : Skill, ITimeHandler {
     #endregion
 
     #region Field&Method
+    // effect & cost of this Skill
+    protected int dmg;
+    protected int HPCost;
+
 
 
     // Check Melee Range
@@ -111,9 +112,6 @@ public class Fighter_Attack : Skill, ITimeHandler {
             positionToMeleeAttack = transform.position + new Vector3(deltaX, deltaY, 0);
         }
     }
-
-    // effect of this skill
-    int dmg;
 
     #endregion
 }
