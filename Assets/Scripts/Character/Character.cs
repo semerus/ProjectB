@@ -37,6 +37,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler {
 		}
 	}
 
+    public bool IsFacingLeft
+    {
+        get { return isFacingLeft; }
+    }
+
 	public IBattleHandler Target {
 		get {
 			return target;

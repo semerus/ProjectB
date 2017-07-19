@@ -47,7 +47,6 @@ public class OgreFemale_AutoAttack : Skill {
             }
         }
         UpdateSkillState(SkillStatus.ProcessOff);
-        Debug.Log("dddddddd"+skillStatus);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
         OnEndSkill(s);
     }

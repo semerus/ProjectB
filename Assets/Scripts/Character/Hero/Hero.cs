@@ -14,7 +14,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	protected override void UpdateHpUI ()
 	{
 		float percent = (float)hp / (float)maxHp;
-		heroUI.UpdateHp (percent);
+		//heroUI.UpdateHp (percent);
 	}
 
 	#endregion

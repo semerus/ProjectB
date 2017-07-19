@@ -45,10 +45,8 @@ public class OgreFemale : Enemy,ITimeHandler {
 
     protected override void InstructEnemyAI()
     {
-        Debug.Log("adsfad:" + (status & CharacterStatus.NotOrderableMask));
         if ((status & CharacterStatus.NotOrderableMask) > 0)
             return;
-        Debug.Log("atk2 : "+atk2.CheckSkillState(SkillStatus.ReadyMask));
 
         if (atk3.CheckSkillState(SkillStatus.ReadyMask) && Sk3())
         {
@@ -57,7 +55,6 @@ public class OgreFemale : Enemy,ITimeHandler {
         }
         else if (atk2.CheckSkillState(SkillStatus.ReadyMask))
         {
-
             StopMove();
             atk2.OnCast();
         }
