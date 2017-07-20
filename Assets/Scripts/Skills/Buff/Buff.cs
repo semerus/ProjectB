@@ -11,7 +11,7 @@ public abstract class Buff {
 	/// </summary>
 	/// <param name="caster">Caster.</param>
 
-	public virtual void BeginBuff(Character target) {
+	public virtual void StartBuff(Character target) {
 		// add to Buff list to target
 		AddBuff(target);
 
