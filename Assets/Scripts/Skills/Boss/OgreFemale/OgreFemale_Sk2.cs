@@ -24,14 +24,17 @@ public class OgreFemale_Sk2 : Skill {
         JumpAttackTargetting();
         JumpAttack();
     }
-    void JumpAttack()
+    
+	void JumpAttack()
     {
         float x = Mathf.Abs(adjustpoint.x - this.gameObject.transform.position.x);
         float y = Mathf.Abs(adjustpoint.y - this.gameObject.transform.position.y);
         Vector3 s = new Vector3(x, y);
-        caster.RefreshStatus(CharacterStatus.ForcedMoving);
-        caster.Move(adjustpoint, s.x, s.y);
-        caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
+		if (caster.BeginJumpTarget (adjustpoint, x, y)) {
+			caster.MoveComplete += new EventHandler<MoveEventArgs> (OnMoveComplete);
+		} else {
+			// enter what happens when rooted at start
+		}
     }
 
     public void JumpAttackTargetting()
@@ -107,6 +110,8 @@ public class OgreFemale_Sk2 : Skill {
                             Debug.Log("Auto Attack => " + c.gameObject.transform.name);
                             IBattleHandler ch = c as IBattleHandler;
                             caster.AttackTarget(c, 50);
+
+							// give 1 sec stun buff
                         }
                     }
                 }

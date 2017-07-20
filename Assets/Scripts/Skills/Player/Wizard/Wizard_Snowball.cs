@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Snowball : Skill
+public class Wizard_Snowball : HeroActive
 {
     IBattleHandler[] enemyNum;
     IBattleHandler target;

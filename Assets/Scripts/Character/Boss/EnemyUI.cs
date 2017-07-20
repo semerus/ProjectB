@@ -6,6 +6,6 @@ public class EnemyUI : MonoBehaviour {
 
 	public void UpdateHp(float percent) {
 		// change 1f later
-		curHpBar.sizeDelta = new Vector2(1f * percent, curHpBar.rect.height);
+		curHpBar.sizeDelta = new Vector2(700f * percent, curHpBar.rect.height);
 	}
 }

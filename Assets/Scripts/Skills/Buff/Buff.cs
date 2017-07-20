@@ -41,21 +41,35 @@ public abstract class Buff {
 				// stop all moving
 				target.StopMove();
 			}
-		}	
-		target.RefreshStatus (CharacterStatus.GetCurrentActionStatus (target));
-        
-		// add timer to TimeSystem if it implements ITimeHandler
+		}
+
+		target.RefreshBuff ();
+        // add timer to TimeSystem if it implements ITimeHandler
 	}
 
     public abstract void CheckCounterBuff();
     
 	public virtual void EndBuff() {
-		// delete from Buff list
-		target.Buffs.Remove(this);
-
-		target.RefreshStatus (CharacterStatus.GetCurrentActionStatus (target));
-
-		// base.EndBuff();
 		// delete timer to TimeSystem if it implements ITimeHandler
+		ITimeHandler t = this as ITimeHandler;
+		if (t != null) {
+			TimeSystem.GetTimeSystem ().DeleteTimer (t);
+		}
+		// delete from Buff list
+		if (target.Buffs.Remove (this)) {
+			target.Anim.UpdateAnimation ();
+			target.RefreshBuff ();
+		}
+
+		target.UpdateBuffList ();
 	}
+
+	/*
+	private void AddBuff(Character target) {
+		if (target.Buffs.Contains (this))
+			return;
+		target.Buffs.Add (this);
+		target.RefreshBuff ();
+	}
+	*/
 }

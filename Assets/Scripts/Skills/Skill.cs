@@ -6,7 +6,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// gameUI prefab
 	protected int id;
 	protected Character caster;
-    [SerializeField]
+	[SerializeField]
 	protected int skillStatus = SkillStatus.ReadyOn;
 	protected float cooldown;
     [SerializeField]
@@ -18,10 +18,10 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 	public virtual void RunTime ()
 	{
-		if (CheckSkillState(SkillStatus.OnCoolDownMask)) {
+		if (CheckSkillStatus(SkillStatus.OnCoolDownMask)) {
 			OnCoolDown ();
 		}
-		if (CheckSkillState(SkillStatus.ChannelingMask)) {
+		if (CheckSkillStatus(SkillStatus.ChannelingMask)) {
 			IChanneling ch = this as IChanneling;
             if(ch != null)
             {
@@ -33,14 +33,14 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
     #endregion
 
     #region Getters and Setters
-	public int State
+	public int Status
     {
 		get { return skillStatus; }
     }
     #endregion
 
     public void OnEndSkill(SkillEventArgs e) {
-		UpdateSkillState (SkillStatus.ProcessOff);
+		UpdateSkillStatus (SkillStatus.ProcessOff);
 
 		EventHandler<SkillEventArgs> endSkill = EndSkill;
 		if (endSkill != null) {
@@ -69,6 +69,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// activate skill (launch projectile, area etc)
 	// run cooldown
 	public abstract void Activate (IBattleHandler target);
+	//public abstract bool CheckCondition ();
 
 	protected virtual void OnCoolDown() {
 		timer_cooldown += Time.deltaTime;
@@ -77,18 +78,18 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 		if (timer_cooldown >= cooldown) {
 			// reset skill to ready
-			UpdateSkillState(SkillStatus.OnCoolDownOff);
+			UpdateSkillStatus(SkillStatus.OnCoolDownOff);
 			timer_cooldown = 0f;
 			TimeSystem.GetTimeSystem ().DeleteTimer (this as ITimeHandler);
 		}
 	}
 
 	protected virtual void StartCoolDown() {
-		UpdateSkillState (SkillStatus.OnCoolDownOn);
+		UpdateSkillStatus (SkillStatus.OnCoolDownOn);
 		TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
 	}
 
-	public bool CheckSkillState(int mask){
+	public bool CheckSkillStatus(int mask){
 		int test = skillStatus & mask;
 		if (test > 0)
 			return true;
@@ -96,7 +97,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 			return false;
 	}
 
-	protected void UpdateSkillState(int change) {
+	protected void UpdateSkillStatus(int change) {
 		skillStatus &= SkillStatus.All;
 
 		if (change == SkillStatus.ChannelingOn || change == SkillStatus.ProcessOn || change == SkillStatus.OnCoolDownOn) {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Blizzard : Skill
+public class Wizard_Blizzard : HeroActive
 {
     public override void Activate(IBattleHandler target)
     {

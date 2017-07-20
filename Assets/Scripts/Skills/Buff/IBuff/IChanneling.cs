@@ -7,5 +7,5 @@ public interface IChanneling {
 
 	// please add TimeSystem.AddTimer during OnChanneling
 	void OnChanneling();
-	void OnInterrupt();
+	void OnInterrupt(IBattleHandler interrupter);
 }

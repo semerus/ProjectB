@@ -22,7 +22,7 @@ public class Wizard : Hero,ITimeHandler
         passiveSkill.SetSkill(this);
         passiveSkill.OnCast();
 
-        activeSkills = new Skill[3];
+		activeSkills = new HeroActive[3];
         activeSkills[0] = gameObject.AddComponent<Wizard_Snowball>();
         activeSkills[1] = gameObject.AddComponent<Wizard_Freeze>();
         activeSkills[2] = gameObject.AddComponent<Wizard_Blizzard>();
@@ -35,15 +35,15 @@ public class Wizard : Hero,ITimeHandler
 
     public void RunTime()
     {
-        if(Input.GetKeyDown("b")&& activeSkills[0].CheckSkillState(SkillStatus.ReadyMask))
+        if(Input.GetKeyDown("b")&& activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask))
         {
             activeSkills[0].OnCast();
         }
-        if (Input.GetKeyDown("n")&& activeSkills[1].CheckSkillState(SkillStatus.ReadyMask))
+        if (Input.GetKeyDown("n")&& activeSkills[1].CheckSkillStatus(SkillStatus.ReadyMask))
         {
             activeSkills[1].OnCast();
         }
-        if (Input.GetKeyDown("m")&& activeSkills[2].CheckSkillState(SkillStatus.ReadyMask))
+        if (Input.GetKeyDown("m")&& activeSkills[2].CheckSkillStatus(SkillStatus.ReadyMask))
         {
             activeSkills[2].OnCast();
         }
@@ -52,7 +52,7 @@ public class Wizard : Hero,ITimeHandler
         {
             if (this.target != null)
             {
-                if (this.target.Team == Team.Hostile && autoAttack.CheckSkillState(SkillStatus.ReadyMask))
+                if (this.target.Team == Team.Hostile && autoAttack.CheckSkillStatus(SkillStatus.ReadyMask))
                     AutoAttack(target);
             }
         }

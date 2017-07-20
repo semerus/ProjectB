@@ -14,7 +14,7 @@ public class OgreFemale_Sk4 : Skill
     public override void RunTime()
     {
         base.RunTime();
-        if(CheckSkillState(SkillStatus.ProcessMask))
+        if(CheckSkillStatus(SkillStatus.ProcessMask))
         {
             Sk4();
         }
@@ -22,8 +22,13 @@ public class OgreFemale_Sk4 : Skill
 
     public override void Activate(IBattleHandler target)
     {
-        caster.StopMove();
-        UpdateSkillState(SkillStatus.ProcessOn);
+		caster.StopMove();
+		// order is important should go after stop move
+		OgreFemale of = caster as OgreFemale;
+		if (of != null) {
+			of.SetPattern (4);
+		}
+        UpdateSkillStatus(SkillStatus.ProcessOn);
         //caster.RefreshStatus(CharacterStatus.);
         cooldown = 20f;
         StartCoolDown();
@@ -54,9 +59,9 @@ public class OgreFemale_Sk4 : Skill
 
     private void BurnRun()
     {
-        float speed = 3*Mathf.Sqrt(2);
+        float speed = 3 * Mathf.Sqrt(2);
         Vector3 target = FindTarget();
-        caster.Move(target, speed, speed);
+		caster.BeginMove (target, speed, speed);
         if(count>=6)
         {
             caster.StopMove();

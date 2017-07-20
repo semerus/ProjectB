@@ -47,17 +47,6 @@ public class Buff_ReceiveDmg_Ratio : Buff, ITimeHandler, IBuff_ReceiveDmg_Ratio
             }
         }
     }
-
-    public override void EndBuff()
-    {
-        TimeSystem.GetTimeSystem().DeleteTimer(this);
-
-        target.Buffs.Remove(this);
-        target.RefreshStatus(CharacterStatus.GetCurrentActionStatus(target));
-
-        //for debuggnig
-        target.UpdateBuffList();
-    }
     #endregion
 
     #region IBuff_ReceiveDmg_Ratio Implement

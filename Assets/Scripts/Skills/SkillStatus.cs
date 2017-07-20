@@ -18,4 +18,11 @@ public sealed class SkillStatus {
 	public const int ProcessMask = 1 << 1;
 	public const int OnCoolDownMask = 1 << 2;
 	public const int ChannelingMask = 1 << 3;
+
+	public static bool CheckStatus(int check, int mask) {
+		if ((check & mask) > 0)
+			return true;
+		else
+			return false;
+	}
 }

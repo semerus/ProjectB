@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Fighter_MeowPunch : Skill {
+public abstract class Fighter_MeowPunch : HeroActive {
     #region implemented abstract members of Skill
 
     public override void Activate(IBattleHandler target)
@@ -28,7 +28,7 @@ public abstract class Fighter_MeowPunch : Skill {
         }
         else
         {
-            caster.Move(positionToMeleeAttack);
+			caster.BeginMove(positionToMeleeAttack);
         }
     }
 
@@ -47,9 +47,11 @@ public abstract class Fighter_MeowPunch : Skill {
         
         // set initial value
         skillStatus = SkillStatus.ReadyOn;
-        timer_cooldown = cooldown;
+        timer_cooldown = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
+
+		button = button = Resources.Load<Sprite> ("Skills/0709/Sword");
     }
 
     #endregion

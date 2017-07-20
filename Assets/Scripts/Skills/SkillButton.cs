@@ -11,6 +11,7 @@ public class SkillButton : MonoBehaviour {
 	private float radius;
 	private RectTransform rect;
 	private Vector2[] vertices;
+	private IHeroActiveUI skill;
 
 	void Awake() {
 		rect = GetComponent<RectTransform> ();
@@ -29,21 +30,42 @@ public class SkillButton : MonoBehaviour {
 		cooldownRenderer.SetMaterial(m, null);
 	}
 
-	public void OnReady() {
-		if (gameObject.activeSelf) {
-			gameObject.SetActive (false);
-		}
+	void Update() {
+		UpdateCooldown ();
 	}
 
-	public void UpdateCooldown(float percent, int leftTime) {
-		if (!gameObject.activeSelf) {
-			gameObject.SetActive (true);
+	public void LinkSkill(IHeroActiveUI skill) {
+		button.onClick.RemoveAllListeners ();
+
+		this.skill = skill;
+		button.image.sprite = skill.InGameUI;
+		button.onClick.AddListener (skill.OnCast);
+	}
+
+	/// <summary>
+	/// When cooldown is complete
+	/// </summary>
+	private void OnReady() {
+		if (cooldownRenderer.gameObject.activeSelf) {
+			cooldownRenderer.gameObject.SetActive (false);
+		}
+		button.interactable = true;
+	}
+
+	private void UpdateCooldown() {
+		if (SkillStatus.CheckStatus (skill.Status, SkillStatus.ReadyMask)) {
+			OnReady ();
+			return;
 		}
 
+		if (!cooldownRenderer.gameObject.activeSelf) {
+			cooldownRenderer.gameObject.SetActive (true);
+		}
+
+		float percent = skill.CurCoolDown / skill.MaxCoolDown;
 		// set mesh
 		Mesh m = CreateMeshFilter (percent);
 		cooldownRenderer.SetMesh (m);
-
 		// set number
 	}
 

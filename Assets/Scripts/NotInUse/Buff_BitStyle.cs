@@ -37,7 +37,6 @@ public abstract class Buff_BitStyle : Buff
                 target.StopMove();
             }
         }
-        target.RefreshStatus(CharacterStatus.GetCurrentActionStatus(target));
 
         // base.StartBuff()
         // add timer to TimeSystem if it implements ITimeHandler
@@ -49,8 +48,6 @@ public abstract class Buff_BitStyle : Buff
     {
         // delete from Buff list
         target.Buffs.Remove(this);
-
-        target.RefreshStatus(CharacterStatus.GetCurrentActionStatus(target));
 
         // base.EndBuff();
         // delete timer to TimeSystem if it implements ITimeHandler

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_ThousandFists : Skill, IChanneling {
+public class Fighter_ThousandFists : HeroActive, IChanneling {
     #region implemented abstract members of Skill + override things
 
     public override void Activate(IBattleHandler target)
@@ -22,26 +22,24 @@ public class Fighter_ThousandFists : Skill, IChanneling {
         }
         // should refine!!
         
-        if (caster.Status == 0 || caster.Status == CharacterStatus.Moving)
+        
+        CheckTargetRange(target);
+
+        if(isTargetInMeleeRange == true)
         {
-            CheckTargetRange(target);
+            // Change character State
+			caster.ChangeAction(CharacterAction.Channeling);
+            caster.CurHP -= HPCost;
 
-            if(isTargetInMeleeRange == true)
-            {
-                // Change character State
-                caster.RefreshStatus(CharacterStatus.Channeling);
-                caster.CurHP -= HPCost;
+            // Change skill State
+			skillStatus = SkillStatus.ChannelingOn;
 
-                // Change skill State
-				skillStatus = SkillStatus.ChannelingOn;
-
-                // Time system Check
-                TimeSystem.GetTimeSystem().AddTimer(this);
-            }
-            else
-            {
-                Debug.LogError("isTargetInMeleeRange is " + isTargetInMeleeRange);
-            }
+            // Time system Check
+            TimeSystem.GetTimeSystem().AddTimer(this);
+        }
+        else
+        {
+            Debug.LogError("isTargetInMeleeRange is " + isTargetInMeleeRange);
         }
     }
 
@@ -68,7 +66,7 @@ public class Fighter_ThousandFists : Skill, IChanneling {
 			skillStatus = SkillStatus.OnCoolDownOn;
 
             // character inspect
-            caster.RefreshStatus(CharacterStatus.Idle);
+			caster.ChangeAction(CharacterAction.Idle);
             // animation state
         }
         else
@@ -113,10 +111,11 @@ public class Fighter_ThousandFists : Skill, IChanneling {
 
     public void OnChanneling()
     {
+		UpdateSkillStatus (SkillStatus.ChannelingOn);
         timer_Channeling += Time.deltaTime;
     }
 
-    public void OnInterrupt()
+	public void OnInterrupt(IBattleHandler interrupter)
     {
         Debug.LogError("not realized yet");
     }
@@ -139,10 +138,12 @@ public class Fighter_ThousandFists : Skill, IChanneling {
 
         // set Timer value
         skillStatus = SkillStatus.ReadyOn;
-        timer_cooldown = cooldown;
+        timer_cooldown = 0f;
         timer_Channeling = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
+
+		button = Resources.Load<Sprite> ("Skills/0709/Magic");
     }
 
     #endregion

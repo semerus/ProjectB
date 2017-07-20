@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_Attack : Skill, ITimeHandler {
+public class Fighter_Attack : Skill {
 	#region implemented abstract members of Skill
 
 	public override void Activate (IBattleHandler target)
@@ -11,9 +11,9 @@ public class Fighter_Attack : Skill, ITimeHandler {
 
         if(isTargetInMeleeRange == true)
         {
-			if(skillStatus == SkillStatus.ReadyOn)
+			if(CheckSkillStatus(SkillStatus.ReadyMask))
             {
-                if ((caster.Status & CharacterStatus.IsBlindMask) > 0)
+				if (caster.CheckCharacterStatus(CharacterStatus.Blind))
                 {
                     StartCoolDown();
                 }
@@ -35,7 +35,7 @@ public class Fighter_Attack : Skill, ITimeHandler {
         }
         else
         {
-            caster.Move(positionToMeleeAttack);
+			caster.BeginMove(positionToMeleeAttack);
         }
 	}
 
@@ -50,7 +50,7 @@ public class Fighter_Attack : Skill, ITimeHandler {
 
         // set initial value
 		skillStatus = SkillStatus.ReadyOn;
-        timer_cooldown = cooldown;
+        timer_cooldown = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
     }

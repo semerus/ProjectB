@@ -19,7 +19,7 @@ public class Fighter : Hero {
         passiveSkill = gameObject.AddComponent<Fighter_Passive_LifeSteal_AutoAttack>();
         passiveSkill.SetSkill(this);
 
-        activeSkills = new Skill[3];
+		activeSkills = new HeroActive[3];
         activeSkills[0] = gameObject.AddComponent<Fighter_MeowPunch_FierceScratch>();
         activeSkills[1] = gameObject.AddComponent<Fighter_CounterStance>();
         activeSkills[2] = gameObject.AddComponent<Fighter_ThousandFists>();
@@ -38,7 +38,7 @@ public class Fighter : Hero {
 
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
-        if(activeSkills[1].State == SkillStatus.ChannelingOn)
+        if(activeSkills[1].Status == SkillStatus.ChannelingOn)
         {
             (activeSkills[1] as Fighter_CounterStance).ReflectDamage(attacker);
 
@@ -55,53 +55,29 @@ public class Fighter : Hero {
                 hp = 0;
                 KillCharacter();
             }
-            Debug.Log(transform.name + "Received Damage: " + receivedDamage);
             UpdateHpUI();
         }
 
     }
+		
+	public override void RunTime ()
+	{
+		base.RunTime ();
+		// for debugging skill
+		if (Input.GetKeyDown(KeyCode.A))
+			activeSkills[0].Activate(target);
+		else if (Input.GetKeyDown(KeyCode.S))
+			activeSkills[1].Activate(target);
+		else if (Input.GetKeyDown(KeyCode.D))
+			activeSkills[2].Activate(target);
 
-    protected override void Update()
-    {
-        // for debugging skill
-        if (Input.GetKeyDown(KeyCode.A))
-            activeSkills[0].Activate(target);
-        else if (Input.GetKeyDown(KeyCode.S))
-            activeSkills[1].Activate(target);
-        else if (Input.GetKeyDown(KeyCode.D))
-            activeSkills[2].Activate(target);
-        else if (Input.GetKeyDown(KeyCode.F))
-        {
-            Buff_ReceiveDmg_Ratio ToMe_Debuff = new Buff_ReceiveDmg_Ratio(this, this, false, 10f, 30f, "Rdmg +1000% 30sec");
-        }
-
-        if (status == CharacterStatus.Idle)
-        {
-            if (this.target != null)
-            {
-                if (this.target.Team == Team.Hostile)
-                    AutoAttack(target);
-            }
-        }
-        else if ((status & CharacterStatus.IsMovingMask) > 0)
-        {
-            Move(moveTarget);
-        }
-        else if ((status & CharacterStatus.IsChannelingMask) > 0)
-        {
-            // Do Channelling Things
-            // 0) AutoAttack
-
-            // 1) Hit
-
-            // 2) Meow Attack
-            
-            // 3) ThousandFist
-            if (activeSkills[2].State == SkillStatus.ChannelingOn)
-            {
-                (activeSkills[2] as Fighter_ThousandFists).TryAttack(target);
-            }
-        }
-
-    }
+		if (action == CharacterAction.Idle)
+		{
+			if (this.target != null)
+			{
+				if (this.target.Team == Team.Hostile)
+					AutoAttack(target);
+			}
+		}
+	}
 }
