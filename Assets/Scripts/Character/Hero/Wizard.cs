@@ -33,8 +33,9 @@ public class Wizard : Hero,ITimeHandler
         TimeSystem.GetTimeSystem().AddTimer(this);
     }
 
-    public void RunTime()
+    public override void RunTime()
     {
+        base.RunTime();
         if(Input.GetKeyDown("b")&& activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask))
         {
             activeSkills[0].OnCast();

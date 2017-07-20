@@ -43,7 +43,7 @@ public class OgreFemale_AutoAttack : Skill {
             {
                 Debug.Log("Auto Attack => " + c.gameObject.transform.name);
                 IBattleHandler ch = c as IBattleHandler;
-                caster.AttackTarget(c, 0);
+                caster.AttackTarget(c, 50);
             }
         }
         UpdateSkillStatus(SkillStatus.ProcessOff);
