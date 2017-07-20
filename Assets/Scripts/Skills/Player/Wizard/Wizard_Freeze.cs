@@ -14,7 +14,10 @@ public class Wizard_Freeze : Skill
     public override void Activate(IBattleHandler target)
     {
         ResetSetting();
-        StartCoolDown();
+        if (target != null)
+        {
+            StartCoolDown();
+        }
     }
 
     public override void RunTime()
@@ -25,6 +28,7 @@ public class Wizard_Freeze : Skill
 
     public void ResetSetting()
     {
+        cooldown = 10;
         enemyNum = BattleManager.GetBattleManager().GetEntities(Team.Hostile);
         skilltime = 0;
         skillCount = 0;
