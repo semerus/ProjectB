@@ -11,11 +11,22 @@ public class Fighter_Attack : Skill {
 
         if(isTargetInMeleeRange == true)
         {
-			if(skillStatus == SkillStatus.ReadyOn)
+			if(CheckSkillStatus(SkillStatus.ReadyMask))
             {
-                caster.AttackTarget(target, dmg);
+				if (caster.CheckCharacterStatus(CharacterStatus.Blind))
+                {
+                    StartCoolDown();
+                }
+                else
+                {
+                    int attackDmg = Calculator.AttackDamage(caster, dmg);
+                    target.ReceiveDamage(caster, attackDmg);
 
-                StartCoolDown();
+                    //LifeStealValue;
+                    caster.ReceiveHeal(10);
+
+                    StartCoolDown();
+                }
             }
             else
             {
@@ -24,7 +35,7 @@ public class Fighter_Attack : Skill {
         }
         else
         {
-            caster.Move(positionToMeleeAttack);
+			caster.BeginMove(positionToMeleeAttack);
         }
 	}
 
@@ -39,7 +50,7 @@ public class Fighter_Attack : Skill {
 
         // set initial value
 		skillStatus = SkillStatus.ReadyOn;
-        timer_cooldown = cooldown;
+        timer_cooldown = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
     }
@@ -47,6 +58,7 @@ public class Fighter_Attack : Skill {
     #endregion
 
     #region Field&Method
+
 
     // Check Melee Range
     bool isTargetInMeleeRange;

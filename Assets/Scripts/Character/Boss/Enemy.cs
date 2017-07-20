@@ -2,13 +2,13 @@
 
 public abstract class Enemy : Character, IDoubleTapHandler {
 
-	protected EnemyUI enemyUI; // load it from spawn, try creating characte spawn later
+	public EnemyUI enemyUI; // load it from spawn, try creating characte spawn later
 
     #region implemented abstract members of Character
     protected override void UpdateHpUI()
     {
 		float percent = (float)hp / (float)maxHp;
-		//EnemyUI.UpdateHp (percent);
+		enemyUI.UpdateHp (percent);
     }
     #endregion
 
@@ -21,6 +21,10 @@ public abstract class Enemy : Character, IDoubleTapHandler {
 
 	#endregion
 
+	public override void Spawn ()
+	{
+		base.Spawn ();
+	}
 	// capsulize patterns
 	protected virtual void InstructEnemyAI () {
 		

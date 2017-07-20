@@ -11,7 +11,7 @@ public class OgreHeal : Skill, IChanneling {
 
 	public override void Activate (IBattleHandler target)
 	{
-		UpdateSkillState (SkillStatus.ChannelingOff);
+		UpdateSkillStatus (SkillStatus.ChannelingOff);
 		caster.HealTarget (healPoint, target);
 		Teleport (this.target);
 		StartCoolDown ();
@@ -25,8 +25,8 @@ public class OgreHeal : Skill, IChanneling {
 	{
 		Debug.Log ("channeling");
 
-		if(!CheckSkillState(SkillStatus.ChannelingMask))
-			UpdateSkillState (SkillStatus.ChannelingOn);
+		if(!CheckSkillStatus(SkillStatus.ChannelingMask))
+			UpdateSkillStatus (SkillStatus.ChannelingOn);
 
 		if(!TimeSystem.GetTimeSystem().CheckTimer(this))
 			TimeSystem.GetTimeSystem ().AddTimer (this);
@@ -38,7 +38,7 @@ public class OgreHeal : Skill, IChanneling {
 		}
 	}
 
-	public void OnInterrupt ()
+	public void OnInterrupt (IBattleHandler interrupter)
 	{
 		Debug.LogError ("OgreHeal interrupt not implemented");
 	}

@@ -8,8 +8,4 @@ public class HeroUI : MonoBehaviour {
 		// change 1f later
 		curHpBar.sizeDelta = new Vector2(1f * percent, curHpBar.rect.height);
 	}
-
-	public void ShowSkill() {
-		
-	}
 }

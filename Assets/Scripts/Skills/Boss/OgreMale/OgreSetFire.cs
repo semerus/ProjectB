@@ -9,7 +9,7 @@ public class OgreSetFire : Skill {
 		if (m != null) {
 			OgreFemale f = m.partner as OgreFemale;
 			if (f != null) {
-				f.atk4.OnCast ();
+				f.Skills[3].OnCast ();
 			} else {
 				Debug.LogError("Wrong OgreSetFire implementation");
 			}

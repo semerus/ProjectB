@@ -1,22 +1,36 @@
 ﻿using UnityEngine;
 
 public abstract class Buff {
-	Character caster;
-	Character target;
+	protected Character caster;
+	protected Character target;
+    protected bool isBuff;
+    public bool Isbuff
+    {
+        get { return isBuff; }
+    }
 
-	// use constructor for creating instance
+    #region Field for Debugging in Hierarchy
+    protected string buffName;
+    public string BuffName
+    {
+        get { return buffName; }
+    }
+    #endregion
 
-	/// <summary>
-	/// Starts the buff. Please base.StartBuff() when overriding
-	/// </summary>
-	/// <param name="caster">Caster.</param>
-	/// <param name="target">Target.</param>
+    /// <summary>
+    /// Starts the buff. Please base.StartBuff() when overriding
+    /// </summary>
+    /// <param name="caster">Caster.</param>
+    /// <param name="target">Target.</param>
+    /// 
+    public virtual void StartBuff(Character caster, Character target) {
+        // check for counterBuff
+        CheckCounterBuff();
 
-	public virtual void StartBuff(Character caster, Character target) {
 		// add to Buff list to target
-		this.target = target;
+		this.target = target; // can do this at construct method
 		target.Buffs.Add(this);
-
+        
 		// check for status changes to the character
 		IStatusBuff buff = this as IStatusBuff;
 		if (buff != null) {
@@ -28,20 +42,34 @@ public abstract class Buff {
 				target.StopMove();
 			}
 		}
-			
-		target.RefreshStatus (CharacterStatus.GetCurrentActionStatus (target));
 
-		// base.StartBuff();
-		// add timer to TimeSystem if it implements ITimeHandler
+		target.RefreshBuff ();
+        // add timer to TimeSystem if it implements ITimeHandler
 	}
 
+    public abstract void CheckCounterBuff();
+    
 	public virtual void EndBuff() {
-		// delete from Buff list
-		target.Buffs.Remove(this);
-
-		target.RefreshStatus (CharacterStatus.GetCurrentActionStatus (target));
-
-		// base.EndBuff();
 		// delete timer to TimeSystem if it implements ITimeHandler
+		ITimeHandler t = this as ITimeHandler;
+		if (t != null) {
+			TimeSystem.GetTimeSystem ().DeleteTimer (t);
+		}
+		// delete from Buff list
+		if (target.Buffs.Remove (this)) {
+			target.Anim.UpdateAnimation ();
+			target.RefreshBuff ();
+		}
+
+		target.UpdateBuffList ();
 	}
+
+	/*
+	private void AddBuff(Character target) {
+		if (target.Buffs.Contains (this))
+			return;
+		target.Buffs.Add (this);
+		target.RefreshBuff ();
+	}
+	*/
 }

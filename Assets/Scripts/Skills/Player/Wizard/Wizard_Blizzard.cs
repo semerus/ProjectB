@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Blizzard : Skill
+public class Wizard_Blizzard : HeroActive
 {
     IBattleHandler[] enemyNum;
     Vector3 targetPosition=new Vector3();

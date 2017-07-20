@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Freeze : Skill
+public class Wizard_Freeze : HeroActive
 {
     float skilltime = 0;
     int skillCount = 0;

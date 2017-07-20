@@ -11,14 +11,14 @@ public class OgreFemale_AutoAttack : Skill {
     public override void RunTime()
     {
         base.RunTime();
-        if (CheckSkillState(SkillStatus.ProcessMask))
+        if (CheckSkillStatus(SkillStatus.ProcessMask))
             AutoAttack();
     }
 
     protected override void OnCoolDown()
     {
         base.OnCoolDown();
-        if(CheckSkillState(SkillStatus.ProcessMask))
+        if(CheckSkillStatus(SkillStatus.ProcessMask))
         {
             TimeSystem.GetTimeSystem().AddTimer(this);
         }
@@ -27,7 +27,7 @@ public class OgreFemale_AutoAttack : Skill {
     public override void Activate(IBattleHandler target)
     {
         cooldown = 3;
-        UpdateSkillState(SkillStatus.ProcessOn);
+        UpdateSkillStatus(SkillStatus.ProcessOn);
         TimeSystem.GetTimeSystem().AddTimer(this);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
     }
@@ -46,7 +46,7 @@ public class OgreFemale_AutoAttack : Skill {
                 caster.AttackTarget(c, 0);
             }
         }
-        UpdateSkillState(SkillStatus.ProcessOff);
+        UpdateSkillStatus(SkillStatus.ProcessOff);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
         OnEndSkill(s);
     }
@@ -102,24 +102,23 @@ public class OgreFemale_AutoAttack : Skill {
 
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
-            caster.Move(this.gameObject.transform.position);
+			caster.StopMove ();
             AutoAttacking();
             Debug.Log("attack on");
         }
         else
         {
-            Debug.Log("no");
             if(this.gameObject.transform.position.x <= minC.transform.position.x)
             {
-                if ((caster.Status & CharacterStatus.IsMovingMask) == 0)
+				if (caster.Action != CharacterAction.Moving)
                 {
                     caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
                 }
-                caster.ChangeMoveTarget(minC.transform.position- new Vector3(2.5f,0,0));
+                caster.ChangeMoveTarget(minC.transform.position - new Vector3(2.5f,0,0));
             }
             else
             {
-                if ((caster.Status & CharacterStatus.IsMovingMask) == 0)
+				if (caster.Action != CharacterAction.Moving)
                 {
                     caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
                 }
@@ -146,14 +145,14 @@ public class OgreFemale_AutoAttack : Skill {
         }
     }
 
-    public void OnMoveComplete(object sender, EventArgs e)
+    protected void OnMoveComplete(object sender, EventArgs e)
     {
         MoveEventArgs m = e as MoveEventArgs;
         if(m != null)
         {
             if(!m.result)
             {
-                UpdateSkillState(SkillStatus.ProcessOff);
+                UpdateSkillStatus(SkillStatus.ProcessOff);
                 SkillEventArgs s = new SkillEventArgs(this.name, true);
                 OnEndSkill(s);             
                 caster.MoveComplete -= OnMoveComplete;

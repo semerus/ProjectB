@@ -100,8 +100,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			return;
 		}
 		for (int i = 0; i < friendly.Count; i++) {
-			// change condition here later
-			if ((friendly [i].Status & CharacterStatus.Dead) == 0) {
+			if (friendly[i].Action != CharacterAction.Dead) {
 				Hero hero = friendly [i] as Hero;
 				hero.AutoAttack (target);
 			}
@@ -111,9 +110,11 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	public void MoveAllFriendly(Vector3 target) {
 		for (int i = 0; i < friendly.Count; i++) {
 			// change condition here later
-			if ((friendly[i].Status & CharacterStatus.Dead) == 0) {
+			if (friendly[i].Action != CharacterAction.Dead) {
 				Hero hero = friendly [i] as Hero;
-                hero.Move(target);
+				hero.BeginMove (target);
+
+				// ?
                 hero.RemoveAttackTarget();
             }
 		}
@@ -126,7 +127,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 		Debug.Log ("sss: " + hostile.Count);
 		// win scenario
 		for (int i = 0; i < hostile.Count; i++) {
-			classifier = classifier && ((hostile [i].Status & CharacterStatus.Dead) > 0); 
+			classifier = classifier && hostile [i].Action == CharacterAction.Dead;
 		}
 		if (classifier) {
 			Debug.Log ("Win");
@@ -137,7 +138,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 		// lose scenario
 		classifier = true;
 		for (int i = 0; i < friendly.Count; i++) {
-			classifier = classifier && ((friendly [i].Status & CharacterStatus.Dead) >0); 
+			classifier = classifier && friendly [i].Action == CharacterAction.Dead;
 		}
 		if (classifier) {
 			Debug.Log ("Lose");
