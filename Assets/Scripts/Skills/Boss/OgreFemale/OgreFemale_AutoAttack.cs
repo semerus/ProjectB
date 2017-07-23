@@ -7,12 +7,21 @@ public class OgreFemale_AutoAttack : Skill {
 
     IBattleHandler[] friendlyNum;
     Character minC;
+    float skillTime=0;
 
     public override void RunTime()
     {
         base.RunTime();
+        skillTime -= Time.deltaTime;
         if (CheckSkillStatus(SkillStatus.ProcessMask))
-            AutoAttack();
+        {
+            if (skillTime <= 0f)
+            {
+                AutoAttack();
+                skillTime = 0.5f;
+            }
+            caster.Target = minC;
+        }
     }
 
     protected override void OnCoolDown()
@@ -26,7 +35,7 @@ public class OgreFemale_AutoAttack : Skill {
 
     public override void Activate(IBattleHandler target)
     {
-        cooldown = 3;
+        cooldown = 2;
         UpdateSkillStatus(SkillStatus.ProcessOn);
         TimeSystem.GetTimeSystem().AddTimer(this);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
@@ -34,6 +43,7 @@ public class OgreFemale_AutoAttack : Skill {
 
     private void AutoAttacking()
     {
+        caster.Target = minC;
         StartCoolDown();
         for (int i = 0; i < friendlyNum.Length; i++)
         {
@@ -53,7 +63,10 @@ public class OgreFemale_AutoAttack : Skill {
 
     public void AutoAttack()
     {
-        AutoAttackTargetting();
+        if(!OutNumberCheck())
+        {
+            AutoAttackTargetting();
+        }
         CheckTargetRange();
     }
 
@@ -77,6 +90,32 @@ public class OgreFemale_AutoAttack : Skill {
             }
         }
         minC = minNum as Character;
+        
+    }
+
+    private bool OutNumberCheck()
+    {
+        int targetingNum = 0;
+
+        for (int i = 0; i <= friendlyNum.Length - 1; i++)
+        {
+            Character c = friendlyNum[i] as Character;
+            bool targetOn = EllipseScanner(3, 1.8f, this.gameObject.transform.position, c.gameObject.transform.position);
+
+            if (targetOn == true)
+            {
+                targetingNum++;
+            }
+        }
+
+        if (targetingNum >= 2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void CheckTargetRange()
@@ -98,7 +137,6 @@ public class OgreFemale_AutoAttack : Skill {
 
         float m_inX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX);
         float m_outX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX);
-
 
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {

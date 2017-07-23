@@ -25,8 +25,8 @@ public class OgreMale : Enemy, ITimeHandler {
 		id = 3;
 		team = Team.Hostile;
         status = CharacterStatus.Idle;
-		maxHp = 15000;
-		hp = 15000;
+		maxHp = 5000;
+		hp = 5000;
 		speed_x = 1f;
 		speed_y = 1f;
 

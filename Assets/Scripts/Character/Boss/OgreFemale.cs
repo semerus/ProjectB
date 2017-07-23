@@ -13,7 +13,7 @@ public class OgreFemale : Enemy,ITimeHandler {
     protected override void Start()
     {
 		base.Start ();
-
+        
 		maxHp = 500;
 		hp = 500;
 		speed_x = 1f;
