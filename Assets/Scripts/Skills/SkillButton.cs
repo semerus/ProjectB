@@ -40,28 +40,27 @@ public class SkillButton : MonoBehaviour {
 		this.skill = skill;
 		button.image.sprite = skill.InGameUI;
 		button.onClick.AddListener (skill.OnCast);
+		UpdateCooldown ();
 	}
 
 	/// <summary>
 	/// When cooldown is complete
 	/// </summary>
 	private void OnReady() {
-		if (cooldownRenderer.gameObject.activeSelf) {
-			cooldownRenderer.gameObject.SetActive (false);
-		}
 		button.interactable = true;
 	}
 
 	private void UpdateCooldown() {
 		if (SkillStatus.CheckStatus (skill.Status, SkillStatus.ReadyMask)) {
 			OnReady ();
-			return;
+		} else {
+			button.interactable = false;
 		}
 
-		if (!cooldownRenderer.gameObject.activeSelf) {
-			cooldownRenderer.gameObject.SetActive (true);
-		}
+		DrawCoolDown ();
+	}
 
+	private void DrawCoolDown() {
 		float percent = skill.CurCoolDown / skill.MaxCoolDown;
 		// set mesh
 		Mesh m = CreateMeshFilter (percent);

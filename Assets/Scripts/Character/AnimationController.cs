@@ -1,11 +1,20 @@
 ﻿using UnityEngine;
 
 public class AnimationController : MonoBehaviour {
+	protected Character character;
+	protected Animator anim;
 	protected SpriteRenderer[] rends;
+	protected int[] offsets;
 	protected bool isAnimFacingLeft = true;
 
 	void Awake() {
+		character = transform.root.GetComponent<Character> ();
+		anim = GetComponentInChildren<Animator> ();
 		rends = GetComponentsInChildren<SpriteRenderer> ();
+		offsets = new int[rends.Length];
+		for (int i = 0; i < rends.Length; i++) {
+			offsets [i] = rends [i].sortingOrder;
+		}
 	}
 
 	public void UpdateFacing(bool isFacingLeft) {
@@ -22,8 +31,8 @@ public class AnimationController : MonoBehaviour {
 	}
 
 	public void UpdateSortingLayer() {
-		foreach (var n in rends) {
-			n.sortingOrder = -(int)(transform.root.position.y * 100f);
+		for (int i = 0; i < rends.Length; i++) {
+			rends[i].sortingOrder = -(int)(transform.root.position.y * 100f) * 100 + offsets[i];
 		}
 	}
 
@@ -35,6 +44,23 @@ public class AnimationController : MonoBehaviour {
 		// channeling
 		// run
 		// dead
+		if (anim == null)
+			return;
+
+		switch (character.Action) {
+		case CharacterAction.Idle:
+			anim.SetInteger ("Action", 0);
+			break;
+		case CharacterAction.Moving:
+			anim.SetInteger ("Action", 1);
+			break;
+		case CharacterAction.Attacking:
+			anim.SetInteger ("Action", 2);
+			break;
+		default:
+			Debug.LogError ("Animation not implemented yet");
+			break;
+		}
 
 		// special occasions
 		// jump

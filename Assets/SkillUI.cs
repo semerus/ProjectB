@@ -3,7 +3,14 @@
 public class SkillUI : MonoBehaviour {
 
 	private static SkillUI instance;
+	Hero currentHero;
 	SkillButton[] buttons;
+
+	public Hero CurrentHero {
+		get {
+			return currentHero;
+		}
+	}
 
 	public static SkillUI GetSkillUI() {
 		if (!instance) {
@@ -23,7 +30,8 @@ public class SkillUI : MonoBehaviour {
 	/// <summary>
 	/// Open up skill hud
 	/// </summary>
-	public void OpenSkills(IHeroActiveUI[] active) {
+	public void OpenSkills(IHeroActiveUI[] active, Hero hero) {
+		this.currentHero = hero;
 		if (!gameObject.activeSelf) {
 			gameObject.SetActive (true);
 		}

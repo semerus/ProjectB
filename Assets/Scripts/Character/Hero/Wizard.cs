@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard : Hero,ITimeHandler
+public class Wizard : Hero
 {
     private void Awake()
     {

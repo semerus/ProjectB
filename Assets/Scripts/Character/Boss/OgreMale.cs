@@ -4,9 +4,6 @@ public class OgreMale : Enemy, ITimeHandler {
 
 	// temporary
 	public OgreFemale partner;
-	public OgreHeal heal;
-	public OgreSetFire fire;
-	public OgreMeteorStrike meteor;
 
 	protected float ai_timer;
 	protected int pattern = 0;
@@ -30,12 +27,14 @@ public class OgreMale : Enemy, ITimeHandler {
 		speed_x = 1f;
 		speed_y = 1f;
 
-		heal = gameObject.AddComponent<OgreHeal> ();
-		meteor = gameObject.AddComponent<OgreMeteorStrike> ();
-		fire = gameObject.AddComponent<OgreSetFire> ();
-		fire.SetSkill (this);
-		heal.SetSkill (this);
-		meteor.SetSkill (this);
+		skills = new Skill[3];
+		skills[0] = gameObject.AddComponent<OgreHeal> ();
+		skills[1] = gameObject.AddComponent<OgreMeteorStrike> ();
+		skills[2] = gameObject.AddComponent<OgreSetFire> ();
+
+		for (int i = 0; i < skills.Length; i++) {
+			skills [i].SetSkill (this);
+		}
 
 		ai_timer = 0f;
 		TimeSystem.GetTimeSystem ().AddTimer (this);
@@ -48,8 +47,9 @@ public class OgreMale : Enemy, ITimeHandler {
 		case 0:
 			if (ai_timer >= 20f) {
 				pattern = 1;
+				OgreHeal heal = skills [0] as OgreHeal;
 				heal.SetTarget (partner);
-				heal.OnCast ();
+				skills[0].OnCast ();
 				ai_timer = 0f;
 			}
 			break;
@@ -58,8 +58,7 @@ public class OgreMale : Enemy, ITimeHandler {
 			if (ai_timer >= 20f) {
 				pattern = 2;
 				// torch fire
-				fire.OnCast();
-				Debug.Log("Torch fire");
+				skills[1].OnCast();
 				ai_timer = 0f;
 			}
 			break;
@@ -67,7 +66,7 @@ public class OgreMale : Enemy, ITimeHandler {
 		case 2:
 			if (ai_timer >= 20f) {
 				pattern = 0;
-				meteor.OnCast ();
+				skills[2].OnCast ();
 				Debug.Log("Meteor");
 				ai_timer = 0;
 			}
@@ -76,16 +75,11 @@ public class OgreMale : Enemy, ITimeHandler {
 			Debug.LogError ("Wrong " + this.transform.root.name + " actions");
 			break;
 		}
-
-//		if (ai_timer >= 20f) {
-//			meteor.OnClick ();
-//			ai_timer = 0f;
-//		}
 	}
 
 	protected override void KillCharacter ()
 	{
-		base.KillCharacter ();
 		TimeSystem.GetTimeSystem ().DeleteTimer (this);
+		base.KillCharacter ();
 	}
 }

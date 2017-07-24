@@ -7,7 +7,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	protected HeroActive[] activeSkills;
 
     protected HeroUI heroUI; // load it from spawn
-	protected int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
+	protected int[] masks = new int[3] { 1 << 9, 1 << 8, 1 << 10 };
 
     #region Getters and Setter
     public Skill[] ActiveSkills
@@ -60,6 +60,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 			if (hitInfo.collider != null) {
 				b = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
 				if (b != null && b.Team != Team.Friendly) {
+					target = b;
 					AutoAttack (b);
 				} else {
 					p = Camera.main.ScreenToWorldPoint (pixelPos);
@@ -91,6 +92,12 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		heroUI = GetComponentInChildren<HeroUI> ();
 	}
 
+	protected override void KillCharacter ()
+	{
+		CloseSkill ();
+		base.KillCharacter ();
+	}
+
     public abstract void AutoAttack(IBattleHandler target);
 
     public void RemoveAttackTarget()
@@ -99,9 +106,20 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
     }
 
     protected void DisplaySkill(){
-		UIManager.GetUIManager ().SkillPanel.OpenSkills (activeSkills);
+		UIManager.GetUIManager ().SkillPanel.OpenSkills (activeSkills, this);
 	}
 
+	private void CloseSkill() {
+		if (UIManager.GetUIManager ().SkillPanel.CurrentHero == this) {
+			UIManager.GetUIManager ().SkillPanel.CloseSkills ();
+		}
+	}
+
+	/// <summary>
+	/// Calculates the correct position inside walking boundaries
+	/// </summary>
+	/// <returns>The position.</returns>
+	/// <param name="target">Target.</param>
 	private Vector3 CalculatePosition(Vector3 target) {
 		int layermask = 1 << 10;
         

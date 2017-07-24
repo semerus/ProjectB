@@ -102,6 +102,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	public virtual void ReceiveHeal (int heal)
 	{
+		if (action == CharacterAction.Dead)
+			return;
 		hp += heal;
 		if (hp >= maxHp) {
 			hp = maxHp;
@@ -193,7 +195,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		status = change;
 
 		// immune
-
+		/*
+		if(CheckCharacterStatus(CharacterStatus.IsImmuneMask)) {
+			
+		}
+		*/
 		// on silence
 
 		// on rooted
@@ -315,10 +321,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 			// send move complete(reached destination event)
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
 			OnMoveComplete (e);
+			return;
 		}
 
 		// update facing
-		if (transform.position.x - target.x >= 0f) {
+		if (transform.position.x - target.x > 0f) {
 			isFacingLeft = true;
 			anim.UpdateFacing (isFacingLeft);
 		} else {
