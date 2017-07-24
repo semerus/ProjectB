@@ -143,7 +143,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
 
-		button = Resources.Load<Sprite> ("Skills/0709/Magic");
+		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill3");
     }
 
     #endregion

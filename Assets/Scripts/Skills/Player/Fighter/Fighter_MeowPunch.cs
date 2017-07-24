@@ -51,7 +51,7 @@ public abstract class Fighter_MeowPunch : HeroActive {
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
 
-		button = button = Resources.Load<Sprite> ("Skills/0709/Sword");
+		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill1");
     }
 
     #endregion

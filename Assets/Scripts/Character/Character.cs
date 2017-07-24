@@ -379,7 +379,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
                 break;
 
             case Team.Hostile:
-                Debug.Log(target);
                 if (target != null&&action==CharacterAction.Idle)
                 {
                     Character t = target as Character;
