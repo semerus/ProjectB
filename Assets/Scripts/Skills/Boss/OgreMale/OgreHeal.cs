@@ -76,9 +76,15 @@ public class OgreHeal : Skill, IChanneling {
 
 	protected void Teleport(Character target) {
 		Vector3 des;
-		des = new Vector3 (target.transform.position.x + 4f, target.transform.position.y, 0f);
-		// teleport
+		if (target.IsFacingLeft) {
+			des = new Vector3 (target.transform.position.x + 4f, target.transform.position.y, 0f);
+		} else {
+			des = new Vector3 (target.transform.position.x - 4f, target.transform.position.y, 0f);
+		}
 
-		caster.transform.position = des;
+		if (Background.GetBackground ().CheckBoundaries (des)) {
+			// if inside boundaries teleport
+			caster.transform.position = des;
+		}
 	}
 }

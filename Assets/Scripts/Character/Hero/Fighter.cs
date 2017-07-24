@@ -71,13 +71,19 @@ public class Fighter : Hero {
 		else if (Input.GetKeyDown(KeyCode.D))
 			activeSkills[2].Activate(target);
 
-		if (action == CharacterAction.Idle)
-		{
-			if (this.target != null)
-			{
-				if (this.target.Team == Team.Hostile)
-					AutoAttack(target);
-			}
-		}
+        switch(action)
+        {
+            case CharacterAction.Idle:
+            case CharacterAction.Moving:
+                if (this.target != null)
+                {
+                    if (this.target.Team == Team.Hostile)
+                        AutoAttack(target);
+                }
+                break;
+
+            default:
+                break;
+        }
 	}
 }

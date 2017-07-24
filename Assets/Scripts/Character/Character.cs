@@ -54,6 +54,10 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		get {
 			return target;
 		}
+        set
+        {
+            target = value;
+        }
 	}
 
 	public AnimationController Anim {
@@ -67,11 +71,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         get { return hp; }
         set { hp = value; }
     }
-	#endregion
+    #endregion
 
-	#region IBattleHandler implementation
+    #region IBattleHandler implementation
 
-	public Team Team {
+    public Team Team {
 		get {
 			return this.team;
 		}
@@ -85,12 +89,12 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
-		for (int i = 0; i < skills.Length; i++) {
-			IChanneling ch = skills [i] as IChanneling;
-			if (ch != null && SkillStatus.CheckStatus(skills[i].Status, SkillStatus.ChannelingMask)) {
-				ch.OnInterrupt (attacker);
-			}
-		}
+		//for (int i = 0; i < skills.Length; i++) {
+		//	IChanneling ch = skills [i] as IChanneling;
+		//	if (ch != null && SkillStatus.CheckStatus(skills[i].Status, SkillStatus.ChannelingMask)) {
+		//		ch.OnInterrupt (attacker);
+		//	}
+		//}
         int receivedDamage = Calculator.ReceiveDamage(this, damage);
         hp -= receivedDamage;
         if (hp <= 0) {
@@ -132,7 +136,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	public virtual void RunTime ()
 	{
-		switch(action) {
+        CheckFacing();
+        switch (action) {
 		case CharacterAction.Moving:
 		case CharacterAction.Jumping:
 			switch (moveMethod) {
@@ -307,6 +312,14 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         customSpeed_y = speed_y;
 		moveTarget = target;
 
+		if (!Background.GetBackground ().CheckBoundaries (target)) {
+			Debug.LogError ("Moved outside boundaries");
+			ChangeAction (CharacterAction.Idle);
+			//MoveEventArgs x = new MoveEventArgs (false, transform.position);
+			//OnMoveComplete (x);
+			return;
+		}
+
 		// calculate speed
 		Vector3 n = Vector3.Normalize(target - transform.position);
 		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
@@ -321,23 +334,91 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 			// send move complete(reached destination event)
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
 			OnMoveComplete (e);
-			return;
-		}
-
-		// update facing
-		if (transform.position.x - target.x > 0f) {
-			isFacingLeft = true;
-			anim.UpdateFacing (isFacingLeft);
-		} else {
-			isFacingLeft = false;
-			anim.UpdateFacing (isFacingLeft);
-		}
-
-		// update sorting layer order by y axis
-		anim.UpdateSortingLayer ();
+        }
 	}
 
-	public bool ChangeMoveTarget(Vector3 target)
+    public void CheckFacing() // 수정됨
+    {
+        Vector3 movePosiotion = moveTarget;
+        switch(team)
+        {
+            case Team.Friendly:
+                if (target != null)
+                {
+                    Character t = target as Character;
+                    Vector3 targetPosition = t.transform.position;
+
+                    if (transform.position.x - targetPosition.x >= 0f)
+                    {
+                        isFacingLeft = true;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                    else
+                    {
+                        isFacingLeft = false;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                }
+                else
+                {
+                    if (transform.position.x - moveTarget.x > 0f)
+                    {
+                        isFacingLeft = true;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                    else if (transform.position.x - moveTarget.x == 0f)
+                    {
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                    else
+                    {
+                        isFacingLeft = false;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                }
+                break;
+
+            case Team.Hostile:
+                Debug.Log(target);
+                if (target != null&&action==CharacterAction.Idle)
+                {
+                    Character t = target as Character;
+                    Vector3 targetPosition = t.transform.position;
+
+                    if (transform.position.x - targetPosition.x >= 0f)
+                    {
+                        isFacingLeft = true;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                    else
+                    {
+                        isFacingLeft = false;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                }
+                else
+                {
+                    if (transform.position.x - moveTarget.x > 0f)
+                    {
+                        isFacingLeft = true;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                    else if (transform.position.x - moveTarget.x == 0f)
+                    {
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                    else
+                    {
+                        isFacingLeft = false;
+                        anim.UpdateFacing(isFacingLeft);
+                    }
+                }
+                break;
+        }
+        anim.UpdateSortingLayer();
+    }
+
+    public bool ChangeMoveTarget(Vector3 target)
     {
 		if (action == CharacterAction.Moving) {
 			moveTarget = target;

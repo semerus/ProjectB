@@ -8,6 +8,7 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 
 	protected Stack<Pointer> pointers = new Stack<Pointer>();
 	protected Dictionary<Character, Pointer> current = new Dictionary<Character, Pointer>();
+	protected BoxCollider2D boundary;
 
 	public static Background GetBackground() {
 		if (!instance) {
@@ -30,7 +31,22 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 	#endregion
 
 	void Awake() {
+		GetBackground ();
+		boundary = GetComponentInChildren<BoxCollider2D> ();
 		pointerPrefab = Resources.Load ("Background/Pointer") as GameObject;
+	}
+
+	/// <summary>
+	/// Checks the boundaries.
+	/// </summary>
+	/// <returns><c>true</c>, if inside boundaries, <c>false</c> if outside boundaries.</returns>
+	/// <param name="pos">Position.</param>
+	public bool CheckBoundaries(Vector3 pos) {
+		if (pos.x - boundary.bounds.max.x > 0 || pos.y - boundary.bounds.max.y > 0 ||
+		    pos.x - boundary.bounds.min.x < 0 || pos.y - boundary.bounds.min.y < 0) {
+			return false;
+		} else
+			return true;
 	}
 
 	public void PositionPointer(Vector3 pos, Character sender) {
