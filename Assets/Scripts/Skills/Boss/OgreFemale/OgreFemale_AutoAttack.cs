@@ -62,10 +62,11 @@ public class OgreFemale_AutoAttack : Skill {
     }
 
     public void AutoAttack()
-	{
-		if (!OutNumberCheck ()) {
-			AutoAttackTargetting();
-		}
+    {
+        if (!OutNumberCheck() || minC == null)
+        {
+            AutoAttackTargetting();
+        }
         CheckTargetRange();
     }
 
