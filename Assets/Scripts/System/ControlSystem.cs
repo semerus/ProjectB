@@ -104,6 +104,8 @@ public sealed class ControlSystem : MonoBehaviour {
 			case TouchPhase.Ended:
 				ResetTouch (Input.GetTouch(i).fingerId, i);
 				break;
+			default:
+				break;
 			}
 			if (oneClick [i]) {
 				if (Time.time - lastClickTime [i] > clickDelay) {
@@ -114,6 +116,7 @@ public sealed class ControlSystem : MonoBehaviour {
 					}
 					oneClick [i] = false;
 					target [i] = null;
+					touchId [i] = -1;
 				}
 			}
 		}
@@ -131,7 +134,7 @@ public sealed class ControlSystem : MonoBehaviour {
 					RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[j]);
 					if (hitInfo.collider != null) {
 						target [i] = hitInfo.collider.transform.root;
-						IDragDropHandler beginDrag = target [0].GetComponent<IDragDropHandler> ();
+						IDragDropHandler beginDrag = target [i].GetComponent<IDragDropHandler> ();
 						if (beginDrag != null) {
 							beginDrag.OnBeginDrag ();
 						}
@@ -145,6 +148,9 @@ public sealed class ControlSystem : MonoBehaviour {
 
 	private void OnDrag(int fingerId, int index) {
 		for (int i = 0; i < touchId.Length; i++) {
+			if (target [i] == null) {
+				continue;
+			}
 			if (touchId [i] == fingerId) {
 				IDragDropHandler drag = target [i].GetComponent<IDragDropHandler> ();
 				if (drag != null) {
@@ -156,6 +162,11 @@ public sealed class ControlSystem : MonoBehaviour {
 
 	private void ResetTouch(int fingerId, int index) {
 		for (int i = 0; i < touchId.Length; i++) {
+			if (target [i] == null) {
+				touchId [i] = -1;
+				oneClick [i] = false;
+				continue;
+			}
 			if (touchId [i] == fingerId) {
 				// reset touch and give drop
 				if (Vector3.Distance(Input.GetTouch(index).position, startPos [i]) < 0.1f) {
@@ -166,17 +177,15 @@ public sealed class ControlSystem : MonoBehaviour {
 						// double tap
 						IDoubleTapHandler doubleTap =  target[i].GetComponent<IDoubleTapHandler>();
 						if (doubleTap != null) {
-							doubleTap.OnDoubleTap (Input.mousePosition);
+							doubleTap.OnDoubleTap (Input.GetTouch(index).position);
 						}
 						oneClick [i] = false;
-						target [i] = null;
 					}
 				} else {
 					IDragDropHandler drop = target [i].GetComponent<IDragDropHandler> ();
 					if (drop != null) {
 						drop.OnDrop (Input.GetTouch(index).position);
 						oneClick [i] = false;
-						target [i] = null;
 					}
 				}
 				target [i] = null;

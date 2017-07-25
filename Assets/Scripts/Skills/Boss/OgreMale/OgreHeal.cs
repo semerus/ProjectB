@@ -23,8 +23,6 @@ public class OgreHeal : Skill, IChanneling {
 
 	public void OnChanneling ()
 	{
-		Debug.Log ("channeling");
-
 		if(!CheckSkillStatus(SkillStatus.ChannelingMask))
 			UpdateSkillStatus (SkillStatus.ChannelingOn);
 

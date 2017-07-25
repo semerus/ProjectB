@@ -8,6 +8,10 @@ public class Wizard_Snowball : HeroActive
     IBattleHandler[] enemyNum;
     IBattleHandler target;
 
+	void Awake() {
+		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill1");
+	}
+
     public override void Activate(IBattleHandler target)
     {
         ResetSetting();

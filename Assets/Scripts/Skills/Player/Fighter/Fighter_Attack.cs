@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Fighter_Attack : Skill {
+	// effect of this skill
+	int dmg;
+
     #region implemented abstract members of Skill
 
     public override void Activate (IBattleHandler target)
@@ -63,7 +66,6 @@ public class Fighter_Attack : Skill {
 
     #region Field&Method
 
-
     // Check Melee Range
     bool isTargetInMeleeRange;
     Vector3 positionToMeleeAttack;
@@ -109,9 +111,6 @@ public class Fighter_Attack : Skill {
             }
         }
     }
-
-    // effect of this skill
-    int dmg;
 
     #endregion
 }
