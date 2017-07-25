@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class Wizard : Hero
 {
+    private Stack[] skillNum = new Stack[2];
+    private GameObject auttoAtackPrefab;
+
     private void Awake()
     {
+        auttoAtackPrefab = Resources.Load<GameObject>("aaa");
+
         id = 2;
         team = Team.Friendly;
         status = CharacterStatus.Idle;
@@ -59,7 +64,14 @@ public class Wizard : Hero
         }
     }
 
+    public override void Spawn()
+    {
+        base.Spawn();
+        heroUI = GetComponentInChildren<HeroUI>();
 
+        GameObject Wizard = new GameObject("wizard");
+        Wizard.transform.SetParent(GameObject.Find("Projectiles").transform);
+    }
 
     public override void AutoAttack(IBattleHandler target)
     {
