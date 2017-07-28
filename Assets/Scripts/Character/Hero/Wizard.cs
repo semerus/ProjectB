@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class Wizard : Hero
 {
+    private Stack[] skillNum = new Stack[2];
+    private GameObject auttoAtackPrefab;
+
     private void Awake()
     {
+        auttoAtackPrefab = Resources.Load<GameObject>("aaa");
+
         id = 2;
         team = Team.Friendly;
         status = CharacterStatus.Idle;
@@ -49,6 +54,7 @@ public class Wizard : Hero
             activeSkills[2].OnCast();
         }
 
+		/*
         if (status == CharacterStatus.Idle)
         {
             if (this.target != null)
@@ -57,17 +63,15 @@ public class Wizard : Hero
                     AutoAttack(target);
             }
         }
+        */
     }
 
-    public override void ReceiveDamage(IBattleHandler attacker, int damage)
+    public override void Spawn()
     {
-        hp -= damage;
-        if (hp <= 0)
-        {
-            hp = 0;
-            KillCharacter();
-        }
-        Debug.Log(transform.name + "Received Damage: " + damage);
-        UpdateHpUI();
+        base.Spawn();
+        heroUI = GetComponentInChildren<HeroUI>();
+
+        GameObject Wizard = new GameObject("wizard");
+        Wizard.transform.SetParent(GameObject.Find("Projectiles").transform);
     }
 }
