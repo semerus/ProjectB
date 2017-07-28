@@ -6,12 +6,10 @@ using UnityEngine;
 public class Wizard : Hero
 {
     private Stack[] skillNum = new Stack[2];
-    private GameObject auttoAtackPrefab;
+    int o = 0;
 
     private void Awake()
     {
-        auttoAtackPrefab = Resources.Load<GameObject>("aaa");
-
         id = 2;
         team = Team.Friendly;
         status = CharacterStatus.Idle;
@@ -41,42 +39,31 @@ public class Wizard : Hero
     public override void RunTime()
     {
         base.RunTime();
-        if(Input.GetKeyDown("b")&& activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask))
+        if (!activeSkills[0].CheckSkillStatus(SkillStatus.ProcessMask) && !activeSkills[1].CheckSkillStatus(SkillStatus.ProcessMask) && !activeSkills[2].CheckSkillStatus(SkillStatus.ProcessMask))
         {
-            activeSkills[0].OnCast();
-        }
-        if (Input.GetKeyDown("n")&& activeSkills[1].CheckSkillStatus(SkillStatus.ReadyMask))
-        {
-            activeSkills[1].OnCast();
-        }
-        if (Input.GetKeyDown("m")&& activeSkills[2].CheckSkillStatus(SkillStatus.ReadyMask))
-        {
-            activeSkills[2].OnCast();
-        }
-
-        if (status == CharacterStatus.Idle)
-        {
-            if (this.target != null)
+            if (Input.GetKeyDown("b") && activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask))
             {
-                if (this.target.Team == Team.Hostile && autoAttack.CheckSkillStatus(SkillStatus.ReadyMask))
-                    AutoAttack(target);
+                activeSkills[0].OnCast();
+            }
+            if (Input.GetKeyDown("n") && activeSkills[1].CheckSkillStatus(SkillStatus.ReadyMask))
+            {
+                activeSkills[1].OnCast();
+            }
+            if (Input.GetKeyDown("m") && activeSkills[2].CheckSkillStatus(SkillStatus.ReadyMask))
+            {
+                activeSkills[2].OnCast();
+            }
+            if (action == CharacterAction.Idle)
+            {
+                if (this.target != null)
+                {
+                    if (this.target.Team == Team.Hostile && autoAttack.CheckSkillStatus(SkillStatus.ReadyMask))
+                    {
+                        autoAttack.OnCast();
+                    }
+                }
             }
         }
-    }
-
-    public override void Spawn()
-    {
-        base.Spawn();
-        heroUI = GetComponentInChildren<HeroUI>();
-
-        GameObject Wizard = new GameObject("wizard");
-        Wizard.transform.SetParent(GameObject.Find("Projectiles").transform);
-    }
-
-    public override void AutoAttack(IBattleHandler target)
-    {
-        this.target = target;
-        autoAttack.Activate(target);
     }
 
     public override void ReceiveDamage(IBattleHandler attacker, int damage)

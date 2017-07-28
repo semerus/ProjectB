@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_AutoAttack : Skill, IPooling_Character
+public class Wizard_AutoAttack : HeroActive, IPooling_Character
 {
     public Stack<IPooledItem_Character> projectileNum = new Stack<IPooledItem_Character>();
     public Projectile projectiles= new Projectile();
+    public Projectile[] projectile = new Projectile[3];
+    int y = 0;
 
     public Stack<IPooledItem_Character> Pool
     {
@@ -14,6 +16,12 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
         {
             return projectileNum;
         }
+    }
+
+    public void SetProjectile()
+    {
+        projectileNum.
+
     }
 
     public void ProjectileStack()
@@ -35,15 +43,25 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
 
     public override void Activate(IBattleHandler target)
     {
-        ProjectileStack();
         cooldown = 2;
+        ProjectileStack();
         StartCoolDown();
-        AuttoAttack();
+    }
+
+    public override void RunTime()
+    {
+        base.RunTime();
+        Debug.Log(projectiles.CheckArrival());
+        if(projectiles.CheckArrival())
+        {
+            AuttoAttack();
+            projectiles.EndProjectile();
+        }
     }
 
     public void AuttoAttack()
     {
-        int damage = 20;
+        int damage = 500;
         IBattleHandler target = caster.Target;
         caster.AttackTarget(target, damage);
     }

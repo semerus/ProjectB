@@ -5,11 +5,11 @@ using UnityEngine;
 public class Fighter_Attack : Skill {
 	// effect of this skill
 	int dmg;
-
     #region implemented abstract members of Skill
 
     public override void Activate (IBattleHandler target)
 	{
+        Debug.Log("aaaaaaaaaaaaa");
         CheckTargetRange(target);
 
         if (isTargetInMeleeRange == true)
@@ -24,11 +24,11 @@ public class Fighter_Attack : Skill {
                 }
                 else
                 {
+                    Debug.Log("sss");
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
                     int attackDmg = Calculator.AttackDamage(caster, dmg);
                     target.ReceiveDamage(caster, attackDmg);
-
                     //LifeStealValue;
                     caster.ReceiveHeal(10);
 

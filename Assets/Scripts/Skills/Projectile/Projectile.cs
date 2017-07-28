@@ -3,24 +3,34 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour,ITimeHandler,IPooledItem_Character {
 
-    bool moving = false;
-    Character caster;
-    Character target;
-    float speed;
-    IPooling_Character pool;
     
+    Character caster;
+    Character target=null;
+    float speed;
+    IPooling_Character pool =null;
+    private bool Pmoving = false;
+    private bool arriving = false;
+
     public void ProjectileOn(Character caster, IPooling_Character pool)
     {
+        arriving = false;
         this.caster = caster;
         this.pool = pool;
-        moving = false;
+        Pmoving = false;
         this.gameObject.SetActive(true);
         transform.position = caster.transform.position;
+        
+    }
+
+    public void ProjectileOn()
+    {
+        Pmoving = false;
+        this.gameObject.SetActive(true);
     }
 
     public void ProjectileMove(Character target, float speed)
     {
-        moving = true;
+        Pmoving = true;
         TimeSystem.GetTimeSystem().AddTimer(this);
         this.target = target;
         this.speed = speed;
@@ -29,23 +39,30 @@ public class Projectile : MonoBehaviour,ITimeHandler,IPooledItem_Character {
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.transform.root.transform == target.transform)
+        if (col != null&&target!=null)
         {
-            OnArrival();
+            if (col.transform.root.transform == target.transform)
+            {
+                OnArrival();
+            }
         }
     }
 
-    public virtual void OnArrival()
+    public void OnArrival()
     {
-        moving = false;
+        arriving = true;
+        Pmoving = false;
         this.gameObject.SetActive(false);
         TimeSystem.GetTimeSystem().DeleteTimer(this);
-        pool.Pool.Push(this);
+        if(pool!=null)
+        {
+            pool.Pool.Push(this);
+        }
     }
 
     public void RunTime()
     {
-        if(moving==true)
+        if(Pmoving==true)
         {
             ProjectileMove(target, speed);
         }
@@ -54,7 +71,7 @@ public class Projectile : MonoBehaviour,ITimeHandler,IPooledItem_Character {
     public void PopDo(Character target)
     {
         TimeSystem.GetTimeSystem().AddTimer(this);
-        moving = true;
+        Pmoving = true;
         this.gameObject.SetActive(true);
         transform.position = caster.transform.position;
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
