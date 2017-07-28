@@ -9,12 +9,7 @@ public class Fighter_Attack : Skill {
 
     public override void Activate ()
 	{
-<<<<<<< HEAD
-        Debug.Log("aaaaaaaaaaaaa");
-        CheckTargetRange(target);
-=======
 		CheckTargetRange(caster.Target);
->>>>>>> a349017f216e5dab6a58e698be6ee9099b3b91f8
 
         if (isTargetInMeleeRange == true)
         {
@@ -32,12 +27,10 @@ public class Fighter_Attack : Skill {
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
                     int attackDmg = Calculator.AttackDamage(caster, dmg);
-<<<<<<< HEAD
-                    target.ReceiveDamage(caster, attackDmg);
-=======
+
 					caster.Target.ReceiveDamage (caster, attackDmg);
 
->>>>>>> a349017f216e5dab6a58e698be6ee9099b3b91f8
+
                     //LifeStealValue;
                     caster.ReceiveHeal(10);
 

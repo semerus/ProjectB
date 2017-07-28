@@ -49,8 +49,29 @@ public sealed class TimeSystem : MonoBehaviour {
 	}
 
 	private void RunSlowTime() {
-		// slow all things
-		// except target
+        int j = 0;
+        //bool isSlowed = false;
+        // slow all things
+        // except target
+        Time.timeScale = 0.2f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        for (int i = 0; i < timers.Count; i++)
+        {
+            timers[i].RunTime();
+        }
+
+        while(j < slowness)
+        {
+            for (int i = 0; i < nonSlowedTimers.Length; i++)
+            {
+                if (timers.Contains(nonSlowedTimers[i]))
+                {
+                    nonSlowedTimers[i].RunTime();
+                }
+            }
+            j++;
+        }
+        /*
 		if (slowCtr++ > slowness) {
 			slowCtr = 0;
 			for (int i = 0; i < timers.Count; i++) {
@@ -63,7 +84,29 @@ public sealed class TimeSystem : MonoBehaviour {
 				}
 			}
 		}
-	}
+        */
+        //for (int i = 0; i < timers.Count; i++)
+        //{
+        //    for (int j = 0; j < nonSlowedTimers.Length; j++)
+        //    {
+        //        if (timers[i] == nonSlowedTimers[j])
+        //        {
+        //            Time.timeScale = 1f;
+        //            Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        //            timers[i].RunTime();
+        //            isSlowed = true;
+        //            break;
+        //        }
+        //    }
+        //    if(!isSlowed)
+        //    {
+        //        Time.timeScale = 0.01f;
+        //        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        //        timers[i].RunTime();
+        //    }
+        //    isSlowed = false;
+        //}
+    }
 
 	public void AddTimer (ITimeHandler handler) {
 		if (CheckTimer (handler))
@@ -101,5 +144,7 @@ public sealed class TimeSystem : MonoBehaviour {
 
 	public void UnSlowMotion() {
 		timeState = TimeState.Running;
-	}
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+    }
 }

@@ -28,18 +28,10 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
                 ch.OnChanneling();
             }
 		}
-<<<<<<< HEAD
-        if (CheckSkillStatus(SkillStatus.ProcessMask))
-        {
-            OnProcess();
-        }
-}
-=======
 		if (CheckSkillStatus (SkillStatus.ProcessMask)) {
 			OnProcess ();
 		}
 	}
->>>>>>> a349017f216e5dab6a58e698be6ee9099b3b91f8
 
     #endregion
 
@@ -75,11 +67,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		if (ch != null) {
 			// start channeling
 			ch.OnChanneling ();
-<<<<<<< HEAD
             TimeSystem.GetTimeSystem().AddTimer(this);
-=======
-
->>>>>>> a349017f216e5dab6a58e698be6ee9099b3b91f8
 		} else {
 			Activate ();
 		}
@@ -87,14 +75,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 	// activate skill (launch projectile, area etc)
 	// run cooldown
-<<<<<<< HEAD
-	public abstract void Activate (IBattleHandler target);
-    //public abstract bool CheckCondition ();
-    protected virtual void OnProcess()
-    {
-    }
-    
-=======
+
 	public virtual void Activate () {
 	}
 
@@ -108,7 +89,6 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 	protected virtual void OnProcess() {
 	}
->>>>>>> a349017f216e5dab6a58e698be6ee9099b3b91f8
 
     protected virtual void OnCoolDown() {
 		timer_cooldown += Time.deltaTime;

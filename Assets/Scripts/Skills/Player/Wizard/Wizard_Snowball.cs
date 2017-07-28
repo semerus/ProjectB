@@ -19,13 +19,8 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
         cooldown = 10f;
     }
 
-<<<<<<< HEAD
     protected override void OnProcess()
-=======
-    public override void Activate()
->>>>>>> a349017f216e5dab6a58e698be6ee9099b3b91f8
-    {
-        Debug.Log("sss");
+    { 
         SnowProjectileShoot();
     }
 
@@ -82,6 +77,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
                         StartCoolDown();
                         UpdateSkillStatus(SkillStatus.ChannelingOff);
                         UpdateSkillStatus(SkillStatus.ProcessOn);
+                        SlowMotion();
                     }
                 }
             }
@@ -102,6 +98,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
         {
             UpdateSkillStatus(SkillStatus.ProcessOff);
             caster.ChangeAction(CharacterAction.Attacking);
+            TimeSystem.GetTimeSystem().UnSlowMotion();
             ResetSetting();
         }
     }
@@ -124,7 +121,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
     }
 
     #region None
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
 
     }
@@ -147,4 +144,19 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
 
     public float Timer_Channeling { get ; set ; }
     #endregion
+
+    void SlowMotion()
+    {
+        List<ITimeHandler> temp = new List<ITimeHandler>();
+        temp.Add(this);
+        temp.Add(this.caster);
+        for(int i = 0; i < projectile.Length; i++)
+        {
+            temp.Add(projectile[i]);
+        }
+
+        ITimeHandler[] nonSlow = new ITimeHandler[temp.Count];
+        temp.CopyTo(nonSlow);
+        TimeSystem.GetTimeSystem().SlowMotion(nonSlow);
+    }
 }
