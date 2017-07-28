@@ -3,19 +3,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Snowball : HeroActive,IPooling_Character
+public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
 {
     IBattleHandler[] enemyNum;
     IBattleHandler target;
     Projectile[] projectile = new Projectile[5];
     float skilltime = 0;
     float shoottime = 0.2f;
-    int num = 0;
     int count = 0;
     float r = 1f;
 
     void Awake() {
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill1");
+        SetSnowProjectile();
+        cooldown = 10f;
+    }
+
+    protected override void OnProcess()
+    {
+        Debug.Log("sss");
+        SnowProjectileShoot();
+    }
+
+    public void OnChanneling()
+    {
+        caster.ChangeAction(CharacterAction.Channeling);
+
+        UpdateSkillStatus(SkillStatus.ChannelingOn);
+
+        SnowProjectileRoundOn();
+    }
+
+    public void OnInterrupt(IBattleHandler interrupter)
+    {
+        StartCoolDown();
+        UpdateSkillStatus(SkillStatus.ChannelingOff);
+        caster.ChangeAction(CharacterAction.Attacking);
+        ResetSetting();
     }
 
     #region Projectile
@@ -24,7 +48,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character
     {
         for(int i=0; i<=4; i++)
         {
-            GameObject p = Instantiate(Resources.Load<GameObject>("snow"));
+            GameObject p = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/SnowBall/Snowball"));
             p.transform.SetParent(GameObject.Find("Projectiles").transform);
             projectile[i] = p.gameObject.GetComponent<Projectile>();
             projectile[i].gameObject.SetActive(false);
@@ -33,7 +57,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character
 
     public void SnowProjectileRoundOn()
     {
-        if (CheckSkillStatus(SkillStatus.ProcessMask))
+        if (CheckSkillStatus(SkillStatus.ChannelingMask))
         {
             skilltime += Time.deltaTime;
             for (int i = 0; i <= 4; i++)
@@ -45,107 +69,48 @@ public class Wizard_Snowball : HeroActive,IPooling_Character
                 Vector3 target = caster.transform.position;
                 Vector3 position = new Vector3(cpx, cpy, 0f);
                 projectile[i].transform.position = position + target;
-
                 if (!projectile[i].gameObject.active && (int)skilltime == i + 1)
                 {
-                    projectile[i].ProjectileOn();
-                    if(i==4)
+                    projectile[i].ProjectileOn(caster);
+                    projectile[count].enabled = false;
+                    if (i == 4)
                     {
-                        UpdateSkillStatus(SkillStatus.ProcessOff);
+                        StartCoolDown();
+                        UpdateSkillStatus(SkillStatus.ChannelingOff);
+                        UpdateSkillStatus(SkillStatus.ProcessOn);
                     }
                 }
             }
-        }
-        else
-        {
-            SnowProjectileShoot();
         }
     }
 
     public void SnowProjectileShoot()
     {
         shoottime += Time.deltaTime;
-        if(shoottime>=0.2&&count<=4)
+        if (shoottime>=0.2&&count<=5)
         {
+            projectile[count].enabled = true;
             projectile[count].ProjectileMove(caster.Target as Character, 30);
             shoottime = 0;
             count++;
         }
-    }
-
-    public void SnowProjectileDamage()
-    {
-        for (int i = 0; i <= 4; i++)
+        if(count>=5)
         {
-            if (projectile[i].CheckArrival())
-            {
-                SnowBall();
-                if(i==4)
-                {
-                    ActivePassive();
-                }
-                projectile[i].EndProjectile();
-            }
+            UpdateSkillStatus(SkillStatus.ProcessOff);
+            caster.ChangeAction(CharacterAction.Attacking);
+            ResetSetting();
         }
     }
 
     #endregion
 
-    public override void RunTime()
-    {
-        base.RunTime();
-        Debug.Log(CheckSkillStatus(SkillStatus.ProcessMask));
-        SnowProjectileRoundOn();
-        SnowProjectileDamage();
-    }
-
-    public override void Activate(IBattleHandler target)
-    {
-        ResetSetting();
-        UpdateSkillStatus(SkillStatus.ProcessOn);
-        if (num==0)
-        {
-            SetSnowProjectile();
-            num = 1;
-        }
-        if (target!=null)
-        {
-            StartCoolDown();
-        }
-        else
-        {
-            return;
-        }
-    }
-
     public void ResetSetting()
     {
-        enemyNum = BattleManager.GetBattleManager().GetEntities(Team.Hostile);
         cooldown = 10f;
         target = caster.Target;
         skilltime = 0;
-    }
-
-    #region SnowBall_Skill
-
-    public void SnowBall()
-    {
-        int damage = (int)(500 * Wizard_Passive.mag);
-        int splash = 250;
-
-        caster.AttackTarget(target, damage);
-        Debug.Log("Wizard SnowBall " + damage + " dmg");
-
-        for (int p = 0; p < enemyNum.Length; p++)
-        {
-            Character c = enemyNum[p] as Character;
-            Character t = target as Character;
-            bool hitcheck = EllipseScanner(3f, 1.3f, t.transform.position, c.transform.position);
-            if (hitcheck && t.transform.position != c.transform.position)
-            {
-                caster.AttackTarget(enemyNum[p], splash);
-            }
-        }
+        shoottime = 0;
+        count = 0;
     }
 
     public void ActivePassive()
@@ -154,31 +119,12 @@ public class Wizard_Snowball : HeroActive,IPooling_Character
         Wizard_Passive.skillResfresh = true;
     }
 
-    #endregion
-
-    #region EllipseScanner
-
-    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
+    #region None
+    public override void Activate(IBattleHandler target)
     {
-        float dx = targetPosition.x - center.x;
-        float dy = targetPosition.y - center.y;
 
-        float l1 = Mathf.Sqrt((dx + Mathf.Sqrt(a * a - b * b)) * (dx + Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-        float l2 = Mathf.Sqrt((dx - Mathf.Sqrt(a * a - b * b)) * (dx - Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-
-        if (l1 + l2 <= 2 * a)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
-    #endregion
-
-    #region None
     public Stack<IPooledItem_Character> Pool
     {
         get
@@ -186,5 +132,15 @@ public class Wizard_Snowball : HeroActive,IPooling_Character
             throw new NotImplementedException();
         }
     }
-#endregion
+
+    public float ChannelTime
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public float Timer_Channeling { get ; set ; }
+    #endregion
 }

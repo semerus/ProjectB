@@ -12,7 +12,7 @@ public class AnimationController : MonoBehaviour {
 
 	void Awake() {
 		character = transform.root.GetComponent<Character> ();
-		anim = GetComponentInChildren<Animator> ();
+		anim = GetComponent<Animator> ();
 		rends = GetComponentsInChildren<SpriteRenderer> ();
 		offsets = new int[rends.Length];
 		for (int i = 0; i < rends.Length; i++) {
@@ -74,5 +74,17 @@ public class AnimationController : MonoBehaviour {
 	public void OnAnimEvent() {
 		//onCue();
 		Debug.Log("Will hit at this moment");
+	}
+
+	public void PauseAnimation() {
+		if (anim == null)
+			return;
+		anim.enabled = false;
+	}
+
+	public void UnPauseAnimation() {
+		if (anim == null)
+			return;
+		anim.enabled = true;
 	}
 }

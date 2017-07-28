@@ -6,9 +6,7 @@ using UnityEngine;
 public class Wizard_AutoAttack : HeroActive, IPooling_Character
 {
     public Stack<IPooledItem_Character> projectileNum = new Stack<IPooledItem_Character>();
-    public Projectile projectiles= new Projectile();
-    public Projectile[] projectile = new Projectile[3];
-    int y = 0;
+	public Projectile projectiles;
 
     public Stack<IPooledItem_Character> Pool
     {
@@ -16,12 +14,6 @@ public class Wizard_AutoAttack : HeroActive, IPooling_Character
         {
             return projectileNum;
         }
-    }
-
-    public void SetProjectile()
-    {
-        projectileNum.
-
     }
 
     public void ProjectileStack()
@@ -43,23 +35,17 @@ public class Wizard_AutoAttack : HeroActive, IPooling_Character
 
     public override void Activate(IBattleHandler target)
     {
+		if (caster.Target.Action == CharacterAction.Dead)
+        {
+			caster.ChangeAction (CharacterAction.Idle);
+		}
+        ProjectileStack();
         cooldown = 2;
         ProjectileStack();
         StartCoolDown();
     }
 
-    public override void RunTime()
-    {
-        base.RunTime();
-        Debug.Log(projectiles.CheckArrival());
-        if(projectiles.CheckArrival())
-        {
-            AuttoAttack();
-            projectiles.EndProjectile();
-        }
-    }
-
-    public void AuttoAttack()
+    public void AutoAttack()
     {
         int damage = 500;
         IBattleHandler target = caster.Target;

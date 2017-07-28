@@ -258,6 +258,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         }
 		gameObject.SetActive (false);
 		ChangeAction (CharacterAction.Dead);
+		TimeSystem.GetTimeSystem().DeleteTimer(this);
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();

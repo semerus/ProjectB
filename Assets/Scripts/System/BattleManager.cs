@@ -5,6 +5,13 @@ using UnityEngine;
 public class BattleManager : MonoBehaviour, ITimeHandler {
 	// active throughout battle scene
 
+	private enum GameState {
+		Loading,
+		Playing,
+		Paused,
+		Ended
+	}
+
 	// temporary -> will be loaded by gamemanager
 	public GameObject map;
 	public GameObject[] heroes;
@@ -13,6 +20,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 
 	// singleton
 	private static BattleManager instance;
+	private GameState gameState = GameState.Playing;
 	private float gameTime;
 	private new Vector3[] heroPos = new Vector3[]{new Vector3(-5.7f, 0.65f), new Vector3(-7.5f, -0.3f), new Vector3(-3.75f, -0.3f), new Vector3(-5.7f, -2.1f)};
 	private new Vector3[] bossPos = new Vector3[]{new Vector3(6.17f, 0f), new Vector3(6.17f, -2.5f)};
@@ -26,7 +34,8 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 		return instance;
 	}
 
-	// list of rigidbody
+	// list of all animators
+	AnimationController[] animControllers;
 	// game state
 
 	// list of IBattleHandler
@@ -49,6 +58,8 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 		string[,] skills = new string[1, 2];
 		skills [0,0] = "Fighter_Attack";
 		skills [0,1] = "Figher_MeowPunch";
+
+		animControllers = GameObject.FindObjectsOfType<AnimationController> ();
 
 		BattleInfo info = new BattleInfo(map, heroes, skills, bosses);
 		StartGame (info);
@@ -155,8 +166,36 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	}
 
 	// pause game
+	public void PauseGame() {
+		switch (gameState) {
+		case GameState.Playing:
+			Debug.Log ("Game Paused");
+			// pause time
+			TimeSystem.GetTimeSystem().PauseTime();
+			// pause animation
+			foreach (var item in animControllers) {
+				item.PauseAnimation ();
+			}
+			gameState = GameState.Paused;
+			break;
+		case GameState.Paused:
+			Debug.Log ("Game UnPaused");
+			// unpause time
+			TimeSystem.GetTimeSystem().UnPauseTime();
+			// unpause animation
+			foreach (var item in animControllers) {
+				item.UnPauseAnimation ();
+			}
+			gameState = GameState.Playing;
+			break;
+		default:
+			break;
+		}
 
+
+	}
 	// unpause game
 
 	// end game(timer)
 }
+

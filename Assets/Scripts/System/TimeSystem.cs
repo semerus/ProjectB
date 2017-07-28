@@ -4,6 +4,7 @@ using UnityEngine;
 public sealed class TimeSystem : MonoBehaviour {
 	// singleton
 	private static TimeSystem instance;
+	private bool isTimeRunning = true;
 
 	public static TimeSystem GetTimeSystem() {
 		if (!instance) {
@@ -19,7 +20,9 @@ public sealed class TimeSystem : MonoBehaviour {
 	private List<ITimeHandler> timers = new List<ITimeHandler>();
 
 	void Update() {
-		RunTime ();
+		if (isTimeRunning) {
+			RunTime ();
+		}
 	}
 
 	private void RunTime() {
@@ -42,9 +45,18 @@ public sealed class TimeSystem : MonoBehaviour {
 			return false;
 	}
 
+	// change to RemoveTimer later
 	public void DeleteTimer(ITimeHandler handler) {
 		if (timers.Contains (handler)) {
 			timers.Remove (handler);
 		}
+	}
+
+	public void PauseTime() {
+		isTimeRunning = false;
+	}
+
+	public void UnPauseTime() {
+		isTimeRunning = true;
 	}
 }

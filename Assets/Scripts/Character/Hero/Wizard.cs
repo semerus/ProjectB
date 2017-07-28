@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class Wizard : Hero
 {
-    private Stack[] skillNum = new Stack[2];
-    int o = 0;
-
     private void Awake()
     {
         id = 2;
@@ -40,8 +37,8 @@ public class Wizard : Hero
     {
         base.RunTime();
         if (!activeSkills[0].CheckSkillStatus(SkillStatus.ProcessMask) && !activeSkills[1].CheckSkillStatus(SkillStatus.ProcessMask) && !activeSkills[2].CheckSkillStatus(SkillStatus.ProcessMask))
-        {
-            if (Input.GetKeyDown("b") && activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask))
+        { 
+            if (Input.GetKeyDown("b") && activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask) && Target!=null)
             {
                 activeSkills[0].OnCast();
             }
@@ -76,5 +73,6 @@ public class Wizard : Hero
         }
         Debug.Log(transform.name + "Received Damage: " + damage);
         UpdateHpUI();
+
     }
 }

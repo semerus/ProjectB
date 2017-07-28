@@ -1,16 +1,6 @@
 ﻿using UnityEngine;
 
 public class Healer : Hero {
-	#region implemented abstract members of Hero
-
-	public override void AutoAttack (IBattleHandler target)
-	{
-		if (ChangeAction (CharacterAction.Attacking)) {
-			autoAttack.Activate (target);
-		}
-	}
-
-	#endregion
 
 	void Awake() {
 		id = 3;

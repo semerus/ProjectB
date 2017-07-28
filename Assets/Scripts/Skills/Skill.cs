@@ -28,7 +28,11 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
                 ch.OnChanneling();
             }
 		}
-	}
+        if (CheckSkillStatus(SkillStatus.ProcessMask))
+        {
+            OnProcess();
+        }
+}
 
     #endregion
 
@@ -61,6 +65,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		if (ch != null) {
 			// start channeling
 			ch.OnChanneling ();
+            TimeSystem.GetTimeSystem().AddTimer(this);
 		} else {
 			Activate (caster.Target);
 		}
@@ -69,9 +74,13 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// activate skill (launch projectile, area etc)
 	// run cooldown
 	public abstract void Activate (IBattleHandler target);
-	//public abstract bool CheckCondition ();
+    //public abstract bool CheckCondition ();
+    protected virtual void OnProcess()
+    {
+    }
+    
 
-	protected virtual void OnCoolDown() {
+    protected virtual void OnCoolDown() {
 		timer_cooldown += Time.deltaTime;
 
 		// change skill ui if necessary
