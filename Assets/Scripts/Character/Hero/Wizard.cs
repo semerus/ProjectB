@@ -59,14 +59,6 @@ public class Wizard : Hero
         }
     }
 
-
-
-    public override void AutoAttack(IBattleHandler target)
-    {
-        this.target = target;
-        autoAttack.Activate(target);
-    }
-
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
         hp -= damage;

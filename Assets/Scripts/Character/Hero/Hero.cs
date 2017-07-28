@@ -60,7 +60,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 			if (hitInfo.collider != null) {
 				b = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
 				if (b != null && b.Team != Team.Friendly) {
-					target = b;
+					this.target = b;
 					AutoAttack (b);
 				} else {
 					p = Camera.main.ScreenToWorldPoint (pixelPos);
@@ -107,9 +107,10 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	}
 
 	public virtual void AutoAttack(IBattleHandler target) {
+		
 		if (ChangeAction (CharacterAction.Attacking)) {
 			this.target = target;
-			autoAttack.OnCast ();
+			//autoAttack.OnCast ();
 		}
 	}
 
