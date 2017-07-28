@@ -6,7 +6,7 @@ public abstract class HeroActive : Skill, IHeroActiveUI {
 
 	#region implemented abstract members of Skill
 
-	public override void Activate (IBattleHandler target)
+	public override void Activate ()
 	{
 		throw new System.NotImplementedException ();
 	}

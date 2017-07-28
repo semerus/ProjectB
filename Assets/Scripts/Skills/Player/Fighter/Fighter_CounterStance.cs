@@ -37,7 +37,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 		base.OnCast ();
 	}
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
 		
     }

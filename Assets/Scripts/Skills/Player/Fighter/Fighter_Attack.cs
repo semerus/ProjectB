@@ -8,9 +8,9 @@ public class Fighter_Attack : Skill {
 
     #region implemented abstract members of Skill
 
-    public override void Activate (IBattleHandler target)
+    public override void Activate ()
 	{
-        CheckTargetRange(target);
+		CheckTargetRange(caster.Target);
 
         if (isTargetInMeleeRange == true)
         {
@@ -27,7 +27,7 @@ public class Fighter_Attack : Skill {
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
                     int attackDmg = Calculator.AttackDamage(caster, dmg);
-                    target.ReceiveDamage(caster, attackDmg);
+					caster.Target.ReceiveDamage (caster, attackDmg);
 
                     //LifeStealValue;
                     caster.ReceiveHeal(10);

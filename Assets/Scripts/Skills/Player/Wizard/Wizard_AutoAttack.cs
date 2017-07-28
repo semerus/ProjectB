@@ -33,7 +33,7 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
         }
     }
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
 		if (caster.Target.Action == CharacterAction.Dead) {
 			caster.ChangeAction (CharacterAction.Idle);
