@@ -5,7 +5,7 @@ public class MoveTest : Skill {
 	
 	#region implemented abstract members of Skill
 
-	public override void Activate (IBattleHandler target)
+	public override void Activate ()
 	{
 		caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
 		caster.BeginMove (new Vector3 ());

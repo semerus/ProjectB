@@ -20,7 +20,7 @@ public class OgreFemale_Sk4 : Skill
         }
     }
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
 		caster.StopMove();
 		// order is important should go after stop move

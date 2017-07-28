@@ -24,7 +24,7 @@ public class OgreMeteorStrike : Skill {
 
 	#region implemented abstract members of Skill
 
-	public override void Activate (IBattleHandler target)
+	public override void Activate ()
 	{
 		UpdateSkillStatus (SkillStatus.ProcessOn);
 		// first strike

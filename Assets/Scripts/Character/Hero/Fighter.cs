@@ -66,12 +66,12 @@ public class Fighter : Hero {
 	{
 		base.RunTime ();
 		// for debugging skill
-		if (Input.GetKeyDown(KeyCode.A))
-			activeSkills[0].Activate(target);
-		else if (Input.GetKeyDown(KeyCode.S))
-			activeSkills[1].Activate(target);
-		else if (Input.GetKeyDown(KeyCode.D))
-			activeSkills[2].Activate(target);
+		if (Input.GetKeyDown (KeyCode.A))
+			activeSkills [0].OnCast ();
+		else if (Input.GetKeyDown (KeyCode.S))
+			activeSkills [1].OnCast ();
+		else if (Input.GetKeyDown (KeyCode.D))
+			activeSkills [2].OnCast ();
 
         //switch(action)
         //{

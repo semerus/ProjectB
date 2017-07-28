@@ -5,15 +5,15 @@ using UnityEngine;
 public abstract class Fighter_MeowPunch : HeroActive {
     #region implemented abstract members of Skill
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
-        CheckTargetRange(target);
+        CheckTargetRange(caster.Target);
 
         if (isTargetInMeleeRange == true && caster.CurHP > HPCost)
         {
             if (skillStatus == SkillStatus.ReadyOn)
             {
-                Character tarChraracter = target as Character;
+				Character tarChraracter = caster.Target as Character;
                 tarChraracter.ReceiveDamage(caster, Calculator.SkillDamage(caster, dmg));
 
                 TraitBuffCasting(caster, tarChraracter);

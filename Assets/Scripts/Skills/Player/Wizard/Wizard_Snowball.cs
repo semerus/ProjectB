@@ -19,7 +19,11 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
         cooldown = 10f;
     }
 
+<<<<<<< HEAD
     protected override void OnProcess()
+=======
+    public override void Activate()
+>>>>>>> a349017f216e5dab6a58e698be6ee9099b3b91f8
     {
         Debug.Log("sss");
         SnowProjectileShoot();

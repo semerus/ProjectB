@@ -9,7 +9,7 @@ public class OgreHeal : Skill, IChanneling {
 
 	#region implemented abstract members of Skill
 
-	public override void Activate (IBattleHandler target)
+	public override void Activate ()
 	{
 		UpdateSkillStatus (SkillStatus.ChannelingOff);
 		caster.HealTarget (healPoint, target);
@@ -31,7 +31,7 @@ public class OgreHeal : Skill, IChanneling {
 
 		timer_channeling += Time.deltaTime;
 		if (timer_channeling >= channelTime) {
-			Activate (target);
+			Activate ();
 			timer_channeling = 0f;
 		}
 	}

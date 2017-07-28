@@ -15,7 +15,7 @@ public class Wizard_Blizzard : HeroActive
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill3");
 	}
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         ResetSetting();
         StartCoolDown();
