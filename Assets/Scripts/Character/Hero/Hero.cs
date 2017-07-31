@@ -7,7 +7,11 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	protected HeroActive[] activeSkills;
 
     protected HeroUI heroUI; // load it from spawn
-	protected int[] masks = new int[3] { 1 << 9, 1 << 8, 1 << 10 };
+	protected int[] masks = new int[3] { 1 << 9, 1 << 8, 1 << 10 }; // enemy -> hero -> control Area
+
+    protected const float speed_x_1Value = 2.57f;
+    protected const float speed_y_1Value = 1.4f;
+
 
     #region Getters and Setter
     public Skill[] ActiveSkills
@@ -65,7 +69,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 				} else {
 					p = Camera.main.ScreenToWorldPoint (pixelPos);
 					BeginMove(new Vector3(p.x, p.y, 0f));
-                    RemoveAttackTarget();
+                    RemoveTarget();
 				}
 				break;
 			}
@@ -74,8 +78,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 			p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
 			BeginMove (p);
-            RemoveAttackTarget();
-		}
+            RemoveTarget();
+        }
 		Background.GetBackground ().DeactivatePointer (this);
 	}
 
@@ -85,6 +89,11 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
     public virtual void SetSkill(Skill[] skills) {
 		
 	}
+
+    public void RemoveTarget()
+    {
+        this.target = null;
+    }
 
 	public override void Spawn ()
 	{
@@ -100,10 +109,6 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
     public abstract void AutoAttack(IBattleHandler target);
 
-    public void RemoveAttackTarget()
-    {
-        this.target = null;
-    }
 
     protected void DisplaySkill(){
 		UIManager.GetUIManager ().SkillPanel.OpenSkills (activeSkills, this);

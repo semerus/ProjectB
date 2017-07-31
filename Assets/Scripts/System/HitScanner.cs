@@ -6,12 +6,6 @@ public class HitScanner : MonoBehaviour
 {
 
     #region Monobehaviours
-    protected void Update()
-    {
-        ScanColliders();
-        print(this.gameObject.name + friendlyBattleHandler.Count + "friendly List");
-    }
-
     protected virtual void Awake()
     {
         scanCharacter = transform.root.gameObject.GetComponent<Character>();

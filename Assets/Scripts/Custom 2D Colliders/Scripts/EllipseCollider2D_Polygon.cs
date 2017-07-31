@@ -30,30 +30,31 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[AddComponentMenu("Physics 2D/Ellipse Collider 2D")]
+[AddComponentMenu("Physics 2D/Ellipse Collider 2D_Polygon")]
 
-[RequireComponent(typeof(EdgeCollider2D))]
-public class EllipseCollider2D : MonoBehaviour {
+[RequireComponent(typeof(PolygonCollider2D))]
+public class EllipseCollider2D_Polygon : MonoBehaviour
+{
 
     [Range(0.1f, 25)]
     public float radiusX = 1, radiusY = 2;
 
-    [Range(10,90)]
+    [Range(10, 90)]
     public int smoothness = 30;
 
     [Range(0, 180)]
     public int rotation = 0;
-    
+
     Vector2 origin, center;
-    
+
     public Vector2[] getPoints(Vector2 off)
     {
         List<Vector2> points = new List<Vector2>();
-        
+
         //origin = transform.localPosition; // this is original but it makes trouble _ when we change position; 
         origin = Vector2.zero;
         center = origin + off;
-        
+
         float ang = 0;
         float o = rotation * Mathf.Deg2Rad;
 
@@ -74,7 +75,7 @@ public class EllipseCollider2D : MonoBehaviour {
             float y = center.y - radiusX * Mathf.Cos(a) * Mathf.Sin(o) - radiusY * Mathf.Sin(a) * Mathf.Cos(o);
 
             points.Add(new Vector2(x, y));
-            ang += 360f/smoothness;
+            ang += 360f / smoothness;
         }
 
         return points.ToArray();

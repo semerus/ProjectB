@@ -82,6 +82,11 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
     }
     #endregion
 
+    #region TraitChanges
+    //protected abstract void TraitBuffCasting(Character caster, Character tarCharacter);
+    //protected abstract void TraitSetValue();
+    #endregion
+
     #region MonoBehaviours
     void Awake()
     {

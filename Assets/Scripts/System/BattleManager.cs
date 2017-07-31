@@ -113,9 +113,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			if (friendly[i].Action != CharacterAction.Dead) {
 				Hero hero = friendly [i] as Hero;
 				hero.BeginMove (target);
-
-				// ?
-                hero.RemoveAttackTarget();
+                hero.RemoveTarget();
             }
 		}
 	}
