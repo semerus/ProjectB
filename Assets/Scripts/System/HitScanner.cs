@@ -8,7 +8,6 @@ public class HitScanner : MonoBehaviour
     #region Monobehaviours
     protected virtual void Awake()
     {
-        scanCharacter = transform.root.gameObject.GetComponent<Character>();
         scanCollider = GetComponent<Collider2D>();
 
         friendlyBattleHandler = new List<IBattleHandler>();
@@ -35,8 +34,6 @@ public class HitScanner : MonoBehaviour
     #endregion
 
     #region Field & Method
-    [SerializeField]
-    protected Character scanCharacter;
     [SerializeField]
     protected Collider2D scanCollider;
     

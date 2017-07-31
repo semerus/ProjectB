@@ -37,7 +37,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 		base.OnCast ();
 	}
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
 		
     }
@@ -103,7 +103,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
 
-		button = Resources.Load<Sprite> ("Skills/0709/Shield");
+		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill2");
     }
 
     #endregion

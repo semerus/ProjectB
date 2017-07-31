@@ -5,15 +5,15 @@ using UnityEngine;
 public abstract class Fighter_MeowPunch : HeroActive {
     #region implemented abstract members of Skill
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
-        CheckTargetRange(target);
+        CheckTargetRange(caster.Target);
 
         if (isTargetInMeleeRange == true && caster.CurHP > HPCost)
         {
             if (CheckSkillStatus(SkillStatus.ReadyOn))
             {
-                Character tarChraracter = target as Character;
+                Character tarChraracter = caster.Target as Character;
 
                 int attackDmg = Calculator.SkillDamage(caster, dmg);
                 tarChraracter.ReceiveDamage(caster, Calculator.SkillDamage(caster, attackDmg));
@@ -50,9 +50,9 @@ public abstract class Fighter_MeowPunch : HeroActive {
         timer_cooldown = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
-        
+
         //UI
-		button = button = Resources.Load<Sprite> ("Skills/0709/Sword");
+		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill1");
     }
 
     #endregion

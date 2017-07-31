@@ -5,7 +5,5 @@ using UnityEngine;
 
 public class Healer_Summon_Totem_AttackSpeedBuff : Healer_Summon_Totem
 {
-    #region TraitChanges
 
-    #endregion
 }

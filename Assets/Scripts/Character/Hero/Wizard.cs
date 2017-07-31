@@ -36,35 +36,31 @@ public class Wizard : Hero
     public override void RunTime()
     {
         base.RunTime();
-        if(Input.GetKeyDown("b")&& activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask))
-        {
-            activeSkills[0].OnCast();
-        }
-        if (Input.GetKeyDown("n")&& activeSkills[1].CheckSkillStatus(SkillStatus.ReadyMask))
-        {
-            activeSkills[1].OnCast();
-        }
-        if (Input.GetKeyDown("m")&& activeSkills[2].CheckSkillStatus(SkillStatus.ReadyMask))
-        {
-            activeSkills[2].OnCast();
-        }
-
-        if (status == CharacterStatus.Idle)
-        {
-            if (this.target != null)
+        if (!activeSkills[0].CheckSkillStatus(SkillStatus.ProcessMask) && !activeSkills[1].CheckSkillStatus(SkillStatus.ProcessMask) && !activeSkills[2].CheckSkillStatus(SkillStatus.ProcessMask))
+        { 
+            if (Input.GetKeyDown("b") && activeSkills[0].CheckSkillStatus(SkillStatus.ReadyMask) && Target!=null)
             {
-                if (this.target.Team == Team.Hostile && autoAttack.CheckSkillStatus(SkillStatus.ReadyMask))
-                    AutoAttack(target);
+                activeSkills[0].OnCast();
+            }
+            if (Input.GetKeyDown("n") && activeSkills[1].CheckSkillStatus(SkillStatus.ReadyMask))
+            {
+                activeSkills[1].OnCast();
+            }
+            if (Input.GetKeyDown("m") && activeSkills[2].CheckSkillStatus(SkillStatus.ReadyMask))
+            {
+                activeSkills[2].OnCast();
+            }
+            if (action == CharacterAction.Idle)
+            {
+                if (this.target != null)
+                {
+                    if (this.target.Team == Team.Hostile && autoAttack.CheckSkillStatus(SkillStatus.ReadyMask))
+                    {
+                        autoAttack.OnCast();
+                    }
+                }
             }
         }
-    }
-
-
-
-    public override void AutoAttack(IBattleHandler target)
-    {
-        this.target = target;
-        autoAttack.Activate(target);
     }
 
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
@@ -77,5 +73,6 @@ public class Wizard : Hero
         }
         Debug.Log(transform.name + "Received Damage: " + damage);
         UpdateHpUI();
+
     }
 }

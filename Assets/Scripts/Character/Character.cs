@@ -255,6 +255,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 		gameObject.SetActive (false);
 		ChangeAction (CharacterAction.Dead);
+		TimeSystem.GetTimeSystem().DeleteTimer(this);
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
@@ -320,6 +321,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		// calculate speed
 		Vector3 n = Vector3.Normalize(target - transform.position);
 		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
+        speed *= Calculator.MoveSpeed(this);
+
 
 		if (Vector3.Distance (target, transform.position) > 0.01f) {
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
@@ -375,7 +378,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
                 break;
 
             case Team.Hostile:
-                Debug.Log(target);
                 if (target != null&&action==CharacterAction.Idle)
                 {
                     Character t = target as Character;

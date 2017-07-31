@@ -42,8 +42,8 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 	/// <returns><c>true</c>, if inside boundaries, <c>false</c> if outside boundaries.</returns>
 	/// <param name="pos">Position.</param>
 	public bool CheckBoundaries(Vector3 pos) {
-		if (pos.x - boundary.bounds.max.x > 0 || pos.y - boundary.bounds.max.y > 0 ||
-		    pos.x - boundary.bounds.min.x < 0 || pos.y - boundary.bounds.min.y < 0) {
+		if (pos.x - (boundary.bounds.max.x + 0.01f) > 0 || pos.y - (boundary.bounds.max.y + 0.01f) > 0 ||
+			pos.x - (boundary.bounds.min.x - 0.01f) < 0 || pos.y - (boundary.bounds.min.y - 0.01f) < 0) {
 			return false;
 		} else
 			return true;

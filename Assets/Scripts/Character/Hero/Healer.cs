@@ -5,7 +5,7 @@ public class Healer : Hero {
 
 	public override void AutoAttack (IBattleHandler target)
 	{
-        autoAttack.Activate(target);
+        autoAttack.Activate();
 	}
 
 	#endregion
@@ -26,17 +26,11 @@ public class Healer : Hero {
 
 		activeSkills = new HeroActive[3];
 		activeSkills[0] = gameObject.AddComponent<Healer_Summon_Totem_MovementSpeedBuff>();
-		activeSkills[1] = gameObject.AddComponent<Wizard_Freeze>();
-		activeSkills[2] = gameObject.AddComponent<Wizard_Blizzard>();
+		activeSkills[1] = gameObject.AddComponent<Healer_Summon_Totem_MovementSpeedBuff>();
+		activeSkills[2] = gameObject.AddComponent<Healer_Summon_Totem_MovementSpeedBuff>();
 		foreach (Skill eachSkill in activeSkills)
 		{
 			eachSkill.SetSkill(this);
 		}
 	}
-
-    #region Summoing Object
-    Healer_Potion healer_potion;
-
-
-    #endregion
 }

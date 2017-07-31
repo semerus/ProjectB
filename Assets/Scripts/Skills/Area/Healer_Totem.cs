@@ -58,7 +58,7 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
     #region MonoBehaviours
     protected override void Awake()
     {
-        scanCharacter = GameObject.FindObjectOfType<Healer>();
+        summoner = GameObject.FindObjectOfType<Healer>();
         scanCollider = GetComponentInChildren<Collider2D>();
 
         friendlyBattleHandler = new List<IBattleHandler>();
@@ -77,7 +77,7 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
         healingPower = 40;
 
         //time
-        duration = 10f;
+        duration = 4f;
         curDuration = 0f;
         time_Between_Heal = 1f;
         curtime_Between_Heal = 0f;
@@ -88,6 +88,7 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
     #endregion
 
     #region Field & Method
+    protected Healer summoner;
     protected Team team;
     protected CharacterAction action;
 
@@ -105,7 +106,15 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
     protected void Heal(Character target)
     {
         target.ReceiveHeal(healingPower);
-        // trait changes
+
+        if(summoner.ActiveSkills[0] is Healer_Summon_Totem_MovementSpeedBuff)
+        {
+            Buff_MoveSpeed_Ratio heroBuff = new Buff_MoveSpeed_Ratio(summoner, target, true, 0.2f, 2f, "MoveR+25%2sec");
+        }
+        else if(summoner.ActiveSkills[0] is Healer_Summon_Totem_AttackSpeedBuff)
+        {
+            Debug.LogError("You should inplement AttackSpeedBuff");
+        }
     }
     
     protected List<Hero> Find_Heroes_InRange()
@@ -130,8 +139,8 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
 
     public void Set(Vector3 setPosition)
     {
-        this.transform.root.position = setPosition;
         this.transform.root.gameObject.SetActive(true);
+        this.transform.root.position = setPosition;
         
         curDuration = 0f;
         curtime_Between_Heal = 0f;

@@ -5,23 +5,16 @@ using UnityEngine;
 public abstract class Healer_Summon_Totem : HeroActive {
 
     #region Implement abstract member
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         if (CheckSkillStatus(SkillStatus.ReadyMask))
         {
             if(caster.CheckCharacterStatus(CharacterStatus.IsSilencedMask) == false)
             {
-                Vector3 spawnPos = GetSpawnPos();
-                healer_Totem_Script.Set(vector 3);
+                healer_Totem_Script.Set(Get_SpawnPos());
+                StartCoolDown();
             }
         }
-    }
-    #endregion
-
-    #region ITimeHandler override
-    public override void RunTime()
-    {
-        ;
     }
     #endregion
 
@@ -37,6 +30,9 @@ public abstract class Healer_Summon_Totem : HeroActive {
         GameObject potion_ref = Resources.Load("Skills\\Area\\Healer_Totem", typeof(GameObject)) as GameObject;
         healer_Totem_Object = Instantiate(potion_ref, Vector3.zero, Quaternion.identity);
         healer_Totem_Script = healer_Totem_Object.GetComponentInChildren<Healer_Totem>();
+
+        //UI
+        button = Resources.Load<Sprite>("Skills/Heroes/Healer/Healer_Skill1");
     }
     #endregion
 
@@ -56,11 +52,15 @@ public abstract class Healer_Summon_Totem : HeroActive {
         
         if(caster.IsFacingLeft == true)
         {
-            
+            returnVector -= summonPos;
+            if (returnVector.x <= xLeft)
+                returnVector = new Vector3(xLeft, returnVector.y, returnVector.z);
         }
         else
         {
-
+            returnVector += summonPos;
+            if (returnVector.x >= xRight)
+                returnVector = new Vector3(xRight, returnVector.y, returnVector.z);
         }
 
         return returnVector;

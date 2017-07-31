@@ -11,7 +11,11 @@ public class Wizard_Blizzard : HeroActive
     float [] inTime =new float[10];
     int ability = 2;
 
-    public override void Activate(IBattleHandler target)
+	void Awake() {
+		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill3");
+	}
+
+    public override void Activate()
     {
         ResetSetting();
         StartCoolDown();

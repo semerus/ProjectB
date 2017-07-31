@@ -16,7 +16,7 @@ public class OgreFemale_Sk2 : Skill {
         cooldown = 10f;
     }
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         adjustpoint = this.gameObject.transform.position + Vector3.down;
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);

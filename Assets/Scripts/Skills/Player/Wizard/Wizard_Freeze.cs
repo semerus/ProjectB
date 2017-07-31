@@ -11,7 +11,11 @@ public class Wizard_Freeze : HeroActive
     IBattleHandler target = null;
     Vector3 targetPosition = new Vector3();
 
-    public override void Activate(IBattleHandler target)
+	void Awake() {
+		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill2");
+	}
+
+    public override void Activate()
     {
         ResetSetting();
         if (target != null)

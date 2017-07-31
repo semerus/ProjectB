@@ -20,7 +20,6 @@ public class Healer_Potion : HitScanner, ITimeHandler {
     protected override void Awake()
     {
         // Collider Setting
-        scanCharacter = GameObject.FindObjectOfType<Healer>();
         scanCollider = GetComponentInChildren<Collider2D>();
 
         friendlyBattleHandler = new List<IBattleHandler>();

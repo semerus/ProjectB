@@ -6,7 +6,7 @@ using UnityEngine;
 public class Healer_Passive : Skill {
 
     #region Implement abstract member
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         //Do nothing;
     }

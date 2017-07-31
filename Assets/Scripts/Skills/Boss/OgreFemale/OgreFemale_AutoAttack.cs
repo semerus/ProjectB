@@ -33,7 +33,7 @@ public class OgreFemale_AutoAttack : Skill {
         }
     }
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         cooldown = 2;
         UpdateSkillStatus(SkillStatus.ProcessOn);
@@ -62,10 +62,11 @@ public class OgreFemale_AutoAttack : Skill {
     }
 
     public void AutoAttack()
-	{
-		if (!OutNumberCheck ()) {
-			AutoAttackTargetting();
-		}
+    {
+        if (!OutNumberCheck() || minC == null)
+        {
+            AutoAttackTargetting();
+        }
         CheckTargetRange();
     }
 

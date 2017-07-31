@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Fighter_Attack : Skill {
+
     #region implemented abstract members of Skill
 
-    public override void Activate (IBattleHandler target)
+    public override void Activate ()
 	{
-        CheckTargetRange(target);
+		CheckTargetRange(caster.Target);
 
         if (isTargetInMeleeRange == true)
         {
@@ -23,10 +24,11 @@ public class Fighter_Attack : Skill {
                 }
                 else
                 {
+                    Debug.Log("sss");
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
                     int attackDmg = Calculator.AttackDamage(caster, dmg);
-                    target.ReceiveDamage(caster, attackDmg);
+					caster.Target.ReceiveDamage (caster, attackDmg);
                     caster.ReceiveHeal(10);
 
                     caster.ChangeAction(CharacterAction.Attacking);
@@ -110,7 +112,5 @@ public class Fighter_Attack : Skill {
             }
         }
     }
-
-
     #endregion
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Healer_Attack : Skill {
 
     #region Implement abstract member of skill
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         // Do nothing;
     }

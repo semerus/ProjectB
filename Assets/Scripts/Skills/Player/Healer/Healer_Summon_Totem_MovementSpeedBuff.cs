@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Healer_Summon_Totem_MovementSpeedBuff : Healer_Summon_Totem {
-    #region TraitChanges
+    
+    // changes are in Healer_Totem -> Heal function
 
-    #endregion
 }

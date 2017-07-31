@@ -5,7 +5,7 @@ using UnityEngine;
 public class Fighter_ThousandFists : HeroActive, IChanneling {
     #region implemented abstract members of Skill + override things
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         // resource check
         if (caster.CurHP <= HPCost)
@@ -23,7 +23,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
         // should refine!!
         
         
-        CheckTargetRange(target);
+		CheckTargetRange(caster.Target);
 
         if(isTargetInMeleeRange == true)
         {
@@ -143,7 +143,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
 
-		button = Resources.Load<Sprite> ("Skills/0709/Magic");
+		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill3");
     }
 
     #endregion

@@ -8,6 +8,10 @@ public abstract class Buff {
     {
         get { return isBuff; }
     }
+    public Character Caster
+    {
+        get { return caster; }
+    }
 
     #region Field for Debugging in Hierarchy
     protected string buffName;

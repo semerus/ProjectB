@@ -64,7 +64,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 			if (hitInfo.collider != null) {
 				b = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
 				if (b != null && b.Team != Team.Friendly) {
-					target = b;
+					this.target = b;
 					AutoAttack (b);
 				} else {
 					p = Camera.main.ScreenToWorldPoint (pixelPos);
@@ -85,6 +85,15 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
     #endregion
     
+	public override void RunTime ()
+	{
+		base.RunTime ();
+        if (autoAttack.CheckSkillStatus(SkillStatus.ReadyMask) && action == CharacterAction.Attacking)
+        {
+            autoAttack.OnCast();
+        }
+    }
+
     // not in use now
     public virtual void SetSkill(Skill[] skills) {
 		
@@ -107,7 +116,13 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		base.KillCharacter ();
 	}
 
-    public abstract void AutoAttack(IBattleHandler target);
+	public virtual void AutoAttack(IBattleHandler target) {
+		
+		if (ChangeAction (CharacterAction.Attacking)) {
+			this.target = target;
+			//autoAttack.OnCast ();
+		}
+	}
 
 
     protected void DisplaySkill(){

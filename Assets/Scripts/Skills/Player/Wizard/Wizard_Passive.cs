@@ -11,7 +11,7 @@ public class Wizard_Passive : Skill {
     public static bool stackOff = false;
     private float buffTime = 0;
 
-    public override void Activate(IBattleHandler target)
+    public override void Activate()
     {
         TimeSystem.GetTimeSystem().AddTimer(this);
     }

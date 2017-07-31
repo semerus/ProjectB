@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class Fighter : Hero {
-    
+
 	void Awake() {
 		// temporary value given
 		id = 1;
@@ -28,13 +28,41 @@ public class Fighter : Hero {
         }
         
     }
-    
+
+	/*
     public override void AutoAttack(IBattleHandler target)
     {
         this.target = target;
         autoAttack.Activate(target);
     }
-		
+<<<<<<< HEAD
+=======
+    */
+
+    public override void ReceiveDamage(IBattleHandler attacker, int damage)
+    {
+        if(activeSkills[1].Status == SkillStatus.ChannelingOn)
+        {
+            (activeSkills[1] as Fighter_CounterStance).ReflectDamage(attacker);
+
+            Debug.Log("CounterAttack Activate");
+            UpdateHpUI();
+        }
+        else
+        {
+            int receivedDamage = Calculator.ReceiveDamage(this, damage);
+
+            hp -= receivedDamage;
+            if (hp <= 0)
+            {
+                hp = 0;
+                KillCharacter();
+            }
+            UpdateHpUI();
+        }
+
+    }
+
     // may adapt to Hero class not this class
 	public override void RunTime ()
 	{
