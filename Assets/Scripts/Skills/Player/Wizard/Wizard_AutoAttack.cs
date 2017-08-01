@@ -35,10 +35,10 @@ public class Wizard_AutoAttack : HeroActive, IPooling_Character
 
     public override void Activate()
     {
-		if (caster.Target.Action == CharacterAction.Dead)
+        if (caster.Target.Action == CharacterAction.Dead)
         {
-			caster.ChangeAction (CharacterAction.Idle);
-		}
+            caster.ChangeAction(CharacterAction.Idle);
+        }
         ProjectileStack();
         cooldown = 2;
         ProjectileStack();

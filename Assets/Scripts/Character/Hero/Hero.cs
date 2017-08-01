@@ -108,11 +108,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	}
 
 	public virtual void AutoAttack(IBattleHandler target) {
-		
-		if (ChangeAction (CharacterAction.Attacking)) {
 			this.target = target;
-			//autoAttack.OnCast ();
-		}
+			autoAttack.OnCast ();
 	}
 
     public void RemoveAttackTarget()

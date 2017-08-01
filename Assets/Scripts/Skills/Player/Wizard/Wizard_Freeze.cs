@@ -18,16 +18,8 @@ public class Wizard_Freeze : HeroActive
     public override void Activate()
     {
         ResetSetting();
-        if (target != null)
-        {
-            StartCoolDown();
-        }
-    }
-
-    public override void RunTime()
-    {
-        base.RunTime();
-        Freeza_abillity2();
+        StartCoolDown();
+        UpdateSkillStatus(SkillStatus.ProcessOn);
     }
 
     public void ResetSetting()
@@ -59,13 +51,16 @@ public class Wizard_Freeze : HeroActive
 
     public void Freeza_abillity1_On()
     {
-        int damage = 10;
+        int damage = 1000;
 
         for (int i = 0; i < enemyNum.Length; i++)
         {
             Character c = enemyNum[i] as Character;
-            caster.AttackTarget(enemyNum[i], damage);
-            // 이속 공속 20퍼 감소 디버프
+            if(c.gameObject.active)
+            {
+                caster.AttackTarget(enemyNum[i], damage);
+                // 이속 공속 20퍼 감소 디버프
+            }
         }
     }
 
@@ -97,6 +92,10 @@ public class Wizard_Freeze : HeroActive
             if (hitcheck)
             {
                 caster.AttackTarget(enemyNum[i], damage);
+                if(skillCount==2)
+                {
+                    // 빙결
+                }
             }
         }
         skillCount++;

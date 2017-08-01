@@ -24,6 +24,7 @@ public class Fighter_Attack : Skill {
                 else
                 {
                     Debug.Log("sss");
+                    caster.ChangeAction(CharacterAction.Attacking);
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
                     int attackDmg = Calculator.AttackDamage(caster, dmg);

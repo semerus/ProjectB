@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class OgreMale : Enemy, ITimeHandler {
+public class OgreMale : Enemy {
 
 	// temporary
 	public OgreFemale partner;
@@ -9,8 +9,9 @@ public class OgreMale : Enemy, ITimeHandler {
 	protected int pattern = 0;
 
 	#region ITimeHandler implementation
-	public void RunTime ()
+	public override void RunTime ()
 	{
+        base.RunTime();
 		ai_timer += Time.deltaTime;
 		InstructEnemyAI ();
 	}

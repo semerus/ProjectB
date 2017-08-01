@@ -3,28 +3,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Blizzard : HeroActive
+public class Wizard_Blizzard : HeroActive,IChanneling
 {
     IBattleHandler[] enemyNum;
     Vector3 targetPosition=new Vector3();
+    float channeling = 0;
     float skilltime = 0;
     float [] inTime =new float[10];
-    int ability = 2;
 
-	void Awake() {
+    void Awake() {
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill3");
-	}
+    }
 
-    public override void Activate()
+    public virtual void OnChanneling()
+    {
+        caster.ChangeAction(CharacterAction.Channeling);
+        UpdateSkillStatus(SkillStatus.ChannelingOn);
+    }
+
+    public virtual void OnInterrupt(IBattleHandler interrupter)
     {
         ResetSetting();
         StartCoolDown();
+        UpdateSkillStatus(SkillStatus.ChannelingOff);
     }
 
-    public override void RunTime()
+    public void SkillChanneling(int abillity)
     {
-        base.RunTime();
-        Blizzard();
+        channeling += Time.deltaTime;
+        switch (abillity)
+        {
+            case 1:
+                if(channeling>=4)
+                {
+                    ResetSetting();
+                    StartCoolDown();
+                    UpdateSkillStatus(SkillStatus.ChannelingOff);
+                    UpdateSkillStatus(SkillStatus.ProcessOn);
+                }
+                break;
+
+            case 2:
+                if (channeling >= 3)
+                {
+                    ResetSetting();
+                    StartCoolDown();
+                    UpdateSkillStatus(SkillStatus.ChannelingOff);
+                    UpdateSkillStatus(SkillStatus.ProcessOn);
+                }
+                break;
+        }
     }
 
     public void ResetSetting()
@@ -39,21 +67,18 @@ public class Wizard_Blizzard : HeroActive
         skilltime = 0;
     }
 
-    public void Blizzard()
+    public void Blizzard(int abiliity)
     {
         if (skilltime<=5)
         {
             skilltime += Time.deltaTime;
-
-            switch(ability)
-            {
-                case 1:
-                    break;
-
-                case 2:
-                    Blizzard_ability2();
-                    break;
-            }
+            Gravity(abiliity);
+            Damage(abiliity);
+        }
+        else
+        {
+            LastDamage(abiliity);
+            UpdateSkillStatus(SkillStatus.ProcessOff);
         }
     }
 
@@ -72,20 +97,24 @@ public class Wizard_Blizzard : HeroActive
         targetPosition = new Vector3(tx, this.gameObject.transform.position.y,0);
     }
 
-    #region Blizzard_ability2
-
-    public void Blizzard_ability2()
-    {
-        Gravity_2();
-        Damage();
-    }
-
-    public void Gravity_2()
+    public void Gravity(int abillity)
     {
         for(int i=0; i< enemyNum.Length; i++)
         {
             Character c = enemyNum[i] as Character;
-            bool hitcheck = EllipseScanner(4f, 1.8f, targetPosition, c.transform.position );
+            bool hitcheck=false;
+
+            switch (abillity)
+            {
+                case 1:
+                    hitcheck = EllipseScanner(3f, 1.3f, targetPosition, c.transform.position);
+                    break;
+
+                case 2:
+                    hitcheck = EllipseScanner(4f, 1.8f, targetPosition, c.transform.position);
+                    break;
+            }
+            
             if(hitcheck)
             {
                 float dx = targetPosition.x - c.transform.position.x;
@@ -96,15 +125,79 @@ public class Wizard_Blizzard : HeroActive
         }
     }
 
-    #endregion
+    public void Explosion()
+    {
+        for (int i = 0; i < enemyNum.Length; i++)
+        {
+            Character c = enemyNum[i] as Character;
 
-    public void Damage()
+            bool hitcheck = false;
+
+            hitcheck = EllipseScanner(3f, 1.3f, targetPosition, c.transform.position);
+
+            if (hitcheck)
+            {
+                c.StopMove();
+                if(c.IsFacingLeft)
+                {
+                    Vector3 t = c.transform.position + new Vector3(6, 0, 0);
+                    Debug.Log(c.transform.position+"         "+ t);
+
+                    c.BeginMove(t, 30, 0);
+                }
+                else
+                {
+                    c.BeginMove(c.transform.position + new Vector3(-6, 0, 0), 1, 0);
+                }
+            }
+        }
+    }
+
+    public void LastDamage(int abillity)
+    {
+        int damage = 50;
+
+        for (int i = 0; i < enemyNum.Length; i++)
+        {
+            Character c = enemyNum[i] as Character;
+
+            bool hitcheck = false;
+
+            switch (abillity)
+            {
+                case 1:
+                    hitcheck = EllipseScanner(3f, 1.3f, targetPosition, c.transform.position);
+                    Explosion();
+                    break;
+            }
+
+            if (hitcheck)
+            {
+                caster.AttackTarget(enemyNum[i], damage);
+            }
+        }
+    }
+
+    public void Damage(int abillity)
     {
         int damage = 50;
         for (int i = 0; i < enemyNum.Length; i++)
         {
             Character c = enemyNum[i] as Character;
-            bool hitcheck = EllipseScanner(4f, 1.8f, targetPosition, c.transform.position);
+
+            bool hitcheck = false;
+
+            switch (abillity)
+            {
+                case 1:
+                    hitcheck = EllipseScanner(3f, 1.3f, targetPosition, c.transform.position);
+                    break;
+
+                case 2:
+                    hitcheck = EllipseScanner(4f, 1.8f, targetPosition, c.transform.position);
+                    break;
+            }
+
             if (hitcheck)
             {
                 inTime[i] += Time.deltaTime;
@@ -139,5 +232,17 @@ public class Wizard_Blizzard : HeroActive
     }
 
     #endregion
+
+    #region None
+    public float ChannelTime
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public float Timer_Channeling { get; set; }
+#endregion
 
 }

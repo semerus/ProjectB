@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class Wizard : Hero
 {
+    public int[] abillity = new int[3];
+
     private void Awake()
     {
+        abillity[0] = 1;
+        abillity[1] = 1;
+        abillity[2] = 1;
         id = 2;
         team = Team.Friendly;
         status = CharacterStatus.Idle;
@@ -23,9 +28,39 @@ public class Wizard : Hero
         passiveSkill.OnCast();
 
 		activeSkills = new HeroActive[3];
-        activeSkills[0] = gameObject.AddComponent<Wizard_Snowball>();
-        activeSkills[1] = gameObject.AddComponent<Wizard_Freeze>();
-        activeSkills[2] = gameObject.AddComponent<Wizard_Blizzard>();
+        switch(abillity[0])
+        {
+            case 1:
+                activeSkills[0] = gameObject.AddComponent<Wizard_Snowball_Abillity1>();
+                break;
+
+            case 2:
+                activeSkills[0] = gameObject.AddComponent<Wizard_Snowball_Abillity2>();
+                break;
+        }
+
+        switch (abillity[1])
+        {
+            case 1:
+                activeSkills[1] = gameObject.AddComponent<Wizard_Freeze_Abillity1>();
+                break;
+
+            case 2:
+                activeSkills[1] = gameObject.AddComponent<Wizard_Freeze_Abillity2>();
+                break;
+        }
+
+        switch (abillity[2])
+        {
+            case 1:
+                activeSkills[2] = gameObject.AddComponent<Wizard_Blizzard_Abillity1>();
+                break;
+
+            case 2:
+                activeSkills[2] = gameObject.AddComponent<Wizard_Blizzard_Abillity2>();
+                break;
+        }
+
         foreach (Skill eachSkill in activeSkills)
         {
             eachSkill.SetSkill(this);
@@ -73,6 +108,5 @@ public class Wizard : Hero
         }
         Debug.Log(transform.name + "Received Damage: " + damage);
         UpdateHpUI();
-
     }
 }

@@ -9,6 +9,7 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
     float speed;
     IPooling_Character pool =null;
     private bool Pmoving = false;
+    int abillity;
 
     public void ProjectileOn(Character caster, IPooling_Character pool)
     {
@@ -19,8 +20,10 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
         transform.position = caster.transform.position;
     }
 
-    public void ProjectileOn(Character caster)
+    public void ProjectileOn(Character caster, int abillity)
     {
+        this.abillity = abillity;
+        pool = null;
         this.caster = caster;
         Pmoving = false;
         this.gameObject.SetActive(true);
@@ -39,23 +42,26 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
 				moving = false;
 				this.gameObject.SetActive(false);
 				TimeSystem.GetTimeSystem().DeleteTimer(this);
-				pool.Pool.Push(this);
+                if(pool!=null)
+                {
+                    pool.Pool.Push(this);
+                }
 			}
 		}
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    private void OnTriggerStay2D(Collider2D col)
     {
-        if (col != null&&target!=null)
+        if (target != null&&Pmoving==true)
         {
-            if (col.transform.root.transform == target.transform)
+            if (col.transform.root.transform == target.transform.root.transform)
             {
-                OnArrival();
+                OnArrival(abillity);
             }
         }
     }
 
-    public virtual void OnArrival()
+    public virtual void OnArrival(int abillity)
     {
         Pmoving = false;
         this.gameObject.SetActive(false);
