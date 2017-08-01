@@ -5,14 +5,13 @@ public class Fighter : Hero {
 	void Awake() {
 		// temporary value given
 		id = 1;
-		team = Team.Friendly;
         status = CharacterStatus.Idle;
         maxHp = 300;
         hp = maxHp;
-		speed_x = 2.57f;
-		speed_y = 1.4f;
+		speed_x = speed_x_1Value * 2f;
+        speed_y = speed_y_1Value * 2f;
         
-        // for Skill debugging
+        // set skill
         autoAttack = gameObject.AddComponent<Fighter_Attack>();
         autoAttack.SetSkill(this);
 
@@ -36,6 +35,8 @@ public class Fighter : Hero {
         this.target = target;
         autoAttack.Activate(target);
     }
+<<<<<<< HEAD
+=======
     */
 
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
@@ -61,31 +62,58 @@ public class Fighter : Hero {
         }
 
     }
-		
+
+    // may adapt to Hero class not this class
 	public override void RunTime ()
 	{
-		base.RunTime ();
-		// for debugging skill
-		if (Input.GetKeyDown (KeyCode.A))
-			activeSkills [0].OnCast ();
-		else if (Input.GetKeyDown (KeyCode.S))
-			activeSkills [1].OnCast ();
-		else if (Input.GetKeyDown (KeyCode.D))
-			activeSkills [2].OnCast ();
+        // Action State Check -> Status Check
+        switch (action) {
+        case CharacterAction.Idle:
+                if (target != null)
+                    AutoAttack(target);
+                break;
 
-        //switch(action)
-        //{
-        //    case CharacterAction.Idle:
-        //    case CharacterAction.Moving:
-        //        if (this.target != null)
-        //        {
-        //            if (this.target.Team == Team.Hostile)
-        //                AutoAttack(target);
-        //        }
-        //        break;
+		case CharacterAction.Moving:
+                switch (moveMethod)
+                {
+                    case MoveMethod.Normal:
+                        Move(moveTarget);
+                        break;
+                    case MoveMethod.CustomSpeed:
+                        Move(moveTarget, customSpeed_x, customSpeed_y);
+                        break;
+                }
+                break;
 
-        //    default:
-        //        break;
-        //}
+       case CharacterAction.Jumping:
+			switch (moveMethod) {
+			case MoveMethod.Normal:
+				Move(moveTarget);
+				break;
+			case MoveMethod.CustomSpeed:
+				Move(moveTarget, customSpeed_x, customSpeed_y);
+				break;
+			}
+			break;
+
+        case CharacterAction.Channeling:
+                // Do channeling Ani
+            break;
+
+        case CharacterAction.Attacking:
+                // Do Attacking Ani
+                break;
+
+        case CharacterAction.Dead:
+                // Do Dead Ani
+                break;
+
+        default:
+                Debug.LogError("CharacterAction Debug Error!");
+                break;
+        }
+
+
+		CheckFacing();
 	}
 }

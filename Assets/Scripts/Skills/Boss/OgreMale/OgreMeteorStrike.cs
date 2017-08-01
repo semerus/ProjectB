@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class OgreMeteorStrike : Skill {
 
@@ -8,6 +9,13 @@ public class OgreMeteorStrike : Skill {
 	protected int counter;
 	protected float progressTimer;
 	protected int strikes = 6;
+	protected Stack<IPooledItem_Character> pool = new Stack<IPooledItem_Character>();
+
+	public Stack<IPooledItem_Character> Pool {
+		get {
+			return pool;
+		}
+	}
 
 	public override void RunTime ()
 	{

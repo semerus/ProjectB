@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Fighter_Attack : Skill {
-	// effect of this skill
-	int dmg;
+
     #region implemented abstract members of Skill
 
     public override void Activate ()
@@ -19,6 +18,8 @@ public class Fighter_Attack : Skill {
                 {
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
+                    caster.ChangeAction(CharacterAction.Attacking);
+
                     StartCoolDown();
                 }
                 else
@@ -27,13 +28,11 @@ public class Fighter_Attack : Skill {
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
                     int attackDmg = Calculator.AttackDamage(caster, dmg);
-
 					caster.Target.ReceiveDamage (caster, attackDmg);
-
-
-                    //LifeStealValue;
                     caster.ReceiveHeal(10);
 
+                    caster.ChangeAction(CharacterAction.Attacking);
+                    
                     StartCoolDown();
                 }
             }
@@ -55,7 +54,7 @@ public class Fighter_Attack : Skill {
     {
         // set original value
         cooldown = 0.9f;
-        dmg = 10;
+        dmg = 20;
 
         // set initial value
 		skillStatus = SkillStatus.ReadyOn;
@@ -67,14 +66,14 @@ public class Fighter_Attack : Skill {
     #endregion
 
     #region Field&Method
+    // effect of this skill
+    int dmg;
 
     // Check Melee Range
     bool isTargetInMeleeRange;
     Vector3 positionToMeleeAttack;
     private void CheckTargetRange(IBattleHandler attackTarget)
     {
-        // you can change 'as Enemy' to 'as Hero' (or something that has IBattleHandler
-        // to get position
         Vector3 enemyPosition = (attackTarget as Enemy).transform.position;
 
         float myA = 2.1f;
@@ -113,6 +112,5 @@ public class Fighter_Attack : Skill {
             }
         }
     }
-
     #endregion
 }

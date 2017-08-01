@@ -22,6 +22,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
     [SerializeField]
 	protected CharacterAction action = CharacterAction.Idle;
 	protected int status = CharacterStatus.Idle;
+    [SerializeField]
     protected MoveMethod moveMethod = MoveMethod.Normal;
 
     [SerializeField]
@@ -90,13 +91,17 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
-		
-		for (int i = 0; i < skills.Length; i++) {
-			IChanneling ch = skills [i] as IChanneling;
-			if (ch != null && SkillStatus.CheckStatus(skills[i].Status, SkillStatus.ChannelingMask)) {
-				ch.OnInterrupt (attacker);
-			}
-		}
+        if(skills != null)
+        {
+            for (int i = 0; i < skills.Length; i++)
+            {
+                IChanneling ch = skills[i] as IChanneling;
+                if (ch != null && SkillStatus.CheckStatus(skills[i].Status, SkillStatus.ChannelingMask))
+                {
+                    ch.OnInterrupt(attacker);
+                }
+            }
+        }
 
         int receivedDamage = Calculator.ReceiveDamage(this, damage);
         hp -= receivedDamage;
@@ -229,39 +234,25 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	protected abstract void UpdateHpUI ();
 
 	public virtual void AttackTarget(IBattleHandler target, int damage) {
-		// check for buffs
-		float dmgRatio = 1f;
-		float lifeStealRatio = 0f;
-        float lifeStealAbs = 0f;
-        float lifeStealSum = 0f;
+        int returnDmg = damage;
+
+        if(this is Hero)
+            // Switch if it is Skill, Attack
+            returnDmg = Calculator.AttackDamage(this, returnDmg);
+        else if(this is Enemy)
+            returnDmg = Calculator.AllDamage(this, returnDmg);
         
-        for (int i = 0; i < buffs.Count; i++)
-        {
-            ILifeStealAbsBuff buff = buffs[i] as ILifeStealAbsBuff;
-            if (buff != null)
-            {
-                lifeStealAbs += buff.LifeStealAbs;
-            }
-        }
-
-        lifeStealSum = (damage * dmgRatio * lifeStealRatio) + lifeStealAbs;
-
-		target.ReceiveDamage(this, (int) (damage * dmgRatio));
-        ReceiveHeal((int)lifeStealSum);
-	}
+        target.ReceiveDamage(this,returnDmg);
+    }
 
 	public virtual void HealTarget(int heal, IBattleHandler target) {
-		// check for buffs
-		float ratio = 1f;
-
-		// add heal ratio
-
-		target.ReceiveHeal ((int) (heal * ratio));
+		target.ReceiveHeal (heal);
 	}
 
 	protected virtual void KillCharacter () {
         //for time System Off
-        if(buffs != null)
+        //1) remove Buff from timer
+        if (buffs != null)
         {
             foreach(Buff eachBuff in buffs)
             {
@@ -270,6 +261,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
                     TimeSystem.GetTimeSystem().DeleteTimer(eachBuffTime);
             }
         }
+        //2) remove Character from timer
+        Debug.LogWarning("Check this with Dead Animation");
+        if (TimeSystem.GetTimeSystem().CheckTimer(this) == true)
+            TimeSystem.GetTimeSystem().DeleteTimer(this);
+
 		gameObject.SetActive (false);
 		ChangeAction (CharacterAction.Dead);
 		TimeSystem.GetTimeSystem().DeleteTimer(this);
@@ -338,7 +334,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		// calculate speed
 		Vector3 n = Vector3.Normalize(target - transform.position);
 		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
-		// i added Mathf.sqrt because calculation doesn't match. think about deltaX,speedX = 3, deltaY,speedY=4  (3,4,5 triangle)
+        speed *= Calculator.MoveSpeed(this);
+
 
 		if (Vector3.Distance (target, transform.position) > 0.01f) {
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
