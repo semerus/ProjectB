@@ -7,7 +7,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	protected int id;
 	protected Team team;
 	protected int maxHp;
-    [SerializeField]
+    
+	[SerializeField]
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
@@ -16,7 +17,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
     [SerializeField]
 	protected List<Buff> buffs = new List<Buff>();
-	protected Skill[] skills;
+	protected Skill[] skills = new Skill[0];
 
     [SerializeField]
 	protected CharacterAction action = CharacterAction.Idle;
@@ -89,12 +90,14 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
-		//for (int i = 0; i < skills.Length; i++) {
-		//	IChanneling ch = skills [i] as IChanneling;
-		//	if (ch != null && SkillStatus.CheckStatus(skills[i].Status, SkillStatus.ChannelingMask)) {
-		//		ch.OnInterrupt (attacker);
-		//	}
-		//}
+		
+		for (int i = 0; i < skills.Length; i++) {
+			IChanneling ch = skills [i] as IChanneling;
+			if (ch != null && SkillStatus.CheckStatus(skills[i].Status, SkillStatus.ChannelingMask)) {
+				ch.OnInterrupt (attacker);
+			}
+		}
+
         int receivedDamage = Calculator.ReceiveDamage(this, damage);
         hp -= receivedDamage;
         if (hp <= 0) {
@@ -202,12 +205,24 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		// immune
 		/*
 		if(CheckCharacterStatus(CharacterStatus.IsImmuneMask)) {
-			
+		// turn off all negative buffs	
 		}
 		*/
 		// on silence
-
+		if (CheckCharacterStatus (CharacterStatus.IsSilencedMask)) {
+			for (int i = 0; i < skills.Length; i++) {
+				IChanneling ch = skills [i] as IChanneling;
+				if (ch != null) {
+					ch.OnInterrupt (null);
+				}
+			}
+		}
 		// on rooted
+		if (CheckCharacterStatus (CharacterStatus.IsRootedMask)) {
+			if (action == CharacterAction.Moving || action == CharacterAction.Jumping) {
+				StopMove ();
+			}
+		}
 	}
 
 	// update hpBar for each character
@@ -227,7 +242,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
             {
                 lifeStealAbs += buff.LifeStealAbs;
             }
-    
         }
 
         lifeStealSum = (damage * dmgRatio * lifeStealRatio) + lifeStealAbs;
