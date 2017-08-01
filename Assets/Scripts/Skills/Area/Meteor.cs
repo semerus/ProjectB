@@ -27,7 +27,6 @@ public class Meteor : Area, ITimeHandler {
 
 	#endregion
 
-
 	public void SetMeteor(Character caster, Vector3 target) {
 		this.caster = caster;
 		gameObject.SetActive (true);

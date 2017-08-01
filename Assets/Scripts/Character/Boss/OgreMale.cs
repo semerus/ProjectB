@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 
-public class OgreMale : Enemy, ITimeHandler {
+public class OgreMale : Enemy {
 
 	// temporary
 	public OgreFemale partner;
 
 	protected float ai_timer;
-	protected int pattern = 0;
+	protected int pattern = 2;
 
 	#region ITimeHandler implementation
-	public void RunTime ()
+	public override void RunTime ()
 	{
+		base.RunTime ();
 		ai_timer += Time.deltaTime;
 		InstructEnemyAI ();
 	}
@@ -29,8 +30,8 @@ public class OgreMale : Enemy, ITimeHandler {
 
 		skills = new Skill[3];
 		skills[0] = gameObject.AddComponent<OgreHeal> ();
-		skills[1] = gameObject.AddComponent<OgreMeteorStrike> ();
-		skills[2] = gameObject.AddComponent<OgreSetFire> ();
+		skills[2] = gameObject.AddComponent<OgreMeteorStrike> ();
+		skills[1] = gameObject.AddComponent<OgreSetFire> ();
 
 		for (int i = 0; i < skills.Length; i++) {
 			skills [i].SetSkill (this);
@@ -38,6 +39,8 @@ public class OgreMale : Enemy, ITimeHandler {
 
 		ai_timer = 0f;
 		TimeSystem.GetTimeSystem ().AddTimer (this);
+
+		BeginMove (transform.position + new Vector3 (3f, 0f, 0f), 3f, 3f);
 	}
 
 	protected override void InstructEnemyAI ()
@@ -64,7 +67,7 @@ public class OgreMale : Enemy, ITimeHandler {
 			break;
 		// after torch file
 		case 2:
-			if (ai_timer >= 20f) {
+			if (ai_timer >= 5f) {
 				pattern = 0;
 				skills[2].OnCast ();
 				Debug.Log("Meteor");

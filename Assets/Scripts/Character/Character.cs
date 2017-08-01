@@ -7,6 +7,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	protected int id;
 	protected Team team;
 	protected int maxHp;
+    
+	[SerializeField]
 	protected int hp;
 	protected float speed_x;
 	protected float speed_y;
@@ -15,7 +17,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
     [SerializeField]
 	protected List<Buff> buffs = new List<Buff>();
-	protected Skill[] skills;
+	protected Skill[] skills = new Skill[0];
 
     [SerializeField]
 	protected CharacterAction action = CharacterAction.Idle;
@@ -230,19 +232,30 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		// immune
 		/*
 		if(CheckCharacterStatus(CharacterStatus.IsImmuneMask)) {
-			
+		// turn off all negative buffs	
 		}
 		*/
 		// on silence
-
+		if (CheckCharacterStatus (CharacterStatus.IsSilencedMask)) {
+			for (int i = 0; i < skills.Length; i++) {
+				IChanneling ch = skills [i] as IChanneling;
+				if (ch != null) {
+					ch.OnInterrupt (null);
+				}
+			}
+		}
 		// on rooted
+		if (CheckCharacterStatus (CharacterStatus.IsRootedMask)) {
+			if (action == CharacterAction.Moving || action == CharacterAction.Jumping) {
+				StopMove ();
+			}
+		}
 	}
 
 	// update hpBar for each character
 	protected abstract void UpdateHpUI ();
 
 	public virtual void AttackTarget(IBattleHandler target, int damage) {
-
         int returnDmg = damage;
 
         if(this is Hero)
