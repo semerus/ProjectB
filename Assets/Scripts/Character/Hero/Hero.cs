@@ -18,6 +18,11 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
     {
         get { return activeSkills; }
     }
+
+    public Skill PassiveSkill
+    {
+        get { return passiveSkill; }
+    }
     #endregion
 
     #region implemented abstract members of Character

@@ -129,4 +129,10 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 			skillStatus = SkillStatus.ReadyOn;
 		}
 	}
+
+    public void AddCooltime(float time)
+    {
+        timer_cooldown += time;
+    }
+
 }

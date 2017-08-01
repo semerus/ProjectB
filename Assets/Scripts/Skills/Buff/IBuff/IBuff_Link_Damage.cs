@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Healer_Summon_Shield : MonoBehaviour {
+public class IBuff_Link : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

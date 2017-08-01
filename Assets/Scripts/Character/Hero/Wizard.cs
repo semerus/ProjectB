@@ -62,17 +62,4 @@ public class Wizard : Hero
             }
         }
     }
-
-    public override void ReceiveDamage(IBattleHandler attacker, int damage)
-    {
-        hp -= damage;
-        if (hp <= 0)
-        {
-            hp = 0;
-            KillCharacter();
-        }
-        Debug.Log(transform.name + "Received Damage: " + damage);
-        UpdateHpUI();
-
-    }
 }

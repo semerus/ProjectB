@@ -27,20 +27,6 @@ public enum AreaState {
 	Disabled
 }
 
-/// <summary>
-/// None, Before, On, After
-/// </summary>
-public enum AttackMotionState
-{
-    None,
-    beforeAttack,
-    OnAttack,
-    afterAttack
-}
-
-/// <summary>
-/// None, 
-/// </summary>
 public enum SkillTrait
 {
     None,
@@ -48,9 +34,10 @@ public enum SkillTrait
     Right
 }
 
-public enum AttackType
+
+public enum LinkerState
 {
-    None,
-    Melee,
-    Range
+    OnLink,
+    willBreak,
+    OffLink
 }
