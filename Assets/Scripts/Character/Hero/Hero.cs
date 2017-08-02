@@ -33,6 +33,9 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		heroUI.UpdateHp (percent);
 	}
 
+	protected override void UpdateCCUI() {
+		heroUI.UpdateCC (status);
+	}
 	#endregion
 
 	#region ITapHandler implementation
@@ -111,8 +114,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	public override void Spawn ()
 	{
-		base.Spawn ();
 		heroUI = GetComponentInChildren<HeroUI> ();
+		base.Spawn ();
 	}
 
 	protected override void KillCharacter ()

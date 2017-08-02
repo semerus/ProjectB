@@ -57,6 +57,8 @@ public class OgreFemale_Sk4 : Skill
         }
     }
 
+	Buff_Stun stun0;
+	Buff_Stun stun1;
     private void BurnRun()
     {
         float speed = 3 * Mathf.Sqrt(2);
@@ -67,6 +69,12 @@ public class OgreFemale_Sk4 : Skill
             caster.StopMove();
             sk4_On = false;
             count = 0;
+
+			// stun both bosses
+			OgreFemale f = caster as OgreFemale;
+			stun0 = new Buff_Stun (2f, caster, caster);
+			stun1 = new Buff_Stun (2f, caster, f.Partner);
+
             SkillEventArgs s = new SkillEventArgs(this.name, true);
             OnEndSkill(s);
         }

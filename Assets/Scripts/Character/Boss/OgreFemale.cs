@@ -3,12 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OgreFemale : Enemy,ITimeHandler {
+public class OgreFemale : Enemy {
 
     IBattleHandler[] friendlyNum;
 	[SerializeField]
 	int pattern = 0;
 	float pattern_timer = 5f;
+	protected OgreMale partner;
+
+	public OgreMale Partner {
+		get {
+			return partner;
+		}
+	}
 
     protected override void Start()
     {
@@ -18,6 +25,7 @@ public class OgreFemale : Enemy,ITimeHandler {
 		hp = 500;
 		speed_x = 1f;
         speed_y = 1f;
+		partner = GameObject.Find ("OgreMale").GetComponent<OgreMale> ();
 
 		skills = new Skill[4];
 		skills [0] = gameObject.AddComponent<OgreFemale_AutoAttack> ();
@@ -60,8 +68,8 @@ public class OgreFemale : Enemy,ITimeHandler {
 
     protected override void InstructEnemyAI()
     {
-		if (CheckCharacterStatus (CharacterStatus.NotOrderableMask))
-			return;
+		base.InstructEnemyAI ();
+
 		switch (pattern) {
 		// idle
 		case 0:
