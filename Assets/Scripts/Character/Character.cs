@@ -213,6 +213,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		// initialize animation status
 		anim = GetComponentInChildren<AnimationController> ();
 		anim.UpdateSortingLayer ();
+		RefreshBuff ();
 	}
 
 	/// <summary>
@@ -220,7 +221,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	/// </summary>
 	public void RefreshBuff() {
 		int change = CharacterStatus.Idle;
-
 		for (int i = 0; i < buffs.Count; i++) {
             IStatusBuff buff = buffs [i] as IStatusBuff;
 			if (buff != null) {
@@ -250,9 +250,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 				StopMove ();
 			}
 		}
+		UpdateCCUI ();
 	}
 
 	// update hpBar for each character
+	protected abstract void UpdateCCUI();
 	protected abstract void UpdateHpUI ();
 
 	public virtual void AttackTarget(IBattleHandler target, int damage) {
@@ -345,6 +347,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         customSpeed_y = speed_y;
 		moveTarget = target;
 
+		/*
 		if (!Background.GetBackground ().CheckBoundaries (target)) {
 			Debug.LogError ("Moved outside boundaries");
 			ChangeAction (CharacterAction.Idle);
@@ -352,6 +355,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 			//OnMoveComplete (x);
 			return;
 		}
+		*/
 
 		// calculate speed
 		Vector3 n = Vector3.Normalize(target - transform.position);
@@ -371,9 +375,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         }
 	}
 
-    public void CheckFacing() // 수정됨
+    public void CheckFacing()
     {
-        Vector3 movePosiotion = moveTarget;
+		Vector3 movePosition = moveTarget;
         switch(team)
         {
             case Team.Friendly:

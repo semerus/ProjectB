@@ -27,7 +27,7 @@ public class Healer : Hero {
 		activeSkills = new HeroActive[3];
 		activeSkills[0] = gameObject.AddComponent<Healer_Summon_Totem_MovementSpeedBuff>();
 		activeSkills[1] = gameObject.AddComponent<Healer_Summon_ProtectionArea_CooltimeReduction>();
-		activeSkills[2] = gameObject.AddComponent<Healer_Summon_Totem_MovementSpeedBuff>();
+		activeSkills[2] = gameObject.AddComponent<Healer_Restore>();
 		foreach (Skill eachSkill in activeSkills)
 		{
 			eachSkill.SetSkill(this);

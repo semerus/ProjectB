@@ -14,14 +14,19 @@ public class HeroUI : MonoBehaviour {
 	public void UpdateCC(int status) {
 		switch (status) {
 		case CharacterStatus.Silenced:
+			ccBar.text = "Silenced";
 			break;
 		case CharacterStatus.Rooted:
+			ccBar.text = "Rooted";
 			break;
 		case CharacterStatus.Stunned:
+			ccBar.text = "Stunned";
 			break;
 		case CharacterStatus.Idle:
+			ccBar.text = "";
 			break;
 		case CharacterStatus.Immune:
+			ccBar.text = "Immune";
 			break;
 		default:
 			break;

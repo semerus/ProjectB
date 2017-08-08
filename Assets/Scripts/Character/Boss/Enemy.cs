@@ -10,6 +10,10 @@ public abstract class Enemy : Character, IDoubleTapHandler {
 		float percent = (float)hp / (float)maxHp;
 		enemyUI.UpdateHp (percent);
     }
+
+	protected override void UpdateCCUI() {
+		enemyUI.UpdateCC (status);
+	}
     #endregion
 
     #region IDoubleTapHandler implementation
@@ -27,6 +31,8 @@ public abstract class Enemy : Character, IDoubleTapHandler {
 	}
 	// capsulize patterns
 	protected virtual void InstructEnemyAI () {
-		
+		if (CheckCharacterStatus (CharacterStatus.NotOrderableMask)) {
+			return;
+		}
 	}
 }

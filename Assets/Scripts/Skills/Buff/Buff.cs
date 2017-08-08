@@ -32,9 +32,10 @@ public abstract class Buff {
         CheckCounterBuff();
 
 		// add to Buff list to target
+		this.caster = caster;
 		this.target = target; // can do this at construct method
 		target.Buffs.Add(this);
-        
+
 		// check for status changes to the character
 		IStatusBuff buff = this as IStatusBuff;
 		if (buff != null) {

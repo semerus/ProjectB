@@ -85,18 +85,31 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 
 	public IBattleHandler[] GetEntities(Team team) {
 		IBattleHandler[] arr;
+		List<IBattleHandler> temp = new List<IBattleHandler> ();
 		switch (team) {
 		case Team.Friendly:
-			arr = new IBattleHandler[friendly.Count];
-			friendly.CopyTo (arr);
+			foreach (var item in friendly) {
+				if (item.Action != CharacterAction.Dead)
+					temp.Add (item);
+			}
+			arr = new IBattleHandler[temp.Count];
+			temp.CopyTo (arr);
 			break;
 		case Team.Hostile:
-			arr = new IBattleHandler[hostile.Count];
-			hostile.CopyTo (arr);
+			foreach (var item in hostile) {
+				if (item.Action != CharacterAction.Dead)
+					temp.Add (item);
+			}
+			arr = new IBattleHandler[temp.Count];
+			temp.CopyTo (arr);
 			break;
 		case Team.Neutral:
-			arr = new IBattleHandler[hostile.Count];
-			neutral.CopyTo (arr);
+			foreach (var item in neutral) {
+				if (item.Action != CharacterAction.Dead)
+					temp.Add (item);
+			}
+			arr = new IBattleHandler[temp.Count];
+			temp.CopyTo (arr);
 			break;
 		default:
 			arr = null;
@@ -133,7 +146,6 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	public void CheckGame() {
 		bool classifier = true;
 
-		Debug.Log ("sss: " + hostile.Count);
 		// win scenario
 		for (int i = 0; i < hostile.Count; i++) {
 			classifier = classifier && hostile [i].Action == CharacterAction.Dead;

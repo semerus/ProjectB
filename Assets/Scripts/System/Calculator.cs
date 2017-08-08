@@ -31,6 +31,26 @@ public class Calculator {
         return returnSpeed;
     }
 
+    public static float AttackCooltime(Character caster, float baseTime)
+    {
+        float returnTime = baseTime;
+
+        float sum_Attack_Ratio = 0f;
+
+        for(int i = 0; i < caster.Buffs.Count; i ++)
+        {
+            IBuff_AttackSpeed_Ratio buff = caster.Buffs[i] as IBuff_AttackSpeed_Ratio;
+            if(buff != null)
+            {
+                sum_Attack_Ratio += buff.AttackSpeed_Ratio;
+            }
+        }
+
+        returnTime *= (1 + sum_Attack_Ratio);
+
+        return returnTime;
+    }
+
     public static int AttackDamage(Character caster, int baseDmg)
     {
         int returnValue = baseDmg;

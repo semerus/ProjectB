@@ -34,6 +34,10 @@ public class OgreFemale_Sk2 : Skill {
 			caster.MoveComplete += new EventHandler<MoveEventArgs> (OnMoveComplete);
 		} else {
 			// enter what happens when rooted at start
+			// 왜 스턴 당하고 일로 올까?
+			SkillEventArgs e = new SkillEventArgs(this.name, false);
+			OnEndSkill(e);
+
 		}
     }
 

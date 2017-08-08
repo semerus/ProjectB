@@ -6,7 +6,7 @@ public class OgreMale : Enemy {
 	public OgreFemale partner;
 
 	protected float ai_timer;
-	protected int pattern = 2;
+	protected int pattern = 1;
 
 	#region ITimeHandler implementation
 	public override void RunTime ()
@@ -39,12 +39,11 @@ public class OgreMale : Enemy {
 
 		ai_timer = 0f;
 		TimeSystem.GetTimeSystem ().AddTimer (this);
-
-		BeginMove (transform.position + new Vector3 (3f, 0f, 0f), 3f, 3f);
 	}
 
 	protected override void InstructEnemyAI ()
 	{
+		base.InstructEnemyAI ();
 		switch (pattern) {
 		// start
 		case 0:
@@ -58,7 +57,7 @@ public class OgreMale : Enemy {
 			break;
 		// after heal
 		case 1:
-			if (ai_timer >= 20f) {
+			if (ai_timer >= 5f) {
 				pattern = 2;
 				// torch fire
 				skills[1].OnCast();
@@ -67,7 +66,7 @@ public class OgreMale : Enemy {
 			break;
 		// after torch file
 		case 2:
-			if (ai_timer >= 5f) {
+			if (ai_timer >= 20f) {
 				pattern = 0;
 				skills[2].OnCast ();
 				Debug.Log("Meteor");

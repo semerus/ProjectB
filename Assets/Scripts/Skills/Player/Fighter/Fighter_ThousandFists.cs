@@ -50,7 +50,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
             curHitCoutns++;
             timer_Channeling = 0f;
             // animation state
-            
+        
             caster.AttackTarget(target, normalDmg);
             print("nor punch!!");
         }
