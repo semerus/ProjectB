@@ -38,7 +38,9 @@ public class OgreHeal : Skill, IChanneling {
 
 	public void OnInterrupt (IBattleHandler interrupter)
 	{
-		Debug.LogError ("OgreHeal interrupt not implemented");
+		UpdateSkillStatus (SkillStatus.ChannelingOff);
+		timer_channeling = 0f;
+		StartCoolDown ();
 	}
 
 	public float ChannelTime {
