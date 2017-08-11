@@ -14,7 +14,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 			return;
 		}
 
-		// skillState check
+		// skillStatus check
 		if (!CheckSkillStatus(SkillStatus.ReadyMask))
 		{
 			print("skill not ready");
@@ -61,7 +61,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
         timer_Channeling += Time.deltaTime;
 
         // skill fail
-        if(timer_Channeling > countableTime)
+        if(timer_Channeling > channelTime)
         {
             //time check
             timer_Channeling = 0f;
@@ -94,7 +94,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
         cooldown = 20f;
         dmg = 250;
         HPCost = 50;
-        countableTime = 5f; // for check easily
+        channelTime = 5f; 
 
         // set initial value
 		skillStatus = SkillStatus.ReadyOn;
@@ -114,23 +114,15 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
     int dmg;
     int HPCost;
 
-    float countableTime;
-
     float channelTime;
     float timer_Channeling;
 
     // Reflect Damage
     public void ReflectDamage(IBattleHandler attacker)
     {
-        // check melee range check
-        if(CheckTargetRange(attacker) == true)
-        {
-            // effect
-            (attacker as Character).ReceiveDamage(caster, dmg);
-            // characterState
-            print("damage reflected!");
-        }
-		caster.ChangeAction(CharacterStatus.Idle);
+        (attacker as Character).ReceiveDamage(caster, dmg);
+
+        caster.ChangeAction(CharacterStatus.Idle);
 		timer_cooldown = 0f;
 		StartCoolDown();
     }

@@ -29,30 +29,17 @@ public class Fighter : Hero {
         
     }
 
-	/*
-    public override void AutoAttack(IBattleHandler target)
-    {
-        this.target = target;
-        autoAttack.Activate(target);
-    }
-<<<<<<< HEAD
-=======
-    */
-
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
         if(activeSkills[1].Status == SkillStatus.ChannelingOn)
         {
-            (activeSkills[1] as Fighter_CounterStance).ReflectDamage(attacker);
-
-            Debug.Log("CounterAttack Activate");
+            (activeSkills[1] as Fighter_CounterStance).OnInterrupt(attacker);
             UpdateHpUI();
         }
         else
         {
             int receivedDamage = Calculator.ReceiveDamage(this, damage);
 
-            //여기에다가 함수를 추가하고 뺄 수는 없을까? -> 해놓고 델리게이트로 바꿔 보도록 합시다!!!
             if (this is Hero)
             {
                 foreach (Buff eachbuff in buffs)

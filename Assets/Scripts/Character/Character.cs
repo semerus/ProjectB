@@ -29,12 +29,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
 	protected bool isFacingLeft = true;
-	protected AnimationController anim;
+    protected AnimationController anim;
 
 	public event EventHandler<MoveEventArgs> MoveComplete;
 
-	#region Getters and Setters
-
+    #region Getters and Setters
 	public List<Buff> Buffs {
 		get {
 			return buffs;

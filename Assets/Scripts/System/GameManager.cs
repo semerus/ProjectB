@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour {
     {
 		GetGameManager ();
 		DontDestroyOnLoad (gameObject);
+
 		//Set Scene view as horizontal
         Screen.orientation = ScreenOrientation.LandscapeLeft;
     }
