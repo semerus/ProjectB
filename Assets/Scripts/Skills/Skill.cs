@@ -11,7 +11,6 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// gameUI prefab
 	protected int id;
 	protected Character caster;
-	[SerializeField]
 	protected int skillStatus = SkillStatus.ReadyOn;
 	protected float cooldown;
     [SerializeField]

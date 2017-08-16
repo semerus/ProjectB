@@ -11,7 +11,6 @@ public class Healer : Hero {
 	#endregion
 
 	void Awake() {
-
 //		autoAttack = gameObject.AddComponent<Healer_Attack>();
 //        passiveSkill = gameObject.AddComponent<Healer_Passive>();
 //

@@ -131,7 +131,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		
 		if (ChangeAction (CharacterAction.Attacking)) {
 			this.target = target;
-			//autoAttack.OnCast ();
+			autoAttack.OnCast ();
 		}
 	}
 

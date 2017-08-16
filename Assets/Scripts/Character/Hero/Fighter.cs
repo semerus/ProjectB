@@ -2,16 +2,6 @@
 
 public class Fighter : Hero {
 
-	/*
-    public override void AutoAttack(IBattleHandler target)
-    {
-        this.target = target;
-        autoAttack.Activate(target);
-    }
-<<<<<<< HEAD
-=======
-    */
-
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
         int receivedDamage = Calculator.ReceiveDamage(this, damage);
