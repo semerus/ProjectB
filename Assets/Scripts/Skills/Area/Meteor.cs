@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.16
+ */
+using UnityEngine;
 
 public class Meteor : Area, ITimeHandler {
 
 	AreaState state;
-
+	AnimationController anim;
 	int damage = 100;
 	float readyTime = 2f;
 	//float activeTime = 0.1f;
@@ -13,6 +17,7 @@ public class Meteor : Area, ITimeHandler {
 
 	public void RunTime ()
 	{
+		/*
 		switch (state) {
 		case AreaState.Ready:
 			timer_ready += Time.deltaTime;
@@ -23,17 +28,25 @@ public class Meteor : Area, ITimeHandler {
 		default:
 			break;
 		}
+		*/
 	}
 
 	#endregion
 
-	public void SetMeteor(Character caster, Vector3 target) {
+	protected override void Awake() {
+		base.Awake ();
+		anim = GetComponentInChildren<AnimationController> ();
+	}
+
+	public void SetMeteor(Character caster, Vector3 target, int damage) {
 		this.caster = caster;
+		this.damage = damage;
 		gameObject.SetActive (true);
 		transform.position = target;
 		state = AreaState.Ready;
 		timer_ready = 0f;
 		TimeSystem.GetTimeSystem ().AddTimer (this);
+		anim.onCue += DestroyMeteor;
 	}
 
 	public void DestroyMeteor() {
@@ -57,6 +70,7 @@ public class Meteor : Area, ITimeHandler {
 		}
 
 		TimeSystem.GetTimeSystem ().DeleteTimer (this);
+		anim.onCue -= DestroyMeteor;
 		gameObject.SetActive (false);
 	}
 }

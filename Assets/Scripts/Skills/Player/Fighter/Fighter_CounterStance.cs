@@ -90,8 +90,12 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
     #region MonoBehaviours
     void Awake()
     {
-        // set original value
-        cooldown = 20f;
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [1] = this;
+		}
+
         dmg = 250;
         HPCost = 50;
         countableTime = 5f; // for check easily

@@ -14,9 +14,14 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
     float r = 1f;
 
     void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [0] = this;
+		}
+
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill1");
         SetSnowProjectile();
-        cooldown = 10f;
     }
 
     protected override void OnProcess()

@@ -1,14 +1,29 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.16
+ */
+using UnityEngine;
 using UnityEngine.UI;
 
 public class HeroUI : MonoBehaviour {
 
-	public RectTransform curHpBar;
+	protected float maxLength = 1.2f;
+	public HpBar hpBar;
 	public Text ccBar;
 
+	void Start() {
+		hpBar = GetComponentInChildren<HpBar> ();
+
+		// separate this later for customization for each hero(different sizes of hp bars)
+		SetUI (maxLength);
+	}
+
+	public void SetUI(float length) {
+		hpBar.SetHp (length);
+	}
+
 	public void UpdateHp(float percent) {
-		// change 1f later
-		curHpBar.sizeDelta = new Vector2(1f * percent, curHpBar.rect.height);
+		hpBar.UpdateHp (percent);
 	}
 
 	public void UpdateCC(int status) {

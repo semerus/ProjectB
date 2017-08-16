@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.13
+ */
+using UnityEngine;
 
 public class OgreMale : Enemy {
 
@@ -17,25 +21,19 @@ public class OgreMale : Enemy {
 	}
 	#endregion
 
-	protected override void Start() {
-		base.Start ();
+	protected void Start() {
 		// temporary <- put this in spawn
-		id = 3;
-		team = Team.Hostile;
-        status = CharacterStatus.Idle;
-		maxHp = 5000;
-		hp = 5000;
-		speed_x = 1f;
-		speed_y = 1f;
 
+		/*
 		skills = new Skill[3];
 		skills[0] = gameObject.AddComponent<OgreHeal> ();
 		skills[2] = gameObject.AddComponent<OgreMeteorStrike> ();
 		skills[1] = gameObject.AddComponent<OgreSetFire> ();
 
 		for (int i = 0; i < skills.Length; i++) {
-			skills [i].SetSkill (this);
+			//skills [i].SetSkill (this);
 		}
+		*/
 
 		ai_timer = 0f;
 		TimeSystem.GetTimeSystem ().AddTimer (this);

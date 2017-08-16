@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.13
+ */
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
@@ -8,6 +12,8 @@ public class GameManager : MonoBehaviour {
 	public string version;
 	private int phase = 0;
 	private static GameManager instance;
+
+	private LoadManager load = LoadManager.Instance;
 
 	public static GameManager GetGameManager() {
 		if (!instance) {
@@ -21,10 +27,24 @@ public class GameManager : MonoBehaviour {
     void Awake()
     {
 		GetGameManager ();
+
+		if (instance != this) {
+			Destroy (this.gameObject);
+		}
+
 		DontDestroyOnLoad (gameObject);
+
 		//Set Scene view as horizontal
         Screen.orientation = ScreenOrientation.LandscapeLeft;
+
+		phase = SceneManager.GetActiveScene().buildIndex;
+
+		LoadData ();
     }
+
+	void Start() {
+		
+	}
 
 	void Update() {
 		switch(phase) {
@@ -48,5 +68,9 @@ public class GameManager : MonoBehaviour {
 		default:
 			break;
 		}
+	}
+
+	void LoadData() {
+		load.LoadData ();
 	}
 }

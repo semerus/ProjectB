@@ -7,19 +7,12 @@ public class Wizard : Hero
 {
     private void Awake()
     {
-        id = 2;
-        team = Team.Friendly;
-        status = CharacterStatus.Idle;
-        maxHp = 200;
-        hp = maxHp;
-        speed_x = 2.57f;
-        speed_y = 1.4f;
-
+		/*
         autoAttack = gameObject.AddComponent<Wizard_AutoAttack>();
-        autoAttack.SetSkill(this);
+        //autoAttack.SetSkill(this);
 
         passiveSkill = gameObject.AddComponent<Wizard_Passive>();
-        passiveSkill.SetSkill(this);
+        //passiveSkill.SetSkill(this);
         passiveSkill.OnCast();
 
 		activeSkills = new HeroActive[3];
@@ -28,11 +21,12 @@ public class Wizard : Hero
         activeSkills[2] = gameObject.AddComponent<Wizard_Blizzard>();
         foreach (Skill eachSkill in activeSkills)
         {
-            eachSkill.SetSkill(this);
+            //eachSkill.SetSkill(this);
         }
-        TimeSystem.GetTimeSystem().AddTimer(this);
+        */
     }
 
+	/*
     public override void RunTime()
     {
         base.RunTime();
@@ -62,4 +56,5 @@ public class Wizard : Hero
             }
         }
     }
+    */
 }

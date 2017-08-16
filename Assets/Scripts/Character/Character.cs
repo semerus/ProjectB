@@ -17,7 +17,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
     [SerializeField]
 	protected List<Buff> buffs = new List<Buff>();
-	protected Skill[] skills = new Skill[0];
+	protected Skill[] skills;
 
     [SerializeField]
 	protected CharacterAction action = CharacterAction.Idle;
@@ -113,9 +113,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
                 if(eachbuff is Buff_Link_ProtectionArea)
                 {
                     Buff_Link_ProtectionArea buff = eachbuff as Buff_Link_ProtectionArea;
-                    if(buff.helaer_ProtectionArea.LinkerState == LinkerState.OnLink || buff.helaer_ProtectionArea.LinkerState == LinkerState.willBreak)
+                    if(buff.healer_ProtectionArea.LinkerState == LinkerState.OnLink || buff.healer_ProtectionArea.LinkerState == LinkerState.willBreak)
                     {
-                        buff.helaer_ProtectionArea.ReceiveDamage(attacker, receivedDamage);
+                        buff.healer_ProtectionArea.ReceiveDamage(attacker, receivedDamage);
                         return;
                     }
                     else
@@ -184,6 +184,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	#endregion
 
+	#region Movement
+
 	protected virtual void OnMoveComplete(MoveEventArgs e) {
 		EventHandler<MoveEventArgs> moveComplete = MoveComplete;
 		if (moveComplete != null) {
@@ -191,26 +193,135 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		}
 	}
 
-	protected virtual void Start() {
-		Spawn ();
+	/// <summary>
+	/// Begins the move at normal speed
+	/// </summary>
+	/// <returns><c>true</c>, if move was begun, <c>false</c> otherwise.</returns>
+	/// <param name="target">Target.</param>
+	public bool BeginMove(Vector3 target) {
+		if (ChangeAction (CharacterAction.Moving)) {
+			moveMethod = MoveMethod.Normal;
+			Move (target);
+			return true;
+		} else
+			return false;
 	}
+
+	/// <summary>
+	/// Begins the move at custom speed
+	/// </summary>
+	/// <returns><c>true</c>, if move was begun, <c>false</c> otherwise.</returns>
+	/// <param name="target">Target.</param>
+	/// <param name="speed_x">Speed x.</param>
+	/// <param name="speed_y">Speed y.</param>
+	public bool BeginMove(Vector3 target, float speed_x, float speed_y) {
+		if (ChangeAction (CharacterAction.Moving)) {
+			moveMethod = MoveMethod.CustomSpeed;
+			Move (target, speed_x, speed_y);
+			return true;
+		} else
+			return false;
+	}
+
+	public bool BeginJumpTarget(Vector3 target, float speed_x, float speed_y) {
+		if (ChangeAction (CharacterAction.Jumping)) {
+			moveMethod = MoveMethod.CustomSpeed;
+			Move (target, speed_x, speed_y);
+			return true;
+		} else
+			return false;
+	}
+
+	protected void Move (Vector3 target) {
+		Move (target, this.speed_x, this.speed_y);
+	}
+
+	protected void Move(Vector3 target, float speed_x, float speed_y) {
+		float speed;
+		customSpeed_x = speed_x;
+		customSpeed_y = speed_y;
+		moveTarget = target;
+
+		/*
+		if (!Background.GetBackground ().CheckBoundaries (target)) {
+			Debug.LogError ("Moved outside boundaries");
+			ChangeAction (CharacterAction.Idle);
+			//MoveEventArgs x = new MoveEventArgs (false, transform.position);
+			//OnMoveComplete (x);
+			return;
+		}
+		*/
+
+		// calculate speed
+		Vector3 n = Vector3.Normalize(target - transform.position);
+		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
+		speed *= Calculator.MoveSpeed(this);
+
+
+		if (Vector3.Distance (target, transform.position) > 0.01f) {
+			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
+		} else{
+			moveTarget = transform.position;
+			ChangeAction (CharacterAction.Idle);
+
+			// send move complete(reached destination event)
+			MoveEventArgs e = new MoveEventArgs (true, transform.position);
+			OnMoveComplete (e);
+		}
+	}
+
+	public bool ChangeMoveTarget(Vector3 target)
+	{
+		if (action == CharacterAction.Moving) {
+			moveTarget = target;
+			return true;
+		} else if (ChangeAction (CharacterAction.Moving)) {
+			BeginMove (target);
+			return true;
+		}
+		return false;
+	}
+
+	public void StopMove() {
+		ChangeAction (CharacterStatus.Idle);
+		MoveEventArgs e = new MoveEventArgs (false, transform.position);
+		OnMoveComplete (e);
+	}
+
+	#endregion
 
 	/// <summary>
 	/// Things to happen at load
 	/// </summary>
-	public virtual void Spawn () {
-		// set team
-		if (this is Hero) {
-			team = Team.Friendly;
-		} else if (this is Enemy) {
-			team = Team.Hostile;
+	public virtual void Spawn (Dictionary<string, object> data, int[] skills) {
+		// apply paramters
+		id = (int)data ["id"];
+		transform.name = data["name"].ToString();
+		maxHp = (int)data ["max_hp"];
+		hp = maxHp;
+		double[] speed = (double[])data ["speed"];
+		speed_x = (float)speed [0];
+		speed_y = (float)speed [1];
+
+		this.skills = new Skill[skills.Length];
+
+		// apply skills
+		for (int i = 0; i < skills.Length; i++) {
+			Dictionary<string, object> param = (Dictionary<string, object>)LoadManager.Instance.SkillData [skills [i]];
+			Type t = Type.GetType (param ["name_script"].ToString ());
+			Skill skill = gameObject.AddComponent (t) as Skill;
+			if (skill != null) {
+				skill.SetSkill (param);
+			}
+			this.skills [i] = skill;
 		}
 
 		// add to entity list
-		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
+		BattleManager.GetBattleManager ().AddEntity (this);
 		TimeSystem.GetTimeSystem ().AddTimer (this);
 
 		// initialize animation status
+		action = CharacterAction.Idle;
 		anim = GetComponentInChildren<AnimationController> ();
 		anim.UpdateSortingLayer ();
 		RefreshBuff ();
@@ -298,82 +409,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		BattleManager.GetBattleManager ().CheckGame ();
 	}
 
-	/// <summary>
-	/// Begins the move at normal speed
-	/// </summary>
-	/// <returns><c>true</c>, if move was begun, <c>false</c> otherwise.</returns>
-	/// <param name="target">Target.</param>
-	public bool BeginMove(Vector3 target) {
-		if (ChangeAction (CharacterAction.Moving)) {
-			moveMethod = MoveMethod.Normal;
-			Move (target);
-			return true;
-		} else
-			return false;
-	}
 
-	/// <summary>
-	/// Begins the move at custom speed
-	/// </summary>
-	/// <returns><c>true</c>, if move was begun, <c>false</c> otherwise.</returns>
-	/// <param name="target">Target.</param>
-	/// <param name="speed_x">Speed x.</param>
-	/// <param name="speed_y">Speed y.</param>
-	public bool BeginMove(Vector3 target, float speed_x, float speed_y) {
-		if (ChangeAction (CharacterAction.Moving)) {
-			moveMethod = MoveMethod.CustomSpeed;
-			Move (target, speed_x, speed_y);
-			return true;
-		} else
-			return false;
-	}
-
-	public bool BeginJumpTarget(Vector3 target, float speed_x, float speed_y) {
-		if (ChangeAction (CharacterAction.Jumping)) {
-			moveMethod = MoveMethod.CustomSpeed;
-			Move (target, speed_x, speed_y);
-			return true;
-		} else
-			return false;
-	}
-
-	protected void Move (Vector3 target) {
-		Move (target, this.speed_x, this.speed_y);
-	}
-
-	protected void Move(Vector3 target, float speed_x, float speed_y) {
-		float speed;
-        customSpeed_x = speed_x;
-        customSpeed_y = speed_y;
-		moveTarget = target;
-
-		/*
-		if (!Background.GetBackground ().CheckBoundaries (target)) {
-			Debug.LogError ("Moved outside boundaries");
-			ChangeAction (CharacterAction.Idle);
-			//MoveEventArgs x = new MoveEventArgs (false, transform.position);
-			//OnMoveComplete (x);
-			return;
-		}
-		*/
-
-		// calculate speed
-		Vector3 n = Vector3.Normalize(target - transform.position);
-		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
-        speed *= Calculator.MoveSpeed(this);
-
-
-		if (Vector3.Distance (target, transform.position) > 0.01f) {
-			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
-		} else{
-			moveTarget = transform.position;
-			ChangeAction (CharacterAction.Idle);
-
-			// send move complete(reached destination event)
-			MoveEventArgs e = new MoveEventArgs (true, transform.position);
-			OnMoveComplete (e);
-        }
-	}
 
     public void CheckFacing()
     {
@@ -455,23 +491,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         anim.UpdateSortingLayer();
     }
 
-    public bool ChangeMoveTarget(Vector3 target)
-    {
-		if (action == CharacterAction.Moving) {
-			moveTarget = target;
-			return true;
-		} else if (ChangeAction (CharacterAction.Moving)) {
-			BeginMove (target);
-			return true;
-		}
-		return false;
-    }
-
-	public void StopMove() {
-		ChangeAction (CharacterStatus.Idle);
-		MoveEventArgs e = new MoveEventArgs (false, transform.position);
-		OnMoveComplete (e);
-	}
+    
 
 	public bool ChangeAction(CharacterAction action) {
 		// changed successfully return true

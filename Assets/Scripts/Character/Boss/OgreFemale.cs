@@ -17,24 +17,19 @@ public class OgreFemale : Enemy {
 		}
 	}
 
-    protected override void Start()
+    protected void Start()
     {
-		base.Start ();
-        
-		maxHp = 500;
-		hp = 500;
-		speed_x = 1f;
-        speed_y = 1f;
-		partner = GameObject.Find ("OgreMale").GetComponent<OgreMale> ();
+		partner = GameObject.Find ("Ogre Wizard").GetComponent<OgreMale> ();
+		partner.partner = this;
 
+		/*
 		skills = new Skill[4];
 		skills [0] = gameObject.AddComponent<OgreFemale_AutoAttack> ();
 		skills [1] = gameObject.AddComponent<OgreFemale_Sk2> ();
 		skills [2] = gameObject.AddComponent<OgreFemale_Sk3> ();
 		skills [3] = gameObject.AddComponent<OgreFemale_Sk4> ();
-
+		*/
 		for (int i = 0; i < skills.Length; i++) {
-			skills [i].SetSkill (this);
 			skills [i].EndSkill += new EventHandler<SkillEventArgs> (OnSkillEnd);
 		}
 		friendlyNum = BattleManager.GetBattleManager ().GetEntities (Team.Friendly);

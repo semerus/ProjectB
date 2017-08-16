@@ -14,7 +14,7 @@ public class Buff_Link_ProtectionArea : Buff {
     public override void EndBuff()
     {
         base.EndBuff();
-        helaer_ProtectionArea.LinkedHeroes.Remove(target as Hero);
+        healer_ProtectionArea.LinkedHeroes.Remove(target as Hero);
     }
 
     #endregion
@@ -28,7 +28,7 @@ public class Buff_Link_ProtectionArea : Buff {
 
         StartBuff(null, this.target);
 
-        this.helaer_ProtectionArea = healer_ProtectionArea;
+        this.healer_ProtectionArea = healer_ProtectionArea;
         healer_ProtectionArea.LinkedHeroes.Add(target as Hero);
 
         // for Debugging
@@ -38,7 +38,7 @@ public class Buff_Link_ProtectionArea : Buff {
     #endregion
 
     #region Field & Method
-    public Healer_ProtectionArea helaer_ProtectionArea;
+    public Healer_ProtectionArea healer_ProtectionArea;
     #endregion
 
 }

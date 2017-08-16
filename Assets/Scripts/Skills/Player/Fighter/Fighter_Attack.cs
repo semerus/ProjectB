@@ -52,13 +52,10 @@ public class Fighter_Attack : Skill {
     #region MonoBehaviours
     void Awake()
     {
-        // set original value
-        cooldown = 0.9f;
-        dmg = 20;
-
-        // set initial value
-		skillStatus = SkillStatus.ReadyOn;
-        timer_cooldown = 0f;
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.autoAttack = this;
+		}
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
     }

@@ -21,10 +21,13 @@ public class Healer_Summon_ProtectionArea : HeroActive {
     #region MonoBehaviours
     protected virtual void Awake()
     {
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [1] = this;
+		}
         //set initial Value
         skillStatus = SkillStatus.ReadyOn;
-        cooldown = 20f;
-        timer_cooldown = 0f;
 
         //Prefab
         GameObject potion_ref = Resources.Load("Skills\\Area\\Healer_ProtectionArea", typeof(GameObject)) as GameObject;

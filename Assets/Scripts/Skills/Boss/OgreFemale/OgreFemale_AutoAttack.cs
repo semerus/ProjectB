@@ -9,6 +9,10 @@ public class OgreFemale_AutoAttack : Skill {
     Character minC;
     float skillTime = 0f;
 
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+	}
+
     public override void RunTime()
     {
         base.RunTime();

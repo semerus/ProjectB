@@ -11,10 +11,9 @@ public class OgreFemale_Sk2 : Skill {
     Character maxC;
     IBattleHandler maxNum = null;
 
-    private void Start()
-    {
-        cooldown = 10f;
-    }
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+	}
 
     public override void Activate()
     {

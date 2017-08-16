@@ -12,6 +12,12 @@ public class Wizard_Blizzard : HeroActive
     int ability = 2;
 
 	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [2] = this;
+		}
+
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill3");
 	}
 

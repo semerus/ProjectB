@@ -60,6 +60,10 @@ public class OgreHeal : Skill, IChanneling {
 
 	#endregion
 
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+	}
+
 	void Start() {
 		// temporary
 		cooldown = 20f;

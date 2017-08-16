@@ -1,17 +1,12 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.16
+ */
+using UnityEngine;
 
 public abstract class HeroActive : Skill, IHeroActiveUI {
 
 	protected Sprite button;
-
-	#region implemented abstract members of Skill
-
-	public override void Activate ()
-	{
-		throw new System.NotImplementedException ();
-	}
-
-	#endregion
 
 	#region implemented IHeroActiveUI
 

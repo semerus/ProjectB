@@ -16,4 +16,8 @@ public class OgreSetFire : Skill {
 		}
 	}
 	#endregion
+
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+	}
 }

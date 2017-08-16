@@ -1,6 +1,6 @@
 ﻿/*
  * Written by Insung Kim
- * Updated: 2017.08.12
+ * Updated: 2017.08.2
  */
 using UnityEngine;
 

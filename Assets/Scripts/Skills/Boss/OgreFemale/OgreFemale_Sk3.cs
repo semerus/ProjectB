@@ -7,6 +7,10 @@ public class OgreFemale_Sk3 : Skill {
 
     IBattleHandler[] friendlyNum;
 
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+	}
+
     public override void Activate()
     {
         cooldown = 10f;
