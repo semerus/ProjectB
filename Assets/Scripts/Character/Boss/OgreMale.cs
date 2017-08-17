@@ -10,7 +10,7 @@ public class OgreMale : Enemy {
 	public OgreFemale partner;
 
 	protected float ai_timer;
-	protected int pattern = 1;
+	protected int pattern = 0;
 
 	#region ITimeHandler implementation
 	public override void RunTime ()
@@ -55,7 +55,7 @@ public class OgreMale : Enemy {
 			break;
 		// after heal
 		case 1:
-			if (ai_timer >= 5f) {
+			if (ai_timer >= 20f) {
 				pattern = 2;
 				// torch fire
 				skills[1].OnCast();

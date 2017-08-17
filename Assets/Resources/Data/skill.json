@@ -262,7 +262,7 @@
 			"name_script": "OgreFemale_AutoAttack",
 			"path_sprite": "",
 			"path_prefab": "",
-			"cooldown": 0.0,
+			"cooldown": 2.0,
 			"damage": 50
 		},
 		{

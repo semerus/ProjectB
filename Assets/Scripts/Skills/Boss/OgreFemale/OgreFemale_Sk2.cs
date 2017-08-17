@@ -110,9 +110,11 @@ public class OgreFemale_Sk2 : Skill {
                         }
                         else
                         {
+							/*
                             Debug.Log("Auto Attack => " + c.gameObject.transform.name);
                             IBattleHandler ch = c as IBattleHandler;
                             caster.AttackTarget(c, 50);
+							*/
 
 							// give 1 sec stun buff
                         }
