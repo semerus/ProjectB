@@ -29,15 +29,25 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
         this.gameObject.SetActive(true);
     }
 
+    public void ProjectileOn(Character caster)
+    {
+        pool = null;
+        this.caster = caster;
+        Pmoving = false;
+        this.gameObject.SetActive(true);
+        transform.position = caster.transform.position;
+    }
+
     public void ProjectileMove(Character target, float speed)
     {
+        this.target = target;
         Pmoving = true;
         TimeSystem.GetTimeSystem().AddTimer(this);
-        this.target = target;
         this.speed = speed;
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed*Time.deltaTime);
+        ProjectileRotation();
 
-		if (Vector3.Distance (transform.position, target.transform.position) < 0.1f) {
+        if (Vector3.Distance (transform.position, target.transform.position) < 0.1f) {
 			if (target.Action == CharacterAction.Dead) {
 				moving = false;
 				this.gameObject.SetActive(false);
@@ -48,6 +58,15 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
                 }
 			}
 		}
+    }
+
+    public void ProjectileRotation()
+    {
+        float dx = target.transform.position.x - this.gameObject.transform.position.x;
+        float dy = target.transform.position.y - this.gameObject.transform.position.y;
+        float seta = Mathf.Atan(dy / dx);
+        seta = seta * 180 / Mathf.PI;
+        transform.rotation = Quaternion.Euler(0, 0, seta);
     }
 
     private void OnTriggerStay2D(Collider2D col)
@@ -88,5 +107,6 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
 		this.target = target;
         transform.position = caster.transform.position;
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
+        ProjectileRotation();
     }
 }

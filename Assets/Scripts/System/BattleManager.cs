@@ -124,9 +124,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			if (friendly[i].Action != CharacterAction.Dead) {
 				Hero hero = friendly [i] as Hero;
 				hero.BeginMove (target);
-
-				// ?
-                hero.RemoveAttackTarget();
+                hero.RemoveTarget();
             }
 		}
 	}
@@ -135,7 +133,6 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	public void CheckGame() {
 		bool classifier = true;
 
-		Debug.Log ("sss: " + hostile.Count);
 		// win scenario
 		for (int i = 0; i < hostile.Count; i++) {
 			classifier = classifier && hostile [i].Action == CharacterAction.Dead;

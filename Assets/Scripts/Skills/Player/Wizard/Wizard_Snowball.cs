@@ -20,7 +20,6 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill1");
         SetSnowProjectile();
         cooldown = 10f;
-        
     }
     
     public virtual void OnChanneling()
@@ -36,6 +35,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
 
     public virtual void OnInterrupt(IBattleHandler interrupter)
     {
+        Wizard_Passive.stackOff = true;
         StartCoolDown();
         UpdateSkillStatus(SkillStatus.ChannelingOff);
         start = 0;
@@ -154,6 +154,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
         shoottime = 0;
         count = 0;
         snowStack = 0;
+        start = 0;
     }
 
     public void ActivePassive()

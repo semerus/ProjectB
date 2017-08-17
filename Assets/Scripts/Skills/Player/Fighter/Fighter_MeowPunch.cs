@@ -11,15 +11,16 @@ public abstract class Fighter_MeowPunch : HeroActive {
 
         if (isTargetInMeleeRange == true && caster.CurHP > HPCost)
         {
-            if (skillStatus == SkillStatus.ReadyOn)
+            if (CheckSkillStatus(SkillStatus.ReadyOn))
             {
-				Character tarChraracter = caster.Target as Character;
-                tarChraracter.ReceiveDamage(caster, Calculator.SkillDamage(caster, dmg));
+                Character tarChraracter = caster.Target as Character;
+
+                int attackDmg = Calculator.SkillDamage(caster, dmg);
+                tarChraracter.ReceiveDamage(caster, Calculator.SkillDamage(caster, attackDmg));
 
                 TraitBuffCasting(caster, tarChraracter);
 
-                caster.ReceiveDamage(caster, HPCost);
-                StartCoolDown();
+                caster.CurHP -= HPCost;
             }
             else
             {
@@ -31,7 +32,6 @@ public abstract class Fighter_MeowPunch : HeroActive {
 			caster.BeginMove(positionToMeleeAttack);
         }
     }
-
     #endregion
 
     #region TraitChanges
@@ -51,6 +51,7 @@ public abstract class Fighter_MeowPunch : HeroActive {
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
 
+        //UI
 		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill1");
     }
 
@@ -60,9 +61,7 @@ public abstract class Fighter_MeowPunch : HeroActive {
     // effect & cost of this Skill
     protected int dmg;
     protected int HPCost;
-
-
-
+    
     // Check Melee Range
     bool isTargetInMeleeRange;
     Vector3 positionToMeleeAttack;

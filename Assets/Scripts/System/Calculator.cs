@@ -13,20 +13,22 @@ public class Calculator {
     /// <param name="mover"> it is for </param>
     /// <param name="baseVector"></param>
     /// <returns></returns>
-    public static Vector3 ModifedMove(Character mover, Vector3 baseVector)
+    public static float MoveSpeed(Character mover)
     {
-        Vector3 returnVector = baseVector;
+        float returnSpeed = 1f;
 
         float sum_MoveSpeed_Ratio = 0f;
         
         for(int i = 0; i < mover.Buffs.Count; i++)
         {
             IBuff_MoveSpeed_Ratio buff = mover.Buffs[i] as IBuff_MoveSpeed_Ratio;
+            if (buff != null)
+                sum_MoveSpeed_Ratio += buff.MoveSpeed_Ratio;
         }
 
-        returnVector *= (1 + sum_MoveSpeed_Ratio);
+        returnSpeed += sum_MoveSpeed_Ratio;
 
-        return returnVector;
+        return returnSpeed;
     }
 
     public static int AttackDamage(Character caster, int baseDmg)

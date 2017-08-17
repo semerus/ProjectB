@@ -6,16 +6,17 @@ using UnityEngine;
 public class Wizard : Hero
 {
     public int[] abillity = new int[3];
+    public Character atkTarget = null;
 
     private void Awake()
     {
         abillity[0] = 1;
-        abillity[1] = 1;
+        abillity[1] = 2;
         abillity[2] = 1;
         id = 2;
         team = Team.Friendly;
         status = CharacterStatus.Idle;
-        maxHp = 200;
+        maxHp = 2000;
         hp = maxHp;
         speed_x = 2.57f;
         speed_y = 1.4f;
@@ -87,12 +88,9 @@ public class Wizard : Hero
             }
             if (action == CharacterAction.Idle)
             {
-                if (this.target != null)
+                if (autoAttack.CheckSkillStatus(SkillStatus.ReadyMask))
                 {
-                    if (this.target.Team == Team.Hostile && autoAttack.CheckSkillStatus(SkillStatus.ReadyMask))
-                    {
-                        autoAttack.OnCast();
-                    }
+                    autoAttack.OnCast();
                 }
             }
         }

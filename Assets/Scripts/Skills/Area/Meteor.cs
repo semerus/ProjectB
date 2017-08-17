@@ -6,6 +6,7 @@ public class Meteor : Area, ITimeHandler {
 
 	int damage = 100;
 	float readyTime = 2f;
+    float aniTime = 0;
 	//float activeTime = 0.1f;
 	float timer_ready;
 
@@ -13,16 +14,27 @@ public class Meteor : Area, ITimeHandler {
 
 	public void RunTime ()
 	{
-		switch (state) {
-		case AreaState.Ready:
-			timer_ready += Time.deltaTime;
-			if (timer_ready >= readyTime) {
-				DestroyMeteor ();
-			}
-			break;
-		default:
-			break;
-		}
+        switch (state)
+        {
+            case AreaState.Ready:
+                timer_ready += Time.deltaTime;
+                aniTime += Time.deltaTime;
+
+                if (timer_ready >= readyTime)
+                {
+                    DestroyMeteor();
+                    timer_ready = 0;
+                }
+
+                if (aniTime >= 3)
+                {
+                    TimeSystem.GetTimeSystem().DeleteTimer(this);
+                    gameObject.SetActive(false);
+                }
+                break;
+            default:
+                break;
+        }
 	}
 
 	#endregion
@@ -55,8 +67,5 @@ public class Meteor : Area, ITimeHandler {
 				}
 			}
 		}
-
-		TimeSystem.GetTimeSystem ().DeleteTimer (this);
-		gameObject.SetActive (false);
 	}
 }

@@ -44,6 +44,12 @@ public class Buff_MoveSpeed_Ratio : Buff, ITimeHandler, IBuff_MoveSpeed_Ratio
                     }
                     // Add more counter Case
                 }
+
+                //referesh check
+                if(eachBuff is Buff_MoveSpeed_Ratio && eachBuff.Caster is Healer)
+                {
+                    eachBuff.EndBuff();
+                }
             }
         }
     }

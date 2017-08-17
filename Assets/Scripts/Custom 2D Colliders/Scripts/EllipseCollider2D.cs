@@ -49,8 +49,9 @@ public class EllipseCollider2D : MonoBehaviour {
     public Vector2[] getPoints(Vector2 off)
     {
         List<Vector2> points = new List<Vector2>();
-
-        origin = transform.localPosition;
+        
+        //origin = transform.localPosition; // this is original but it makes trouble _ when we change position; 
+        origin = Vector2.zero;
         center = origin + off;
         
         float ang = 0;

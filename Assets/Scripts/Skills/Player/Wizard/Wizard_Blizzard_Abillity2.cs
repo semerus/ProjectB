@@ -14,6 +14,7 @@ public class Wizard_Blizzard_Abillity2 : Wizard_Blizzard {
 
     protected override void OnProcess()
     {
+        Wizard_Passive.skillCount++;
         base.OnProcess();
         Blizzard(abillity);
     }

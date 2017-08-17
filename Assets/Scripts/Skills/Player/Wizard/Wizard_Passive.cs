@@ -11,6 +11,15 @@ public class Wizard_Passive : Skill {
     public static bool stackOff = false;
     private float buffTime = 0;
 
+    private void Awake()
+    {
+        mag = 1;
+        skillCount = 0;
+        skillResfresh = false;
+        stackOff = false;
+        buffTime = 0;
+    }
+
     public override void Activate()
     {
         TimeSystem.GetTimeSystem().AddTimer(this);

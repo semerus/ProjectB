@@ -21,6 +21,7 @@ public class Wizard_Snowball_Abillity1 : Wizard_Snowball
 
     protected override void OnProcess()
     {
+        Wizard_Passive.skillCount++;
         SnowProjectileShoot(abillity);
     }
 }

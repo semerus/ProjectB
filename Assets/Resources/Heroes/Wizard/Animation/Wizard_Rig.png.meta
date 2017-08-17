@@ -1,0 +1,442 @@
+fileFormatVersion: 2
+guid: 01a0b033248f54c49bd3de6bce712acf
+timeCreated: 1501126679
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: l_ear
+    21300002: Wizard_Rig_1
+    21300004: c_hat
+    21300006: r_ear
+    21300008: c_face_attack
+    21300010: l_shoulder
+    21300012: c_ribbon
+    21300014: l_arm_upper
+    21300016: c_hair_front
+    21300018: c_face_normal
+    21300020: c_face_casting
+    21300022: l_arm_lower
+    21300024: r_shoulder
+    21300026: c_body
+    21300028: r_arm_upper
+    21300030: c_face_skill
+    21300032: r_arm_lower
+    21300034: c_hair_back
+    21300036: c_circle
+    21300038: c_necklace
+    21300040: c_face_dead
+    21300042: l_leg
+    21300044: r_leg
+    21300046: c_tassle
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: l_ear
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 1081
+        width: 135
+        height: 170
+      alignment: 9
+      pivot: {x: 0.75713605, y: 0.13414809}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Wizard_Rig_1
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 1088
+        width: 8
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_hat
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 951
+        width: 567
+        height: 300
+      alignment: 9
+      pivot: {x: 0.5255096, y: 0.41803792}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_ear
+      rect:
+        serializedVersion: 2
+        x: 933
+        y: 1032
+        width: 161
+        height: 232
+      alignment: 9
+      pivot: {x: 0.6796761, y: 0.1695746}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_face_attack
+      rect:
+        serializedVersion: 2
+        x: 1164
+        y: 977
+        width: 270
+        height: 255
+      alignment: 9
+      pivot: {x: 0.5000002, y: 0.05190262}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_shoulder
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 951
+        width: 111
+        height: 95
+      alignment: 9
+      pivot: {x: 0.8909167, y: 0.16504677}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_ribbon
+      rect:
+        serializedVersion: 2
+        x: 883
+        y: 851
+        width: 206
+        height: 144
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_arm_upper
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 860
+        width: 81
+        height: 58
+      alignment: 9
+      pivot: {x: 0.83927613, y: 0.6745637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_hair_front
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 514
+        width: 268
+        height: 392
+      alignment: 9
+      pivot: {x: 0.6295275, y: 0.92801327}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_face_normal
+      rect:
+        serializedVersion: 2
+        x: 556
+        y: 652
+        width: 275
+        height: 255
+      alignment: 9
+      pivot: {x: 0.5000002, y: 0.05190262}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_face_casting
+      rect:
+        serializedVersion: 2
+        x: 1160
+        y: 668
+        width: 273
+        height: 255
+      alignment: 9
+      pivot: {x: 0.5000002, y: 0.05190262}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_arm_lower
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 352
+        width: 165
+        height: 476
+      alignment: 9
+      pivot: {x: 0.9295337, y: 0.37237728}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_shoulder
+      rect:
+        serializedVersion: 2
+        x: 882
+        y: 694
+        width: 159
+        height: 137
+      alignment: 9
+      pivot: {x: 0.0906445, y: 0.5105573}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_body
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 352
+        width: 295
+        height: 243
+      alignment: 9
+      pivot: {x: 0.5392241, y: 0.8154679}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_arm_upper
+      rect:
+        serializedVersion: 2
+        x: 963
+        y: 586
+        width: 54
+        height: 82
+      alignment: 9
+      pivot: {x: 0.41964495, y: 0.852778}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_face_skill
+      rect:
+        serializedVersion: 2
+        x: 1160
+        y: 352
+        width: 272
+        height: 255
+      alignment: 9
+      pivot: {x: 0.5000002, y: 0.05190262}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_arm_lower
+      rect:
+        serializedVersion: 2
+        x: 954
+        y: 467
+        width: 64
+        height: 94
+      alignment: 9
+      pivot: {x: 0.7937975, y: 0.82312924}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_hair_back
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 34
+        width: 316
+        height: 398
+      alignment: 9
+      pivot: {x: 0.5732349, y: 0.93609744}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_circle
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 260
+        width: 53
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_necklace
+      rect:
+        serializedVersion: 2
+        x: 895
+        y: 241
+        width: 119
+        height: 90
+      alignment: 9
+      pivot: {x: 0.45138216, y: 0.9660587}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_face_dead
+      rect:
+        serializedVersion: 2
+        x: 1174
+        y: 44
+        width: 258
+        height: 255
+      alignment: 9
+      pivot: {x: 0.5000002, y: 0.05190262}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_leg
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 84
+        width: 64
+        height: 106
+      alignment: 9
+      pivot: {x: 0.5451994, y: 0.89570993}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_leg
+      rect:
+        serializedVersion: 2
+        x: 734
+        y: 85
+        width: 66
+        height: 105
+      alignment: 9
+      pivot: {x: 0.54383063, y: 0.8857035}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_tassle
+      rect:
+        serializedVersion: 2
+        x: 874
+        y: 118
+        width: 66
+        height: 107
+      alignment: 9
+      pivot: {x: 0.7848945, y: 0.90553}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    outline: []
+    physicsShape: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -9,10 +9,36 @@ public class Wizard_Blizzard : HeroActive,IChanneling
     Vector3 targetPosition=new Vector3();
     float channeling = 0;
     float skilltime = 0;
+    float explosiontime = 0;
     float [] inTime =new float[10];
+    int count = 0;
+    Character[] target = new Character[10];
+    bool[] FacingLeft = new bool[10];
+    GameObject bl;
 
     void Awake() {
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill3");
+    }
+
+    public void BlizzardPrefabOn(int abillity)
+    {
+        switch (abillity)
+        {
+            case 1:
+                bl = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/Blizzard/Blizzard_Abillity1"));
+                break;
+
+            case 2:
+                bl = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/Blizzard/Blizzard_Abillity2"));
+                break;
+        }
+        bl.gameObject.SetActive(true);
+        bl.gameObject.transform.position = targetPosition + new Vector3(0,2.2f,0);
+    }
+
+    public void BlizzardPrefabOff()
+    {
+        Destroy(bl);
     }
 
     public virtual void OnChanneling()
@@ -23,6 +49,7 @@ public class Wizard_Blizzard : HeroActive,IChanneling
 
     public virtual void OnInterrupt(IBattleHandler interrupter)
     {
+        Wizard_Passive.stackOff = true;
         ResetSetting();
         StartCoolDown();
         UpdateSkillStatus(SkillStatus.ChannelingOff);
@@ -40,6 +67,8 @@ public class Wizard_Blizzard : HeroActive,IChanneling
                     StartCoolDown();
                     UpdateSkillStatus(SkillStatus.ChannelingOff);
                     UpdateSkillStatus(SkillStatus.ProcessOn);
+                    BlizzardPrefabOn(abillity);
+                    caster.ChangeAction(CharacterAction.Idle);
                 }
                 break;
 
@@ -50,6 +79,8 @@ public class Wizard_Blizzard : HeroActive,IChanneling
                     StartCoolDown();
                     UpdateSkillStatus(SkillStatus.ChannelingOff);
                     UpdateSkillStatus(SkillStatus.ProcessOn);
+                    BlizzardPrefabOn(abillity);
+                    caster.ChangeAction(CharacterAction.Idle);
                 }
                 break;
         }
@@ -65,6 +96,9 @@ public class Wizard_Blizzard : HeroActive,IChanneling
         }
         FindPosition();
         skilltime = 0;
+        count = 0;
+        explosiontime = 0;
+        channeling = 0;
     }
 
     public void Blizzard(int abiliity)
@@ -77,8 +111,7 @@ public class Wizard_Blizzard : HeroActive,IChanneling
         }
         else
         {
-            LastDamage(abiliity);
-            UpdateSkillStatus(SkillStatus.ProcessOff);
+            Explosion(abiliity);
         }
     }
 
@@ -125,7 +158,7 @@ public class Wizard_Blizzard : HeroActive,IChanneling
         }
     }
 
-    public void Explosion()
+    public void ExplosionCheck()
     {
         for (int i = 0; i < enemyNum.Length; i++)
         {
@@ -137,21 +170,75 @@ public class Wizard_Blizzard : HeroActive,IChanneling
 
             if (hitcheck)
             {
-                c.StopMove();
-                if(c.IsFacingLeft)
-                {
-                    Vector3 t = c.transform.position + new Vector3(6, 0, 0);
-                    Debug.Log(c.transform.position+"         "+ t);
+                target[count] = c;
 
-                    c.BeginMove(t, 30, 0);
+                if (c.IsFacingLeft)
+                {
+                    FacingLeft[count] = true;
                 }
                 else
                 {
-                    c.BeginMove(c.transform.position + new Vector3(-6, 0, 0), 1, 0);
+                    FacingLeft[count] = false;
                 }
+                count++;
             }
         }
     }
+
+    public bool CheckBoundary(Character target)
+    {
+        Vector3 position = target.transform.position;
+        float cpx = position.x;
+        float cpy = position.y;
+        float lx = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.x / 2;
+        float ly = (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.y / 2) + GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.y;
+
+        if ((cpx<=lx && cpx >= -lx)&&(cpy<ly && cpy > -ly))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void Explosion(int abillity)
+    {
+        if(explosiontime==0)
+        {
+            LastDamage(abillity);
+        }
+
+        explosiontime += Time.deltaTime;
+        if (explosiontime<=0.2)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                target[i].StopMove();
+                if (FacingLeft[i])
+                {
+                    if (CheckBoundary(target[i]))
+                    {
+                        target[i].transform.position += new Vector3(20, 0, 0) * Time.deltaTime;
+                    }
+                }
+                else
+                {
+                    if (CheckBoundary(target[i]))
+                    {
+                        target[i].transform.position -= new Vector3(20, 0, 0) * Time.deltaTime;
+                    }
+                }
+            }
+        }
+        else
+        {
+            BlizzardPrefabOff();
+            UpdateSkillStatus(SkillStatus.ProcessOff);
+        }
+    }
+
 
     public void LastDamage(int abillity)
     {
@@ -167,10 +254,9 @@ public class Wizard_Blizzard : HeroActive,IChanneling
             {
                 case 1:
                     hitcheck = EllipseScanner(3f, 1.3f, targetPosition, c.transform.position);
-                    Explosion();
+                    ExplosionCheck();
                     break;
             }
-
             if (hitcheck)
             {
                 caster.AttackTarget(enemyNum[i], damage);

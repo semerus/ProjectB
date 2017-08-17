@@ -7,6 +7,9 @@ public class Wizard_AutoAttack : HeroActive, IPooling_Character
 {
     public Stack<IPooledItem_Character> projectileNum = new Stack<IPooledItem_Character>();
 	public Projectile projectiles;
+    public Character target = null;
+    public bool start = false;
+    public float timer = 0;
 
     public Stack<IPooledItem_Character> Pool
     {
@@ -20,35 +23,66 @@ public class Wizard_AutoAttack : HeroActive, IPooling_Character
     {
         if (projectileNum.Count < 1)
         {
-            GameObject p = Instantiate(Resources.Load<GameObject>("aaa"));
+            GameObject p = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/AutoAttack/AutoAttack"));
             p.transform.SetParent(GameObject.Find("Projectiles").transform);
             projectiles = p.gameObject.GetComponent<Projectile>();
 
             projectiles.ProjectileOn(caster, this);
-            projectiles.ProjectileMove(caster.Target as Character, 3);
+            projectiles.ProjectileMove(target, 3);
         }
         else
         {
-            projectileNum.Pop().PopDo(caster.Target as Character) ;
+            projectileNum.Pop().PopDo(target) ;
+        }
+    }
+
+    public override void RunTime()
+    {
+        base.RunTime();
+        timer += Time.deltaTime;
+        if(timer>=0.5 && caster.Action == CharacterAction.Attacking)
+        {
+            caster.ChangeAction(CharacterAction.Idle);
         }
     }
 
     public override void Activate()
     {
-        if (caster.Target.Action == CharacterAction.Dead)
+        if(!start && caster.Target!=null)
         {
-            caster.ChangeAction(CharacterAction.Idle);
+            start = true;
         }
-        ProjectileStack();
-        cooldown = 2;
-        ProjectileStack();
-        StartCoolDown();
-    }
-
-    public void AutoAttack()
-    {
-        int damage = 500;
-        IBattleHandler target = caster.Target;
-        caster.AttackTarget(target, damage);
+        if(start)
+        {
+            if (caster.Action == CharacterAction.Idle)
+            {
+                timer = 0;
+                TimeSystem.GetTimeSystem().AddTimer(this);
+                caster.ChangeAction(CharacterAction.Attacking);
+                if (target == null)
+                {
+                    target = caster.Target as Character;
+                }
+                if (caster.Target != null)
+                {
+                    if (caster.Target.Action == CharacterAction.Dead)
+                    {
+                        caster.ChangeAction(CharacterAction.Idle);
+                    }
+                }
+                if (target.transform.position.x >= this.gameObject.transform.position.x)
+                {
+                    caster.IsFacingLeft = false;
+                }
+                else
+                {
+                    caster.IsFacingLeft = true;
+                }
+                ProjectileStack();
+                cooldown = 2;
+                ProjectileStack();
+                StartCoolDown();
+            }
+        }
     }
 }

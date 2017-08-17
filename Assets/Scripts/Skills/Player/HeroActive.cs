@@ -8,7 +8,7 @@ public abstract class HeroActive : Skill, IHeroActiveUI {
 
 	public override void Activate ()
 	{
-		throw new System.NotImplementedException ();
+
 	}
 
 	#endregion
@@ -33,5 +33,15 @@ public abstract class HeroActive : Skill, IHeroActiveUI {
 		}
 	}
 
-	#endregion
+    #endregion
+
+    #region MonoBehaviours
+    // State
+    /// <summary>
+    /// index 0 = prepareTime, 1 = invokeTime, 2 = finishTime
+    /// </summary>
+    protected float[] motionTimes; 
+    protected float curMotionTime;
+    protected bool isCameraTriggered;
+    #endregion
 }

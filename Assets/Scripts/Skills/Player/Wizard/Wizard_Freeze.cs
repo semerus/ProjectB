@@ -10,16 +10,26 @@ public class Wizard_Freeze : HeroActive
     IBattleHandler[] enemyNum;
     IBattleHandler target = null;
     Vector3 targetPosition = new Vector3();
+    GameObject fl;
 
 	void Awake() {
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill2");
 	}
 
+    public void EffectOn()
+    {
+        fl = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/Freeze/Freeze_abillity1"));
+        fl.transform.position = new Vector3(0, 0, 0);
+        fl.SetActive(true);
+    }
+
     public override void Activate()
     {
+        Wizard_Passive.skillCount++;
         ResetSetting();
         StartCoolDown();
         UpdateSkillStatus(SkillStatus.ProcessOn);
+        EffectOn();
     }
 
     public void ResetSetting()
@@ -31,27 +41,36 @@ public class Wizard_Freeze : HeroActive
         cooldown = 10;
         target = caster.Target;
         Character t = target as Character;
-        targetPosition = t.transform.position;
+        if(t!=null)
+        {
+            targetPosition = t.transform.position;
+        }
     }
 
     #region Freeza_abillity1
 
     public void Freeza_abillity1()
     {
-        if (skillCount <= 5)
+        if (skillCount <= 4)
         {
             skilltime += Time.deltaTime;
             if (skilltime >= 1)
             {
+                skillCount++;
                 Freeza_abillity1_On();
                 skilltime = 0;
             }
+        }
+        else
+        {
+            Destroy(fl);
+            UpdateSkillStatus(SkillStatus.ProcessOff);
         }
     }
 
     public void Freeza_abillity1_On()
     {
-        int damage = 1000;
+        int damage = (int)(100 * Wizard_Passive.mag);
 
         for (int i = 0; i < enemyNum.Length; i++)
         {
@@ -70,42 +89,29 @@ public class Wizard_Freeze : HeroActive
 
     public void Freeza_abillity2()
     {
-        if(skillCount <= 2 && target!=null)
+        if(skilltime==0)
         {
-            skilltime += Time.deltaTime;
-            if (skilltime >= 1)
+            int damage = (int)(120 * Wizard_Passive.mag);
+            for (int i = 0; i < enemyNum.Length; i++)
             {
-                Freeza_abillity2_On();
-                skilltime = 0;
-            }
-        }
-    }
-
-    public void Freeza_abillity2_On()
-    {
-        int damage = (int) (120* Wizard_Passive.mag);
-
-        for (int i = 0; i < enemyNum.Length; i++)
-        {
-            Character c = enemyNum[i] as Character;
-            bool hitcheck = EllipseScanner(0.6f, 0.3f, targetPosition, c.transform.position);
-            if (hitcheck)
-            {
-                caster.AttackTarget(enemyNum[i], damage);
-                if(skillCount==2)
+                Character c = enemyNum[i] as Character;
+                if (c.gameObject.active)
                 {
-                    // 빙결
+                    caster.AttackTarget(enemyNum[i], damage);
+                    // 이동불가 디버프
                 }
             }
         }
-        skillCount++;
 
-        if (skillCount == 3)
+        skilltime += Time.deltaTime;
+        
+        if(skilltime>=3)
         {
+            Destroy(fl);
             Wizard_Passive.skillCount++;
             Wizard_Passive.skillResfresh = true;
+            UpdateSkillStatus(SkillStatus.ProcessOff);
         }
-
     }
 
     #endregion
