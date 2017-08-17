@@ -39,6 +39,8 @@ public class Fighter : Hero {
     // may adapt to Hero class not this class
 	public override void RunTime ()
 	{
+		base.RunTime ();
+		/*
         // Action State Check -> Status Check
         switch (action) {
         case CharacterAction.Idle:
@@ -87,5 +89,6 @@ public class Fighter : Hero {
         }
 
 		CheckFacing();
+		*/
 	}
 }

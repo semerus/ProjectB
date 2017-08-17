@@ -39,7 +39,7 @@ public class OgreFemale_AutoAttack : Skill {
 
     public override void Activate()
     {
-        cooldown = 2;
+        //cooldown = 2;
         UpdateSkillStatus(SkillStatus.ProcessOn);
         TimeSystem.GetTimeSystem().AddTimer(this);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
@@ -60,6 +60,7 @@ public class OgreFemale_AutoAttack : Skill {
                 caster.AttackTarget(c, 50);
             }
         }
+		caster.Anim.onCue -= AutoAttacking;
         UpdateSkillStatus(SkillStatus.ProcessOff);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
         OnEndSkill(s);
@@ -145,7 +146,10 @@ public class OgreFemale_AutoAttack : Skill {
         if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
         {
 			caster.StopMove ();
-            AutoAttacking();
+			if (caster.ChangeAction (CharacterAction.Attacking)) {
+				caster.Anim.onCue += AutoAttacking;
+			}
+            //AutoAttacking();
             Debug.Log("attack on");
         }
         else

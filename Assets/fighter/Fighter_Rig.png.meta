@@ -1,0 +1,370 @@
+fileFormatVersion: 2
+guid: 2f37230b1964784479d500731d28df7f
+timeCreated: 1502229864
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: l_arm_upper
+    21300002: c_head_normal
+    21300004: r_arm_upper
+    21300006: c_tail
+    21300008: l_arm_lower
+    21300010: c_tassle
+    21300012: r_arm_lower
+    21300014: l_hand
+    21300016: r_hand
+    21300018: l_leg
+    21300020: c_body
+    21300022: c_l_ribbon
+    21300024: c_r_ribbon
+    21300026: r_leg
+    21300028: c_head_dead
+    21300030: l_foot
+    21300032: r_foot
+    21300034: c_head_attacking
+    21300036: c_head_casting
+    21300038: c_head_skill
+    21300040: c_head_damaged
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: l_arm_upper
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1089
+        width: 84
+        height: 74
+      alignment: 9
+      pivot: {x: 0.8214513, y: 0.77366847}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_normal
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 814
+        width: 342
+        height: 351
+      alignment: 9
+      pivot: {x: 0.48815712, y: 0.09227855}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_arm_upper
+      rect:
+        serializedVersion: 2
+        x: 892
+        y: 1072
+        width: 56
+        height: 91
+      alignment: 9
+      pivot: {x: 0.37945557, y: 0.87090594}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_tail
+      rect:
+        serializedVersion: 2
+        x: 1068
+        y: 793
+        width: 323
+        height: 393
+      alignment: 9
+      pivot: {x: 0.04439467, y: 0.06714473}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_arm_lower
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 970
+        width: 90
+        height: 79
+      alignment: 9
+      pivot: {x: 0.87502646, y: 0.2607422}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_tassle
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 916
+        width: 94
+        height: 139
+      alignment: 9
+      pivot: {x: 0.1840197, y: 0.8885164}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_arm_lower
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 957
+        width: 93
+        height: 72
+      alignment: 9
+      pivot: {x: 0.877446, y: 0.2937351}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_hand
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 802
+        width: 133
+        height: 138
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_hand
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 778
+        width: 130
+        height: 138
+      alignment: 9
+      pivot: {x: 0.86348736, y: 0.3336836}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_leg
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 632
+        width: 130
+        height: 130
+      alignment: 9
+      pivot: {x: 0.71809244, y: 0.85310197}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_body
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 530
+        width: 252
+        height: 234
+      alignment: 9
+      pivot: {x: 0.59643555, y: 0.06727692}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_l_ribbon
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 525
+        width: 93
+        height: 237
+      alignment: 9
+      pivot: {x: 0.51451784, y: 0.9329422}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_r_ribbon
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 560
+        width: 150
+        height: 205
+      alignment: 9
+      pivot: {x: 0.24798177, y: 0.91490746}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_leg
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 604
+        width: 147
+        height: 129
+      alignment: 9
+      pivot: {x: 0.63776505, y: 0.88723683}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_dead
+      rect:
+        serializedVersion: 2
+        x: 1092
+        y: 411
+        width: 342
+        height: 351
+      alignment: 9
+      pivot: {x: 0.4881571, y: 0.09227855}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_foot
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 500
+        width: 96
+        height: 88
+      alignment: 9
+      pivot: {x: 0.78126997, y: 0.8221817}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_foot
+      rect:
+        serializedVersion: 2
+        x: 892
+        y: 453
+        width: 87
+        height: 107
+      alignment: 9
+      pivot: {x: 0.5931102, y: 0.8406783}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_attacking
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 118
+        width: 343
+        height: 352
+      alignment: 9
+      pivot: {x: 0.4881571, y: 0.09227855}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_casting
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 121
+        width: 342
+        height: 351
+      alignment: 9
+      pivot: {x: 0.4881571, y: 0.09227855}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_skill
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 40
+        width: 342
+        height: 351
+      alignment: 9
+      pivot: {x: 0.4881571, y: 0.09227855}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_damaged
+      rect:
+        serializedVersion: 2
+        x: 1296
+        y: 56
+        width: 342
+        height: 351
+      alignment: 9
+      pivot: {x: 0.4881571, y: 0.09227855}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

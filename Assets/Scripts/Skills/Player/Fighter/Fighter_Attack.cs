@@ -8,6 +8,8 @@ public class Fighter_Attack : Skill {
 
     public override void Activate ()
 	{
+		Debug.Log ("fighter attacking");
+
 		CheckTargetRange(caster.Target);
 
         if (isTargetInMeleeRange == true)

@@ -41,6 +41,7 @@ public class OgreFemale : Enemy {
 		case 1:
 		case 3:
 		case 4:
+			ChangeAction (CharacterAction.Idle);
 			pattern = 0;
 			break;
 		case 2:
