@@ -10,6 +10,7 @@ public class Wizard : Hero
 
     private void Awake()
     {
+<<<<<<< HEAD
         abillity[0] = 1;
         abillity[1] = 2;
         abillity[2] = 1;
@@ -21,11 +22,14 @@ public class Wizard : Hero
         speed_x = 2.57f;
         speed_y = 1.4f;
 
+=======
+		/*
+>>>>>>> 96a441a56d03b4f6eda8cbf73eb63b00e7d93ad2
         autoAttack = gameObject.AddComponent<Wizard_AutoAttack>();
-        autoAttack.SetSkill(this);
+        //autoAttack.SetSkill(this);
 
         passiveSkill = gameObject.AddComponent<Wizard_Passive>();
-        passiveSkill.SetSkill(this);
+        //passiveSkill.SetSkill(this);
         passiveSkill.OnCast();
 
 		activeSkills = new HeroActive[3];
@@ -64,11 +68,12 @@ public class Wizard : Hero
 
         foreach (Skill eachSkill in activeSkills)
         {
-            eachSkill.SetSkill(this);
+            //eachSkill.SetSkill(this);
         }
-        TimeSystem.GetTimeSystem().AddTimer(this);
+        */
     }
 
+	/*
     public override void RunTime()
     {
         base.RunTime();
@@ -95,6 +100,7 @@ public class Wizard : Hero
             }
         }
     }
+<<<<<<< HEAD
 
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
@@ -107,4 +113,7 @@ public class Wizard : Hero
         Debug.Log(transform.name + "Received Damage: " + damage);
         UpdateHpUI();
     }
+=======
+    */
+>>>>>>> 96a441a56d03b4f6eda8cbf73eb63b00e7d93ad2
 }

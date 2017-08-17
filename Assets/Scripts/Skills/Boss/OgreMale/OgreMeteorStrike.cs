@@ -6,6 +6,7 @@ public class OgreMeteorStrike : Skill {
 	Character target;
 
 	public GameObject meteorPrefab;
+	int damage;
 	protected int counter;
 	protected float progressTimer;
 	protected int strikes = 6;
@@ -15,6 +16,17 @@ public class OgreMeteorStrike : Skill {
 		get {
 			return pool;
 		}
+	}
+
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+		meteorPrefab = Resources.Load ("Skills/Area/Meteor") as GameObject;
+	}
+
+	public override void SetSkill (Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.damage = (int)param ["damage"];
 	}
 
 	public override void RunTime ()
@@ -43,11 +55,6 @@ public class OgreMeteorStrike : Skill {
 
 	#endregion
 
-	void Start() {
-		cooldown = 15f;
-		meteorPrefab = Resources.Load ("Skills/Area/Meteor") as GameObject;
-	}
-
 	protected void InProgress() {
 		if (counter++ < strikes) {
 			Vector3 pos = SetTarget ();
@@ -71,6 +78,6 @@ public class OgreMeteorStrike : Skill {
 
 	void CreateMeteor(Vector3 pos) {
 		Meteor meteor = Instantiate (meteorPrefab).GetComponent<Meteor> ();
-		meteor.SetMeteor (caster, pos);
+		meteor.SetMeteor (caster, pos, damage);
 	}
 }

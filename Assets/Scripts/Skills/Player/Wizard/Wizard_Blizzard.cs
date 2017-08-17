@@ -16,7 +16,17 @@ public class Wizard_Blizzard : HeroActive,IChanneling
     bool[] FacingLeft = new bool[10];
     GameObject bl;
 
+<<<<<<< HEAD
     void Awake() {
+=======
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [2] = this;
+		}
+
+>>>>>>> 96a441a56d03b4f6eda8cbf73eb63b00e7d93ad2
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill3");
     }
 

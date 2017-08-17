@@ -17,7 +17,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
     [SerializeField]
 	protected List<Buff> buffs = new List<Buff>();
-	protected Skill[] skills = new Skill[0];
+	protected Skill[] skills;
 
     [SerializeField]
 	protected CharacterAction action = CharacterAction.Idle;
@@ -29,12 +29,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	protected IBattleHandler target;
     protected Vector3 moveTarget;
 	protected bool isFacingLeft = true;
-	protected AnimationController anim;
+    protected AnimationController anim;
 
 	public event EventHandler<MoveEventArgs> MoveComplete;
 
-	#region Getters and Setters
-
+    #region Getters and Setters
 	public List<Buff> Buffs {
 		get {
 			return buffs;
@@ -105,6 +104,28 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         }
 
         int receivedDamage = Calculator.ReceiveDamage(this, damage);
+
+        //여기에다가 함수를 추가하고 뺄 수는 없을까? -> 해놓고 델리게이트로 바꿔 보도록 합시다!!!
+        if(this is Hero)
+        {
+            foreach(Buff eachbuff in buffs)
+            {
+                if(eachbuff is Buff_Link_ProtectionArea)
+                {
+                    Buff_Link_ProtectionArea buff = eachbuff as Buff_Link_ProtectionArea;
+                    if(buff.healer_ProtectionArea.LinkerState == LinkerState.OnLink || buff.healer_ProtectionArea.LinkerState == LinkerState.willBreak)
+                    {
+                        buff.healer_ProtectionArea.ReceiveDamage(attacker, receivedDamage);
+                        return;
+                    }
+                    else
+                    {
+                        buff.EndBuff();
+                    }
+                }
+            }
+        }
+
         hp -= receivedDamage;
         if (hp <= 0) {
 			hp = 0;
@@ -163,116 +184,13 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	#endregion
 
+	#region Movement
+
 	protected virtual void OnMoveComplete(MoveEventArgs e) {
 		EventHandler<MoveEventArgs> moveComplete = MoveComplete;
 		if (moveComplete != null) {
 			moveComplete (this, e);
 		}
-	}
-
-	protected virtual void Start() {
-		Spawn ();
-	}
-
-	/// <summary>
-	/// Things to happen at load
-	/// </summary>
-	public virtual void Spawn () {
-		// set team
-		if (this is Hero) {
-			team = Team.Friendly;
-		} else if (this is Enemy) {
-			team = Team.Hostile;
-		}
-
-		// add to entity list
-		BattleManager.GetBattleManager ().AddEntity (this as IBattleHandler);
-		TimeSystem.GetTimeSystem ().AddTimer (this);
-
-		// initialize animation status
-		anim = GetComponentInChildren<AnimationController> ();
-		anim.UpdateSortingLayer ();
-	}
-
-	/// <summary>
-	/// Refreshes the buff (please run this after each add buff / delete buff)
-	/// </summary>
-	public void RefreshBuff() {
-		int change = CharacterStatus.Idle;
-
-		for (int i = 0; i < buffs.Count; i++) {
-            IStatusBuff buff = buffs [i] as IStatusBuff;
-			if (buff != null) {
-				change |= buff.Status;
-			}
-		}
-		status = change;
-
-		// immune
-		/*
-		if(CheckCharacterStatus(CharacterStatus.IsImmuneMask)) {
-		// turn off all negative buffs	
-		}
-		*/
-		// on silence
-		if (CheckCharacterStatus (CharacterStatus.IsSilencedMask)) {
-			for (int i = 0; i < skills.Length; i++) {
-				IChanneling ch = skills [i] as IChanneling;
-				if (ch != null) {
-					ch.OnInterrupt (null);
-				}
-			}
-		}
-		// on rooted
-		if (CheckCharacterStatus (CharacterStatus.IsRootedMask)) {
-			if (action == CharacterAction.Moving || action == CharacterAction.Jumping) {
-				StopMove ();
-			}
-		}
-	}
-
-	// update hpBar for each character
-	protected abstract void UpdateHpUI ();
-
-	public virtual void AttackTarget(IBattleHandler target, int damage) {
-        int returnDmg = damage;
-
-        if(this is Hero)
-            // Switch if it is Skill, Attack
-            returnDmg = Calculator.AttackDamage(this, returnDmg);
-        else if(this is Enemy)
-            returnDmg = Calculator.AllDamage(this, returnDmg);
-        
-        target.ReceiveDamage(this,returnDmg);
-    }
-
-	public virtual void HealTarget(int heal, IBattleHandler target) {
-		target.ReceiveHeal (heal);
-	}
-
-	protected virtual void KillCharacter () {
-        //for time System Off
-        //1) remove Buff from timer
-        if (buffs != null)
-        {
-            foreach(Buff eachBuff in buffs)
-            {
-                ITimeHandler eachBuffTime = eachBuff as ITimeHandler;
-                if (eachBuffTime != null)
-                    TimeSystem.GetTimeSystem().DeleteTimer(eachBuffTime);
-            }
-        }
-        //2) remove Character from timer
-        Debug.LogWarning("Check this with Dead Animation");
-        if (TimeSystem.GetTimeSystem().CheckTimer(this) == true)
-            TimeSystem.GetTimeSystem().DeleteTimer(this);
-
-		gameObject.SetActive (false);
-		ChangeAction (CharacterAction.Dead);
-		TimeSystem.GetTimeSystem().DeleteTimer(this);
-
-		// BattleManager check
-		BattleManager.GetBattleManager ().CheckGame ();
 	}
 
 	/// <summary>
@@ -320,10 +238,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
 	protected void Move(Vector3 target, float speed_x, float speed_y) {
 		float speed;
-        customSpeed_x = speed_x;
-        customSpeed_y = speed_y;
+		customSpeed_x = speed_x;
+		customSpeed_y = speed_y;
 		moveTarget = target;
 
+		/*
 		if (!Background.GetBackground ().CheckBoundaries (target)) {
 			Debug.LogError ("Moved outside boundaries");
 			ChangeAction (CharacterAction.Idle);
@@ -331,11 +250,12 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 			//OnMoveComplete (x);
 			return;
 		}
+		*/
 
 		// calculate speed
 		Vector3 n = Vector3.Normalize(target - transform.position);
 		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
-        speed *= Calculator.MoveSpeed(this);
+		speed *= Calculator.MoveSpeed(this);
 
 
 		if (Vector3.Distance (target, transform.position) > 0.01f) {
@@ -347,12 +267,153 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 			// send move complete(reached destination event)
 			MoveEventArgs e = new MoveEventArgs (true, transform.position);
 			OnMoveComplete (e);
-        }
+		}
 	}
 
-    public void CheckFacing() // 수정됨
+	public bool ChangeMoveTarget(Vector3 target)
+	{
+		if (action == CharacterAction.Moving) {
+			moveTarget = target;
+			return true;
+		} else if (ChangeAction (CharacterAction.Moving)) {
+			BeginMove (target);
+			return true;
+		}
+		return false;
+	}
+
+	public void StopMove() {
+		ChangeAction (CharacterStatus.Idle);
+		MoveEventArgs e = new MoveEventArgs (false, transform.position);
+		OnMoveComplete (e);
+	}
+
+	#endregion
+
+	/// <summary>
+	/// Things to happen at load
+	/// </summary>
+	public virtual void Spawn (Dictionary<string, object> data, int[] skills) {
+		// apply paramters
+		id = (int)data ["id"];
+		transform.name = data["name"].ToString();
+		maxHp = (int)data ["max_hp"];
+		hp = maxHp;
+		double[] speed = (double[])data ["speed"];
+		speed_x = (float)speed [0];
+		speed_y = (float)speed [1];
+
+		this.skills = new Skill[skills.Length];
+
+		// apply skills
+		for (int i = 0; i < skills.Length; i++) {
+			Dictionary<string, object> param = (Dictionary<string, object>)LoadManager.Instance.SkillData [skills [i]];
+			Type t = Type.GetType (param ["name_script"].ToString ());
+			Skill skill = gameObject.AddComponent (t) as Skill;
+			if (skill != null) {
+				skill.SetSkill (param);
+			}
+			this.skills [i] = skill;
+		}
+
+		// add to entity list
+		BattleManager.GetBattleManager ().AddEntity (this);
+		TimeSystem.GetTimeSystem ().AddTimer (this);
+
+		// initialize animation status
+		action = CharacterAction.Idle;
+		anim = GetComponentInChildren<AnimationController> ();
+		anim.UpdateSortingLayer ();
+		RefreshBuff ();
+	}
+
+	/// <summary>
+	/// Refreshes the buff (please run this after each add buff / delete buff)
+	/// </summary>
+	public void RefreshBuff() {
+		int change = CharacterStatus.Idle;
+		for (int i = 0; i < buffs.Count; i++) {
+            IStatusBuff buff = buffs [i] as IStatusBuff;
+			if (buff != null) {
+				change |= buff.Status;
+			}
+		}
+		status = change;
+
+		// immune
+		/*
+		if(CheckCharacterStatus(CharacterStatus.IsImmuneMask)) {
+		// turn off all negative buffs	
+		}
+		*/
+		// on silence
+		if (CheckCharacterStatus (CharacterStatus.IsSilencedMask)) {
+			for (int i = 0; i < skills.Length; i++) {
+				IChanneling ch = skills [i] as IChanneling;
+				if (ch != null) {
+					ch.OnInterrupt (null);
+				}
+			}
+		}
+		// on rooted
+		if (CheckCharacterStatus (CharacterStatus.IsRootedMask)) {
+			if (action == CharacterAction.Moving || action == CharacterAction.Jumping) {
+				StopMove ();
+			}
+		}
+		UpdateCCUI ();
+	}
+
+	// update hpBar for each character
+	protected abstract void UpdateCCUI();
+	protected abstract void UpdateHpUI ();
+
+	public virtual void AttackTarget(IBattleHandler target, int damage) {
+        int returnDmg = damage;
+
+        if(this is Hero)
+            // Switch if it is Skill, Attack
+            returnDmg = Calculator.AttackDamage(this, returnDmg);
+        else if(this is Enemy)
+            returnDmg = Calculator.AllDamage(this, returnDmg);
+        
+        target.ReceiveDamage(this,returnDmg);
+    }
+
+	public virtual void HealTarget(int heal, IBattleHandler target) {
+		target.ReceiveHeal (heal);
+	}
+
+	protected virtual void KillCharacter () {
+        //for time System Off
+        //1) remove Buff from timer
+        if (buffs != null)
+        {
+            foreach(Buff eachBuff in buffs)
+            {
+                ITimeHandler eachBuffTime = eachBuff as ITimeHandler;
+                if (eachBuffTime != null)
+                    TimeSystem.GetTimeSystem().DeleteTimer(eachBuffTime);
+            }
+        }
+        //2) remove Character from timer
+        Debug.LogWarning("Check this with Dead Animation");
+        if (TimeSystem.GetTimeSystem().CheckTimer(this) == true)
+            TimeSystem.GetTimeSystem().DeleteTimer(this);
+
+		gameObject.SetActive (false);
+		ChangeAction (CharacterAction.Dead);
+		TimeSystem.GetTimeSystem().DeleteTimer(this);
+
+		// BattleManager check
+		BattleManager.GetBattleManager ().CheckGame ();
+	}
+
+
+
+    public void CheckFacing()
     {
-        Vector3 movePosiotion = moveTarget;
+		Vector3 movePosition = moveTarget;
         switch(team)
         {
             case Team.Friendly:
@@ -430,23 +491,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         anim.UpdateSortingLayer();
     }
 
-    public bool ChangeMoveTarget(Vector3 target)
-    {
-		if (action == CharacterAction.Moving) {
-			moveTarget = target;
-			return true;
-		} else if (ChangeAction (CharacterAction.Moving)) {
-			BeginMove (target);
-			return true;
-		}
-		return false;
-    }
-
-	public void StopMove() {
-		ChangeAction (CharacterStatus.Idle);
-		MoveEventArgs e = new MoveEventArgs (false, transform.position);
-		OnMoveComplete (e);
-	}
+    
 
 	public bool ChangeAction(CharacterAction action) {
 		// changed successfully return true

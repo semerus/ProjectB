@@ -53,13 +53,11 @@ public class Fighter_Attack : Skill {
     #region MonoBehaviours
     void Awake()
     {
-        // set original value
-        cooldown = 0.9f;
-        dmg = 20;
-
-        // set initial value
-		skillStatus = SkillStatus.ReadyOn;
-        timer_cooldown = 0f;
+		caster = GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.autoAttack = this;
+		}
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
     }
@@ -75,43 +73,47 @@ public class Fighter_Attack : Skill {
     Vector3 positionToMeleeAttack;
     private void CheckTargetRange(IBattleHandler attackTarget)
     {
-        Vector3 enemyPosition = (attackTarget as Enemy).transform.position;
-
-        float myA = 2.1f;
-        float myB = 0.7f;
-
-        float outerX = 0.5f;
-        float innerX = 0.2f;
-        float outerY = 0.3f;
-
-        float dX = enemyPosition.x - this.transform.position.x;
-        float dY = enemyPosition.y - this.transform.position.y;
-
-        float inX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX;
-        float outX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX;
-
-        float m_inX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX);
-        float m_outX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX);
-
-        float deltaX = enemyPosition.x - caster.transform.position.x;
-        float deltaY = enemyPosition.y - caster.transform.position.y;
-
-        if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
+        if(attackTarget is Character)
         {
-            isTargetInMeleeRange = true;
-        }
-        else
-        {
-            isTargetInMeleeRange = false;
-            if (this.gameObject.transform.position.x <= enemyPosition.x)
+            RaycastHit2D[] hits = Physics2D.LinecastAll(caster.transform.position,
+                (attackTarget as Character).gameObject.transform.position, LayerMask.NameToLayer("EnemyCollider"));
+
+            if(hits != null)
             {
-                positionToMeleeAttack = enemyPosition - new Vector3(2.3f, 0, 0);
+                
             }
             else
             {
-                positionToMeleeAttack = enemyPosition + new Vector3(2.3f, 0, 0);
+                positionToMeleeAttack = (attackTarget as Character).transform.position;
             }
         }
+        //float myA = 2.1f;
+        //float myB = 0.7f;
+
+        //float outerX = 0.5f;
+        //float innerX = 0.2f;
+        //float outerY = 0.3f;
+
+        //float dX = enemyPosition.x - this.transform.position.x;
+        //float dY = enemyPosition.y - this.transform.position.y;
+
+        //float inX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX;
+        //float outX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX;
+
+        //float m_inX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX);
+        //float m_outX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX);
+
+        //float deltaX = enemyPosition.x - caster.transform.position.x;
+        //float deltaY = enemyPosition.y - caster.transform.position.y;
+
+        //if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
+        //{
+        //    isTargetInMeleeRange = true;
+        //}
+        //else
+        //{
+        //    isTargetInMeleeRange = false;
+        //}
     }
     #endregion
 }

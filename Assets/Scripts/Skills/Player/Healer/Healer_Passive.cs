@@ -15,13 +15,13 @@ public class Healer_Passive : Skill {
     #region MonoBehaviours
     void Awake()
     {
-        UpdateSkillStatus(SkillStatus.OnCoolDownOn);
-        cooldown = 10f;
-        timer_cooldown = cooldown - 10;
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.passiveSkill = this;
+		}
 
         //Time system Add
-        if (TimeSystem.GetTimeSystem().CheckTimer(this) == false)
-            TimeSystem.GetTimeSystem().AddTimer(this);
+        TimeSystem.GetTimeSystem().AddTimer(this);
 
         //Prefab
         GameObject potion_ref = Resources.Load("Skills\\Area\\Healer_Potion", typeof(GameObject)) as GameObject;
@@ -75,13 +75,16 @@ public class Healer_Passive : Skill {
 
             spawnVector = new Vector3(xPos, yPos, 0);
 
-            foreach(GameObject hero in BattleManager.GetBattleManager().heroes)
-            {
-                if (Mathf.Abs(hero.transform.position.x - xPos) >= space_X)
-                    isSpawnAvailable = false;
-                if (Mathf.Abs(hero.transform.position.y - yPos) >= space_Y)
-                    isSpawnAvailable = false;
-            }
+			IBattleHandler[] friendly = BattleManager.GetBattleManager ().GetEntities (Team.Friendly);
+			for (int i = 0; i < friendly.Length; i++) {
+				Hero hero = friendly[i] as Hero;
+				if (hero != null) {
+					if (Mathf.Abs(hero.transform.position.x - xPos) >= space_X)
+						isSpawnAvailable = false;
+					if (Mathf.Abs(hero.transform.position.y - yPos) >= space_Y)
+						isSpawnAvailable = false;
+				}
+			}
 
             infinityBreaker++;
             if (infinityBreaker > 20)

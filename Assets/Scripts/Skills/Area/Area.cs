@@ -4,7 +4,7 @@ public abstract class Area : MonoBehaviour {
 	public Character caster; // <- change to protected later
 	protected Collider2D col;
 
-	void Awake() {
+	protected virtual void Awake() {
 		col = GetComponentInChildren<Collider2D> ();
 	}
 

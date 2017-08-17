@@ -1,0 +1,45 @@
+{
+	"data": 
+	[
+		{
+			"id": 1000,
+			"name": "Fighter",
+			"path_prefab": "Heroes/Fighter/Fighter",
+			"max_hp": 300,
+			"speed": [2.57, 1.4],
+			"hit_range": [0.5, 0.3]
+		},
+		{
+			"id": 1001,
+			"name": "Healer",
+			"path_prefab": "Heroes/Healer/Healer",
+			"max_hp": 250,
+			"speed": [2.57, 1.4],
+			"hit_range": [0.5, 0.3]
+		},
+		{
+			"id": 1002,
+			"name": "Wizard",
+			"path_prefab": "Heroes/Wizard/Wizard",
+			"max_hp": 200,
+			"speed": [2.57, 1.4],
+			"hit_range": [0.5, 0.3]
+		},
+		{
+			"id": 1003,
+			"name": "Archer",
+			"path_prefab": "",
+			"max_hp": 250,
+			"speed": [2.57, 1.4],
+			"hit_range": [0.5, 0.3]
+		},
+		{
+			"id": 1004,
+			"name": "Warrior",
+			"path_prefab": "",
+			"max_hp": 450,
+			"speed": [2.57, 1.4],
+			"hit_range": [0.5, 0.3]
+		}
+	]
+}

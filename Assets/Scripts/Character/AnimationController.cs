@@ -78,8 +78,10 @@ public class AnimationController : MonoBehaviour {
 	}
 
 	public void OnAnimEvent() {
-		//onCue();
-		Debug.Log("Will hit at this moment");
+		if (onCue != null) {
+			onCue();
+		}
+		//Debug.Log("Will hit at this moment");
 	}
 
 	public void PauseAnimation() {

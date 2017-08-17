@@ -5,13 +5,24 @@ using UnityEngine;
 
 public class OgreFemale_Sk4 : Skill
 {
-    int count = 0;
+	int damage;
+	int count = 0;
     int mod = 1;
     int startNum = 0;
     bool sk4_On = false;
     IBattleHandler[] friendlyNum;
     float tx;
     float ty;
+
+	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+	}
+
+	public override void SetSkill (Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.damage = (int)param ["damage"];
+	}
 
     public override void RunTime()
     {
@@ -57,12 +68,14 @@ public class OgreFemale_Sk4 : Skill
 
             if (burnCheck == true)
             {
-                Debug.Log("Burn " + c.transform.name);
-                // 불붙기
+                //Debug.Log("Burn " + c.transform.name);
+				caster.AttackTarget(c, damage / 10);
             }
         }
     }
 
+	Buff_Stun stun0;
+	Buff_Stun stun1;
     private void BurnRun()
     {
         float speed = 3 * Mathf.Sqrt(2);
@@ -73,6 +86,12 @@ public class OgreFemale_Sk4 : Skill
             caster.StopMove();
             sk4_On = false;
             count = 0;
+
+			// stun both bosses
+			OgreFemale f = caster as OgreFemale;
+			stun0 = new Buff_Stun (2f, caster, caster);
+			stun1 = new Buff_Stun (2f, caster, f.Partner);
+
             SkillEventArgs s = new SkillEventArgs(this.name, true);
             OnEndSkill(s);
         }

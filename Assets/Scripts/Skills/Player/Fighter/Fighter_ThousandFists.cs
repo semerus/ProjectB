@@ -50,7 +50,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
             curHitCoutns++;
             timer_Channeling = 0f;
             // animation state
-            
+        
             caster.AttackTarget(target, normalDmg);
             print("nor punch!!");
         }
@@ -124,8 +124,13 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
     #region MonoBehaviours
     void Awake()
     {
-        // set original value
-        cooldown = 20f;
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [2] = this;
+		}
+        
+		// set original value
         normalDmg = 20;
         lastDmg = 50;
         HPCost = 30;

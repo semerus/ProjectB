@@ -1,9 +1,14 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.16
+ */
+using UnityEngine;
 
 public abstract class HeroActive : Skill, IHeroActiveUI {
 
 	protected Sprite button;
 
+<<<<<<< HEAD
 	#region implemented abstract members of Skill
 
 	public override void Activate ()
@@ -13,6 +18,8 @@ public abstract class HeroActive : Skill, IHeroActiveUI {
 
 	#endregion
 
+=======
+>>>>>>> 96a441a56d03b4f6eda8cbf73eb63b00e7d93ad2
 	#region implemented IHeroActiveUI
 
 	public Sprite InGameUI {

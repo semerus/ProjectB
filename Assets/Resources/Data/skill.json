@@ -1,0 +1,312 @@
+{
+	"data": 
+	[
+		{
+			"id": 100030,
+			"name": "Fighter Passive",
+			"name_script": "Wizard_Passive",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 0.0
+		},
+		{
+			"id": 100040,
+			"name": "Melee Autoattack",
+			"name_script": "Fighter_Attack",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 0.9,
+			"damage": 20
+		},
+		{
+			"id": 100000,
+			"name": "Meow Punch1",
+			"name_script": "Fighter_MeowPunch_FierceScratch",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 15.0,
+			"damage": 100,
+			"cost": 30,
+			"extra_cost": 20,
+			"buff_time": 2.0,
+			"buff_ratio": 0.25
+		},
+		{
+			"id": 100001,
+			"name": "Meow Punch2",
+			"name_script": "Fighter_MeowPunch_ForePaw",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 15.0,
+			"damage": 100,
+			"cost": 30,
+			"extra_cost": 0,
+			"buff_time": 2.0,
+			"buff_ratio": 0.25
+		},
+		{
+			"id": 100010,
+			"name": "Counter Stance",
+			"name_script": "Fighter_CounterStance",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"damage": 250,
+			"cost": 50,
+			"channel_time": 2.0
+		},
+		{
+			"id": 100011,
+			"name": "Counter Stance2",
+			"name_script": "Fighter_CounterStance",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"damage": 250,
+			"cost": 50,
+			"channel_time": 2.0
+		},
+		{
+			"id": 100020,
+			"name": "Thousand Fists",
+			"name_script": "Fighter_ThousandFists",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"damage": 20,
+			"hit_count": 7
+		},
+		{
+			"id": 100021,
+			"name": "Thousand Fists2",
+			"name_script": "Fighter_ThousandFists",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"damage": 20,
+			"hit_count": 7
+		},
+		{
+			"id": 100130,
+			"name": "Healer Passive",
+			"name_script": "Healer_Passive",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 30.0,
+			"heal": 50,
+			"remain_time": 5.0
+		},
+		{
+			"id": 100100,
+			"name": "Summon Totem",
+			"name_script": "Healer_Summon_Totem_AttackSpeedBuff",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"heal": 40,
+			"remain_time": 4.0,
+			"health": 2
+		},
+		{
+			"id": 100101,
+			"name": "Summon Totem2",
+			"name_script": "Healer_Summon_Totem_AttackSpeedBuff",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"heal": 40,
+			"remain_time": 4.0,
+			"health": 2
+		},
+		{
+			"id": 100110,
+			"name": "Protection Area",
+			"name_script": "Healer_Summon_ProtectionArea",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 25.0,
+			"shield": 300,
+			"remain_time": 2
+		},
+		{
+			"id": 100111,
+			"name": "Protection Area2",
+			"name_script": "Healer_Summon_ProtectionArea",
+			"path_sprite": "",
+			"path_prefab": "",	
+			"cooldown": 25.0,
+			"shield": 300,
+			"remain_time": 2
+		},
+		{
+			"id": 100120,
+			"name": "Restore",
+			"name_script": "Healer_Restore",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+		},
+		{
+			"id": 100121,
+			"name": "Restore",
+			"name_script": "",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+		},
+		{
+			"id": 100230,
+			"name": "Repeated Training",
+			"name_script": "Wizard_Passive",
+			"path_sprite": "",
+			"path_prefab": "",
+			"max_stack": 2,
+			"cooldown": 0.0,
+			"damage": 20
+		},
+		{
+			"id": 100240,
+			"name": "Range Autoattack",
+			"name_script": "Wizard_AutoAttack",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 2.0,
+			"damage": 20
+		},
+		{
+			"id": 100200,
+			"name": "Snowball",
+			"name_script": "Wizard_Snowball",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 2.0,
+			"damage": 20
+		},
+		{
+			"id": 100201,
+			"name": "Snowball2",
+			"name_script": "Wizard_Snowball",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 2.0,
+			"damage": 20
+		},
+		{
+			"id": 100210,
+			"name": "Freeze",
+			"name_script": "Wizard_Freeze",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 2.0,
+			"damage": 20
+		},
+		{
+			"id": 100211,
+			"name": "Freeze2",
+			"name_script": "Wizard_Freeze",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 2.0,
+			"damage": 20
+		},
+		{
+			"id": 100220,
+			"name": "Blizzard",
+			"name_script": "Wizard_Blizzard",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 2.0,
+			"damage": 20
+		},
+		{
+			"id": 100221,
+			"name": "Blizzard2",
+			"name_script": "Wizard_Blizzard",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 2.0,
+			"damage": 20
+		},
+		{
+			"id": 200000,
+			"name": "Heal",
+			"name_script": "OgreHeal",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"heal": 3000,
+			"channel_time": 4.0
+		},
+		{
+			"id": 200010,
+			"name": "Set Fire",
+			"name_script": "OgreSetFire",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+		},
+		{
+			"id": 200020,
+			"name": "Meteor Strike",
+			"name_script": "OgreMeteorStrike",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"damage": 40,
+			"cast_time": 1.5,
+			"hit_count": 6
+		},
+		{
+			"id": 200100,
+			"name": "Melee Attack",
+			"name_script": "OgreFemale_AutoAttack",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 0.0,
+			"damage": 50
+		},
+		{
+			"id": 200110,
+			"name": "Jump Attack",
+			"name_script": "OgreFemale_Sk2",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 10.0,
+			"buff_time": 1.0
+		},
+		{
+			"id": 200120,
+			"name": "Battle Cry",
+			"name_script": "OgreFemale_Sk3",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 10.0,
+			"channel_time": 2.0,
+			"cast_time": 1.0,
+			"buff_time": 4.0
+		},
+		{
+			"id": 200130,
+			"name": "On Fire",
+			"name_script": "OgreFemale_Sk4",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 20.0,
+			"damage": 50,
+			"channel_time": 2.0,
+			"cast_time": 1.0,
+			"buff_time": 4.0,
+			"stunned_time": 3.0
+		},
+		{
+			"id": 200140,
+			"name": "Berserker Mode",
+			"name_script": "OgreFemale_Sk5",
+			"path_sprite": "",
+			"path_prefab": "",
+			"cooldown": 0.0,
+			"buff_ratio": 2.0
+		},
+	]
+}
+	

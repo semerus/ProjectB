@@ -13,6 +13,12 @@ public class Wizard_Freeze : HeroActive
     GameObject fl;
 
 	void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [1] = this;
+		}
+
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill2");
 	}
 

@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.13
+ */
+using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Enemy : Character, IDoubleTapHandler {
 
@@ -10,6 +15,10 @@ public abstract class Enemy : Character, IDoubleTapHandler {
 		float percent = (float)hp / (float)maxHp;
 		enemyUI.UpdateHp (percent);
     }
+
+	protected override void UpdateCCUI() {
+		enemyUI.UpdateCC (status);
+	}
     #endregion
 
     #region IDoubleTapHandler implementation
@@ -21,12 +30,15 @@ public abstract class Enemy : Character, IDoubleTapHandler {
 
 	#endregion
 
-	public override void Spawn ()
+	public override void Spawn (Dictionary<string, object> data, int[] skills)
 	{
-		base.Spawn ();
+		team = Team.Hostile;
+		base.Spawn (data, skills);
 	}
 	// capsulize patterns
 	protected virtual void InstructEnemyAI () {
-		
+		if (CheckCharacterStatus (CharacterStatus.NotOrderableMask)) {
+			return;
+		}
 	}
 }

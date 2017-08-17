@@ -17,9 +17,14 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
     CameraShake a;
 
     void Awake() {
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [0] = this;
+		}
+
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill1");
         SetSnowProjectile();
-        cooldown = 10f;
     }
     
     public virtual void OnChanneling()

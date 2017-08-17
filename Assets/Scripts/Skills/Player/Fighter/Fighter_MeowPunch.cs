@@ -42,6 +42,12 @@ public abstract class Fighter_MeowPunch : HeroActive {
     #region MonoBehaviours
     protected void Awake()
     {
+		caster = gameObject.GetComponent<Character> ();
+		Hero h = caster as Hero;
+		if (h != null) {
+			h.activeSkills [0] = this;
+		}
+
         // set original value
         TraitSetValue();
         

@@ -94,10 +94,8 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
 
     protected int maxHp_Count;
     protected int curHp_Count;
-
-    [SerializeField]
+    
     protected float duration;
-    [SerializeField]
     protected float curDuration;
     protected float time_Between_Heal;
     protected float curtime_Between_Heal;

@@ -1,4 +1,9 @@
-﻿using System;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.13
+ */
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Skill : MonoBehaviour, ITimeHandler {
@@ -6,13 +11,19 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	// gameUI prefab
 	protected int id;
 	protected Character caster;
-	[SerializeField]
 	protected int skillStatus = SkillStatus.ReadyOn;
 	protected float cooldown;
     [SerializeField]
-	protected float timer_cooldown;
+	protected float timer_cooldown = 0f;
 
 	public event EventHandler<SkillEventArgs> EndSkill;
+
+	#region Getters and Setters
+	public int Status
+	{
+		get { return skillStatus; }
+	}
+	#endregion
 
 	#region ITimeHandler implementation
 
@@ -35,13 +46,6 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
     #endregion
 
-    #region Getters and Setters
-	public int Status
-    {
-		get { return skillStatus; }
-    }
-    #endregion
-
     public void OnEndSkill(SkillEventArgs e) {
 		UpdateSkillStatus (SkillStatus.ProcessOff);
 
@@ -51,8 +55,10 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		}
 	}
 
-    public void SetSkill(Character caster) {
-		this.caster = caster;
+	public virtual void SetSkill(Dictionary<string, object> param) {
+		//this.caster = gameObject.GetComponent<Character> ();
+		this.id = (int)param ["id"];
+		this.cooldown = (float)((double)param ["cooldown"]);
 	}
 
 	// when ui button is clicked
@@ -129,4 +135,10 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 			skillStatus = SkillStatus.ReadyOn;
 		}
 	}
+
+    public void AddCooltime(float time)
+    {
+        timer_cooldown += time;
+    }
+
 }

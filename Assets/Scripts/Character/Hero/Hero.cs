@@ -1,22 +1,32 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.13
+ */
+using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
-	protected Skill autoAttack;
-    protected Skill passiveSkill;
-	protected HeroActive[] activeSkills;
+	public Skill autoAttack;
+	public Skill passiveSkill;
+	public HeroActive[] activeSkills = new HeroActive[3];
 
-    protected HeroUI heroUI; // load it from spawn
+    protected HeroUI heroUI;
 	protected int[] masks = new int[3] { 1 << 9, 1 << 8, 1 << 10 }; // enemy -> hero -> control Area
 
-    protected const float speed_x_1Value = 2.57f;
-    protected const float speed_y_1Value = 1.4f;
+    //protected const float speed_x_1Value = 2.57f;
+    //protected const float speed_y_1Value = 1.4f;
 
 
     #region Getters and Setter
     public Skill[] ActiveSkills
     {
         get { return activeSkills; }
+    }
+
+    public Skill PassiveSkill
+    {
+        get { return passiveSkill; }
     }
     #endregion
 
@@ -28,6 +38,9 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		heroUI.UpdateHp (percent);
 	}
 
+	protected override void UpdateCCUI() {
+		heroUI.UpdateCC (status);
+	}
 	#endregion
 
 	#region ITapHandler implementation
@@ -88,26 +101,24 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	public override void RunTime ()
 	{
 		base.RunTime ();
-        if (autoAttack.CheckSkillStatus(SkillStatus.ReadyMask) && action == CharacterAction.Attacking)
-        {
-            autoAttack.OnCast();
-        }
+		if (autoAttack != null) {
+			if (autoAttack.CheckSkillStatus(SkillStatus.ReadyMask) && action == CharacterAction.Attacking)
+			{
+				autoAttack.OnCast();
+			}
+		}
     }
-
-    // not in use now
-    public virtual void SetSkill(Skill[] skills) {
-		
-	}
 
     public void RemoveTarget()
     {
         this.target = null;
     }
 
-	public override void Spawn ()
+	public override void Spawn (Dictionary<string, object> data, int[] skills)
 	{
-		base.Spawn ();
+		team = Team.Friendly;
 		heroUI = GetComponentInChildren<HeroUI> ();
+		base.Spawn (data, skills);
 	}
 
 	protected override void KillCharacter ()
@@ -119,6 +130,10 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	public virtual void AutoAttack(IBattleHandler target) {
 			this.target = target;
 			autoAttack.OnCast ();
+<<<<<<< HEAD
+=======
+		}
+>>>>>>> 96a441a56d03b4f6eda8cbf73eb63b00e7d93ad2
 	}
 
 

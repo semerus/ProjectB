@@ -1,0 +1,21 @@
+{
+	"data":
+	[
+		{
+		"id": 2000,
+		"name": "Ogre Wizard",
+		"path_prefab": "Bosses/OgreMale/OgreMale",
+		"max_hp": 15000,
+		"speed": [2.57, 1.4],
+		"hit_range": [1.3, 0.45]
+		},
+		{
+		"id": 2001,
+		"name": "Ogre Warrior",
+		"path_prefab": "Bosses/OgreFemale/OgreFemale",
+		"max_hp": 30000,
+		"speed": [2.57, 1.4],
+		"hit_range": [1.05, 0.35]
+		}
+	]
+}
