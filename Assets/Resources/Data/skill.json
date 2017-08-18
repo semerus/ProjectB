@@ -171,30 +171,33 @@
 			"path_sprite": "",
 			"path_prefab": "",
 			"cooldown": 2.0,
-			"damage": 20
+			"damage": 20,
+			"speed": 3.0
 		},
 		{
 			"id": 100200,
 			"name": "Snowball",
-			"name_script": "Wizard_Snowball",
+			"name_script": "Wizard_Snowball_Abillity1",
 			"path_sprite": "",
 			"path_prefab": "",
 			"cooldown": 2.0,
-			"damage": 20
+			"damage": 20,
+			"speed": 36.0
 		},
 		{
 			"id": 100201,
 			"name": "Snowball2",
-			"name_script": "Wizard_Snowball",
+			"name_script": "Wizard_Snowball_Abillity2",
 			"path_sprite": "",
 			"path_prefab": "",
 			"cooldown": 2.0,
-			"damage": 20
+			"damage": 20,
+			"speed": 36.0
 		},
 		{
 			"id": 100210,
 			"name": "Freeze",
-			"name_script": "Wizard_Freeze",
+			"name_script": "Wizard_Freeze_Abillity1",
 			"path_sprite": "",
 			"path_prefab": "",
 			"cooldown": 2.0,
@@ -203,7 +206,7 @@
 		{
 			"id": 100211,
 			"name": "Freeze2",
-			"name_script": "Wizard_Freeze",
+			"name_script": "Wizard_Freeze_Abillity2",
 			"path_sprite": "",
 			"path_prefab": "",
 			"cooldown": 2.0,
@@ -214,18 +217,22 @@
 			"name": "Blizzard",
 			"name_script": "Wizard_Blizzard",
 			"path_sprite": "",
-			"path_prefab": "",
+			"path_prefab": "Skills/Heroes/Wizard/Blizzard/Blizzard_Abillity1",
 			"cooldown": 2.0,
-			"damage": 20
+			"damage": 20,
+			"channel_time": 4.0,
+			"exist_time": 5.0
 		},
 		{
 			"id": 100221,
 			"name": "Blizzard2",
 			"name_script": "Wizard_Blizzard",
 			"path_sprite": "",
-			"path_prefab": "",
+			"path_prefab": "Skills/Heroes/Wizard/Blizzard/Blizzard_Abillity2",
 			"cooldown": 2.0,
-			"damage": 20
+			"damage": 20,
+			"channel_time": 3.0,
+			"exist_time": 5.0
 		},
 		{
 			"id": 200000,

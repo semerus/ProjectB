@@ -43,7 +43,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
     public bool IsFacingLeft
     {
         get { return isFacingLeft; }
-        set { isFacingLeft = value; }
+        set
+        {
+            isFacingLeft = value;
+            //CheckFacing();
+        }
     }
 
 	public Skill[] Skills {

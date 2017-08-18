@@ -78,7 +78,8 @@ public class Archer_AutoAttack : HeroActive,IPooling_Character {
             projectiles = p.gameObject.GetComponent<Projectile>();
 
             projectiles.ProjectileOn(caster, this);
-            projectiles.ProjectileMove(AttackTarget, 3);
+            projectiles.SetProjectile(1, 1);
+            projectiles.ProjectileMove(AttackTarget);
         }
         else
         {

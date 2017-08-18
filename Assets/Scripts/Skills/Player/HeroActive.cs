@@ -8,18 +8,6 @@ public abstract class HeroActive : Skill, IHeroActiveUI {
 
 	protected Sprite button;
 
-<<<<<<< HEAD
-	#region implemented abstract members of Skill
-
-	public override void Activate ()
-	{
-
-	}
-
-	#endregion
-
-=======
->>>>>>> 96a441a56d03b4f6eda8cbf73eb63b00e7d93ad2
 	#region implemented IHeroActiveUI
 
 	public Sprite InGameUI {

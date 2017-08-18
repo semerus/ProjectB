@@ -14,6 +14,7 @@ public class CameraShake : MonoBehaviour
 
     private void Awake()
     {
+        GetCameraShakeSystem();
         currentPosition = Camera.main.transform.position;
         stime = 0;
     }
@@ -24,7 +25,7 @@ public class CameraShake : MonoBehaviour
         {
             instance = GameObject.FindObjectOfType(typeof(CameraShake)) as CameraShake;
             if (!instance)
-                Debug.LogError("No active TimeSystem in the scene");
+                Debug.LogError("No active CameraShake in the scene");
         }
         return instance;
     }

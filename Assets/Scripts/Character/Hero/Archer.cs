@@ -21,10 +21,8 @@ public class Archer : Hero
         speed_y = 1.4f;
 
         autoAttack = gameObject.AddComponent<Archer_AutoAttack>();
-        autoAttack.SetSkill(this);
 
         passiveSkill = gameObject.AddComponent<Archer_Passive>();
-        passiveSkill.SetSkill(this);
         passiveSkill.OnCast();
 
         activeSkills = new HeroActive[3];
@@ -59,11 +57,6 @@ public class Archer : Hero
             case 2:
                 activeSkills[2] = gameObject.AddComponent<Archer_EscapeShot_Abillity2>();
                 break;
-        }
-
-        foreach (Skill eachSkill in activeSkills)
-        {
-            eachSkill.SetSkill(this);
         }
         TimeSystem.GetTimeSystem().AddTimer(this);
     }

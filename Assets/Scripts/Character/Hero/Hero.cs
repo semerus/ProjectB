@@ -130,10 +130,6 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	public virtual void AutoAttack(IBattleHandler target) {
 			this.target = target;
 			autoAttack.OnCast ();
-<<<<<<< HEAD
-=======
-		}
->>>>>>> 96a441a56d03b4f6eda8cbf73eb63b00e7d93ad2
 	}
 
 

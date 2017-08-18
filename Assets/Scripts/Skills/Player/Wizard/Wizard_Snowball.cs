@@ -7,14 +7,15 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
 {
     IBattleHandler[] enemyNum;
     IBattleHandler target;
-    Projectile[] projectile = new Projectile[5];
-    float skilltime = 0;
+    protected Projectile[] projectile = new Projectile[5];
+    int damage;
+    float speed;
+    protected float skilltime = 0;
     float shoottime = 0.2f;
     int count = 0;
     int snowStack = 0;
     float r = 1f;
     private int start = 0;
-    CameraShake a;
 
     void Awake() {
 		caster = gameObject.GetComponent<Character> ();
@@ -22,11 +23,17 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
 		if (h != null) {
 			h.activeSkills [0] = this;
 		}
-
 		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill1");
+    }
+
+    public override void SetSkill(Dictionary<string, object> param)
+    {
+        base.SetSkill(param);
+        damage = (int)param["damage"];
+        speed = (float)((double)param["speed"]);
         SetSnowProjectile();
     }
-    
+
     public virtual void OnChanneling()
     {
         if (start == 0)
@@ -48,6 +55,8 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
 
     #region Projectile
 
+    
+
     public void SetSnowProjectile()
     {
         for(int i=0; i<=4; i++)
@@ -55,6 +64,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
             GameObject p = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/SnowBall/Snowball"));
             p.transform.SetParent(GameObject.Find("Projectiles").transform);
             projectile[i] = p.gameObject.GetComponent<Projectile>();
+            projectile[i].SetProjectile(damage, speed);
             projectile[i].gameObject.SetActive(false);
         }
     }
@@ -117,7 +127,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
             case 1:
                 if (shoottime >= 0.4 && count <= 5)
                 {
-                    projectile[count].ProjectileMove(caster.Target as Character, 36);
+                    projectile[count].ProjectileMove(caster.Target as Character);
                     shoottime = 0;
                     count++;
                 }
@@ -133,7 +143,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
             case 2:
                 if (shoottime >= 0.2 && count < snowStack)
                 {
-                    projectile[count].ProjectileMove(caster.Target as Character, 36);
+                    projectile[count].ProjectileMove(caster.Target as Character);
                     shoottime = 0;
                     count++;
                 }

@@ -6,10 +6,17 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
     protected bool moving = false;
     protected Character caster;
     protected Character target=null;
+    int damage;
     float speed;
     IPooling_Character pool =null;
     private bool Pmoving = false;
     int abillity;
+
+    public void SetProjectile(int damage, float speed)
+    {
+        this.damage = damage;
+        this.speed = speed;
+    }
 
     public void ProjectileOn(Character caster, IPooling_Character pool)
     {
@@ -29,6 +36,11 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
         this.gameObject.SetActive(true);
     }
 
+    public void DeleteProjectile()
+    {
+        Destroy(this.gameObject);
+    }
+
     public void ProjectileOn(Character caster)
     {
         pool = null;
@@ -38,12 +50,11 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
         transform.position = caster.transform.position;
     }
 
-    public void ProjectileMove(Character target, float speed)
+    public void ProjectileMove(Character target)
     {
         this.target = target;
         Pmoving = true;
         TimeSystem.GetTimeSystem().AddTimer(this);
-        this.speed = speed;
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed*Time.deltaTime);
         ProjectileRotation();
 
@@ -95,7 +106,7 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
     {
         if(Pmoving==true)
         {
-            ProjectileMove(target, speed);
+            ProjectileMove(target);
         }
     }
 

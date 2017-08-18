@@ -26,6 +26,7 @@ public class Archer_Explosive : HeroActive {
 
     public void EffectMove()
     {
-        projectile.ProjectileMove(caster.Target as Character, 10);
+        projectile.SetProjectile(1, 1);
+        projectile.ProjectileMove(caster.Target as Character);
     }
 }

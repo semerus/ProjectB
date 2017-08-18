@@ -16,6 +16,7 @@ public class Wizard_Snowball_Abillity1 : Wizard_Snowball
     public override void OnInterrupt(IBattleHandler interrupter)
     {
         base.OnInterrupt(interrupter);
+        DeleteProjectile();
         caster.ChangeAction(CharacterAction.Attacking);
     }
 
@@ -23,6 +24,14 @@ public class Wizard_Snowball_Abillity1 : Wizard_Snowball
     {
         Wizard_Passive.skillCount++;
         SnowProjectileShoot(abillity);
+    }
+
+    public void DeleteProjectile()
+    {
+        for (int i = 0; i <= (int)(skilltime - 0.1 * i); i++)
+        {
+            projectile[i].DeleteProjectile();
+        }
     }
 }
     
