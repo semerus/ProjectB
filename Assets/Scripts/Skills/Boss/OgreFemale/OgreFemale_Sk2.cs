@@ -29,6 +29,7 @@ public class OgreFemale_Sk2 : Skill {
         float x = Mathf.Abs(adjustpoint.x - this.gameObject.transform.position.x);
         float y = Mathf.Abs(adjustpoint.y - this.gameObject.transform.position.y);
         Vector3 s = new Vector3(x, y);
+
 		if (caster.BeginJumpTarget (adjustpoint, x, y)) {
 			caster.MoveComplete += new EventHandler<MoveEventArgs> (OnMoveComplete);
 		} else {
@@ -36,7 +37,6 @@ public class OgreFemale_Sk2 : Skill {
 			// 왜 스턴 당하고 일로 올까?
 			SkillEventArgs e = new SkillEventArgs(this.name, false);
 			OnEndSkill(e);
-
 		}
     }
 

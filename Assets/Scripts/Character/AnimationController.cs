@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.17
+ */
+using UnityEngine;
 
 public class AnimationController : MonoBehaviour {
-	protected Character character;
+	
 	protected Animator anim;
 	protected SpriteRenderer[] rends;
 	protected int[] offsets;
@@ -10,8 +14,8 @@ public class AnimationController : MonoBehaviour {
 	public delegate void OnCue();
 	public OnCue onCue;
 
-	void Awake() {
-		character = transform.root.GetComponent<Character> ();
+	protected virtual void Awake() {
+		
 		anim = GetComponent<Animator> ();
 		rends = GetComponentsInChildren<SpriteRenderer> ();
 		offsets = new int[rends.Length];
@@ -20,6 +24,9 @@ public class AnimationController : MonoBehaviour {
 			offsets [i] = rends [i].sortingOrder;
 		}
 	}
+
+	// call on change state
+	public virtual void UpdateAnimation() {}
 
 	public void UpdateFacing(bool isFacingLeft) {
 		if (isFacingLeft == isAnimFacingLeft) {
@@ -39,38 +46,7 @@ public class AnimationController : MonoBehaviour {
 			rends[i].sortingOrder = -(int)(transform.root.position.y * 100f) * 100 + offsets[i];
 		}
 	}
-
-	// call on change state
-	public void UpdateAnimation() {
-		// uses character state
-		// idle
-		// attack
-		// channeling
-		// run
-		// dead
-		if (anim == null)
-			return;
-
-		switch (character.Action) {
-		case CharacterAction.Idle:
-			anim.SetInteger ("Action", 0);
-			break;
-		case CharacterAction.Moving:
-			anim.SetInteger ("Action", 1);
-			break;
-		case CharacterAction.Attacking:
-			anim.SetInteger ("Action", 2);
-			break;
-		default:
-			Debug.LogError ("Animation not implemented yet");
-			break;
-		}
-
-		// special occasions
-		// jump
-		// used by skills
-	}
-
+		
 	public void OnAnimEvent() {
 		if (onCue != null) {
 			onCue();

@@ -400,7 +400,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         if (TimeSystem.GetTimeSystem().CheckTimer(this) == true)
             TimeSystem.GetTimeSystem().DeleteTimer(this);
 
-		gameObject.SetActive (false);
+		//gameObject.SetActive (false);
 		ChangeAction (CharacterAction.Dead);
 		TimeSystem.GetTimeSystem().DeleteTimer(this);
 

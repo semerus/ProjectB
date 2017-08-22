@@ -231,6 +231,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			Dictionary<string, object> param = (Dictionary<string, object>)LoadManager.Instance.HeroData [hs [i]];
 			GameObject prefab = Resources.Load<GameObject> (param ["path_prefab"].ToString ());
 			Hero hero = Instantiate (prefab).GetComponent<Hero> ();
+			hero.transform.position = heroPos [i];
 			hero.Spawn (param, hss0[i]);
 		}
 
@@ -238,6 +239,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			Dictionary<string, object> param = (Dictionary<string, object>)LoadManager.Instance.BossData [bs [i]];
 			GameObject prefab = Resources.Load<GameObject> (param ["path_prefab"].ToString ());
 			Enemy enemy = Instantiate (prefab).GetComponent<Enemy> ();
+			enemy.transform.position = bossPos [i];
 			enemy.Spawn (param, bss0[i]);
 		}
 
