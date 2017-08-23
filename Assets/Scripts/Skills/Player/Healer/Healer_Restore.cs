@@ -10,7 +10,7 @@ public class Healer_Restore : HeroActive {
         {
             if (caster.CheckCharacterStatus(CharacterStatus.IsSilencedMask) == false)
             {
-                    
+
             }
         }
     }

@@ -43,6 +43,7 @@ public class Healer_ProtectionArea : MonoBehaviour, ITimeHandler {
     #region MonoBehaviours
     protected virtual void Awake()
     {
+        // hit scanner check
         if (hitScanner == null)
             hitScanner = transform.root.GetComponentInChildren<HitScanner>();
     }
