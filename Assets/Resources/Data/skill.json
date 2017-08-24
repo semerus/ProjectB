@@ -130,7 +130,7 @@
 			"path_prefab": "",
 			"cooldown": 25.0,
 			"shield": 300,
-			"remain_time": 2
+			"duration": 2.0
 		},
 		{
 			"id": 100111,
@@ -140,7 +140,7 @@
 			"path_prefab": "",	
 			"cooldown": 25.0,
 			"shield": 300,
-			"remain_time": 2
+			"duration": 2.0
 		},
 		{
 			"id": 100120,

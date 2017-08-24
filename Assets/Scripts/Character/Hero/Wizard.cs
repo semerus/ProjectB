@@ -13,4 +13,10 @@ public class Wizard : Hero
             autoAttack.OnCast();
         }
     }
+
+	protected override void KillCharacter ()
+	{
+		base.KillCharacter ();
+		gameObject.SetActive (false);
+	}
 }

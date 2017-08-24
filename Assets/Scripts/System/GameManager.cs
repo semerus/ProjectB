@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
 
 	// active throughout the whole game
 	public string version;
-	private int phase = 0;
+	private int phase;
 	private static GameManager instance;
 
 	private LoadManager load = LoadManager.Instance;
@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour {
 
     void Awake()
     {
+		phase = 0;
 		GetGameManager ();
 
 		if (instance != this) {
@@ -49,14 +50,7 @@ public class GameManager : MonoBehaviour {
 	void Update() {
 		switch(phase) {
 		case 0: // title scene
-			#if UNITY_EDITOR
-			if (Input.GetMouseButtonUp (0)) {
-				phase = 1;
-				SceneManager.LoadScene(1);
-			}
-			#endif
-
-			#if UNITY_STANDALONE_WIN
+			#if UNITY_EDITOR || UNITY_STANDALONE_WIN
 			if (Input.GetMouseButtonUp (0)) {
 				phase = 1;
 				SceneManager.LoadScene(1);
@@ -71,6 +65,13 @@ public class GameManager : MonoBehaviour {
 			#endif
 			break;
 		case 1: // battle scene
+			//#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+			if(Input.GetKeyUp(KeyCode.Alpha1)) {
+				Debug.Log("restart scene");
+				phase = 1;
+				SceneManager.LoadScene(1);
+			}
+			//#endif
 			break;
 		default:
 			break;

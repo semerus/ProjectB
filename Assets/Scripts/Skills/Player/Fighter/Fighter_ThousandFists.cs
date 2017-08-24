@@ -19,6 +19,7 @@ public class Fighter_ThousandFists : HeroActive {
 		if (caster.ChangeAction (CharacterAction.Active3)) {
 			target = caster.Target;
 			StartCoolDown ();
+			hitCount = 0;
 			//UpdateSkillStatus (SkillStatus.ProcessOn);
 			caster.Anim.ClearAnimEvent ();
 			caster.Anim.onCue += Attack;

@@ -117,6 +117,29 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		*/
     }
 
+	public override void ReceiveDamage (IBattleHandler attacker, int damage)
+	{
+		int receivedDamage = Calculator.ReceiveDamage(this, damage);
+
+		foreach (Buff eachbuff in buffs)
+		{
+			if (eachbuff is Buff_Link_ProtectionArea)
+			{
+				Buff_Link_ProtectionArea buff = eachbuff as Buff_Link_ProtectionArea;
+				if (buff.healer_ProtectionArea.LinkerState == LinkerState.OnLink || buff.healer_ProtectionArea.LinkerState == LinkerState.willBreak)
+				{
+					buff.healer_ProtectionArea.ReceiveDamage(attacker, receivedDamage);
+					return;
+				}
+				else
+				{
+					buff.EndBuff();
+				}
+			}
+		}
+		base.ReceiveDamage (attacker, damage);
+	}
+
     public void RemoveTarget()
     {
         this.target = null;

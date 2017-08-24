@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Buff_Link_ProtectionArea : Buff {
 
+	public Healer_ProtectionArea healer_ProtectionArea;
+
     #region override Buff things
     public override void CheckCounterBuff()
     {
@@ -16,7 +18,6 @@ public class Buff_Link_ProtectionArea : Buff {
         base.EndBuff();
         healer_ProtectionArea.LinkedHeroes.Remove(target as Hero);
     }
-
     #endregion
 
     #region Constructor
@@ -25,20 +26,13 @@ public class Buff_Link_ProtectionArea : Buff {
         caster = null;
         this.target = target;
         isBuff = true;
-
+		this.healer_ProtectionArea = healer_ProtectionArea;
+		healer_ProtectionArea.LinkedHeroes.Add(target as Hero);
         StartBuff(null, this.target);
-
-        this.healer_ProtectionArea = healer_ProtectionArea;
-        healer_ProtectionArea.LinkedHeroes.Add(target as Hero);
 
         // for Debugging
         buffName = name;
         target.UpdateBuffList();
     }
     #endregion
-
-    #region Field & Method
-    public Healer_ProtectionArea healer_ProtectionArea;
-    #endregion
-
 }

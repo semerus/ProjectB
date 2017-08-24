@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Healer_Summon_ProtectionArea : HeroActive {
 
+	protected GameObject protectionArea;
+	protected int shield;
+	protected float duration;
+
     #region Implement abstract member
     public override void Activate()
     {
+		/*
         if (CheckSkillStatus(SkillStatus.ReadyMask))
         {
             if (caster.CheckCharacterStatus(CharacterStatus.IsSilencedMask) == false)
@@ -15,6 +20,9 @@ public class Healer_Summon_ProtectionArea : HeroActive {
                 StartCoolDown();
             }
         }
+        */
+		healer_ProtectionArea_Script.Set(caster.transform.position);
+		StartCoolDown();
     }
     #endregion
 
@@ -26,12 +34,12 @@ public class Healer_Summon_ProtectionArea : HeroActive {
 		if (h != null) {
 			h.activeSkills [1] = this;
 		}
-        //set initial Value
-        skillStatus = SkillStatus.ReadyOn;
-
+        
         //Prefab
-        GameObject potion_ref = Resources.Load("Skills/Area/Healer_ProtectionArea", typeof(GameObject)) as GameObject;
-        healer_ProtectionArea_Object = Instantiate(potion_ref, Vector3.zero, Quaternion.identity);
+		protectionArea = Resources.Load("Skills/Area/Healer_ProtectionArea", typeof(GameObject)) as GameObject;
+		healer_ProtectionArea_Object = Instantiate (protectionArea);
+        healer_ProtectionArea_Script = healer_ProtectionArea_Object.GetComponentInChildren<Healer_ProtectionArea>();
+		healer_ProtectionArea_Object.SetActive (false);
 
         //UI
         button = Resources.Load<Sprite>("Skills/Heroes/Healer/Healer_Skill2");
@@ -39,6 +47,15 @@ public class Healer_Summon_ProtectionArea : HeroActive {
     #endregion
 
     #region Field & Method
+
+	public override void SetSkill (Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.shield = (int)param ["shield"];
+		this.duration = (float)((double)param ["duration"]);
+		healer_ProtectionArea_Script.SetValue (shield, duration, caster);
+	}
+
     protected GameObject healer_ProtectionArea_Object;
     protected Healer_ProtectionArea healer_ProtectionArea_Script;
     #endregion

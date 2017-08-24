@@ -13,11 +13,7 @@ public sealed class ControlSystem : MonoBehaviour {
 	int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
 
 	void Update() {
-		#if UNITY_EDITOR
-		ProcessClick ();
-		#endif
-
-		#if UNITY_STANDALONE_WIN
+		#if UNITY_EDITOR || UNITY_STANDALONE_WIN
 		ProcessClick ();
 		#endif
 

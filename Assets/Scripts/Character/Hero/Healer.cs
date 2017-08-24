@@ -10,6 +10,13 @@ public class Healer : Hero {
 
 	#endregion
 
+	// temporary solution without animation
+	protected override void KillCharacter ()
+	{
+		base.KillCharacter ();
+		gameObject.SetActive (false);
+	}
+
 	void Awake() {
 //		autoAttack = gameObject.AddComponent<Healer_Attack>();
 //        passiveSkill = gameObject.AddComponent<Healer_Passive>();
