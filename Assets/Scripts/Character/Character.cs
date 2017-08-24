@@ -43,6 +43,11 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
     public bool IsFacingLeft
     {
         get { return isFacingLeft; }
+        set
+        {
+            isFacingLeft = value;
+            //CheckFacing();
+        }
     }
 
 	public Skill[] Skills {
@@ -70,7 +75,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
     public int CurHP
     {
         get { return hp; }
-        set { hp = value; }
     }
     #endregion
 
@@ -367,6 +371,10 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	protected abstract void UpdateCCUI();
 	protected abstract void UpdateHpUI ();
 
+	public void UseHp(int cost) {
+		hp -= cost;
+	}
+
 	public virtual void AttackTarget(IBattleHandler target, int damage) {
         int returnDmg = damage;
 
@@ -376,7 +384,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         else if(this is Enemy)
             returnDmg = Calculator.AllDamage(this, returnDmg);
         
-        target.ReceiveDamage(this,returnDmg);
+        target.ReceiveDamage(this, returnDmg);
     }
 
 	public virtual void HealTarget(int heal, IBattleHandler target) {
@@ -396,19 +404,20 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
             }
         }
         //2) remove Character from timer
-        Debug.LogWarning("Check this with Dead Animation");
-        if (TimeSystem.GetTimeSystem().CheckTimer(this) == true)
-            TimeSystem.GetTimeSystem().DeleteTimer(this);
 
 		//gameObject.SetActive (false);
 		ChangeAction (CharacterAction.Dead);
+		anim.onCue += DisposeBody;
 		TimeSystem.GetTimeSystem().DeleteTimer(this);
 
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
 	}
 
-
+	private void DisposeBody() {
+		anim.onCue -= DisposeBody;
+		gameObject.SetActive (false);
+	}
 
     public void CheckFacing()
     {
@@ -506,6 +515,9 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 				return false;
 			break;
 		case CharacterAction.Channeling:
+		case CharacterAction.Active1:
+		case CharacterAction.Active2:
+		case CharacterAction.Active3:
 			if (CheckCharacterStatus (CharacterStatus.IsSilencedMask))
 				return false;
 			break;

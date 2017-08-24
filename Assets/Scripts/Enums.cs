@@ -13,12 +13,12 @@ public enum CharacterAction {
 	Idle = 0,
 	Moving = 1,
 	Attacking = 2,
-	Dead = 3,
-	Channeling = 4,
-
-
-	// special case
-	Jumping = 5
+	Jumping = 3,
+	Dead = 4,
+	Channeling = 5,
+	Active1 = 6,
+	Active2 = 7,
+	Active3 = 8
 }
 
 public enum AreaState {

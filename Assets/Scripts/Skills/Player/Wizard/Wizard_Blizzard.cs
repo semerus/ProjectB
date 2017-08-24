@@ -3,64 +3,74 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Blizzard : HeroActive
+public class Wizard_Blizzard : HeroActive,IChanneling
 {
     IBattleHandler[] enemyNum;
     Vector3 targetPosition=new Vector3();
-    float skilltime = 0;
-    float [] inTime =new float[10];
-    int ability = 2;
+    float channeling = 0;
+    protected float time;
+    protected int damage;
+    protected float maxChannelingTime;
+    GameObject blizzard;
 
-	void Awake() {
-		caster = gameObject.GetComponent<Character> ();
-		Hero h = caster as Hero;
-		if (h != null) {
-			h.activeSkills [2] = this;
-		}
+    public override void SetSkill(Dictionary<string, object> param)
+    {
+        base.SetSkill(param);
+        caster = gameObject.GetComponent<Character>();
+        Hero h = caster as Hero;
+        if (h != null)
+        {
+            h.activeSkills[2] = this;
+        }
+        time = (float)((double)param["exist_time"]);
+        damage = (int)param["damage"];
+        button = Resources.Load<Sprite>("Skills/Heroes/Wizard/Wizard_Skill3");
+        maxChannelingTime = (float)((double)param["channel_time"]);
+        blizzard = Instantiate(Resources.Load<GameObject>(param["path_prefab"].ToString()));
+        blizzard.SetActive(false);
+    }
 
-		button = Resources.Load<Sprite> ("Skills/Heroes/Wizard/Wizard_Skill3");
-	}
+    public virtual void OnChanneling()
+    {
+        caster.ChangeAction(CharacterAction.Channeling);
+        UpdateSkillStatus(SkillStatus.ChannelingOn);
+        SkillChanneling();
+    }
+
+    public virtual void OnInterrupt(IBattleHandler interrupter)
+    {
+        Wizard_Passive.stackOff = true;
+        ResetSetting();
+        StartCoolDown();
+        UpdateSkillStatus(SkillStatus.ChannelingOff);
+    }
+
+    public virtual void SkillChanneling()
+    {
+        channeling += Time.deltaTime;
+
+        if (channeling >= maxChannelingTime)
+        {
+            Activate();
+           // BlizzardPrefabOn(abillity);
+        }
+    }
 
     public override void Activate()
     {
         ResetSetting();
         StartCoolDown();
-    }
-
-    public override void RunTime()
-    {
-        base.RunTime();
-        Blizzard();
+        UpdateSkillStatus(SkillStatus.ChannelingOff);
+        blizzard.SetActive(true);
+        blizzard.GetComponent<Wizzard_BlizzardArea>().SetBlizzard(time, damage, caster);
+        blizzard.transform.position = targetPosition;
+        caster.ChangeAction(CharacterAction.Idle);
     }
 
     public void ResetSetting()
     {
-        cooldown = 10;
-        enemyNum = BattleManager.GetBattleManager().GetEntities(Team.Hostile);
-        for (int i = 0; i < enemyNum.Length; i++)
-        {
-            inTime[i] = 0;
-        }
         FindPosition();
-        skilltime = 0;
-    }
-
-    public void Blizzard()
-    {
-        if (skilltime<=5)
-        {
-            skilltime += Time.deltaTime;
-
-            switch(ability)
-            {
-                case 1:
-                    break;
-
-                case 2:
-                    Blizzard_ability2();
-                    break;
-            }
-        }
+        channeling = 0;
     }
 
     public void FindPosition()
@@ -75,75 +85,19 @@ public class Wizard_Blizzard : HeroActive
         {
             tx = this.gameObject.transform.position.x + 3f;
         }
-        targetPosition = new Vector3(tx, this.gameObject.transform.position.y,0);
+        targetPosition = new Vector3(tx, this.gameObject.transform.position.y, 0);
     }
 
-    #region Blizzard_ability2
-
-    public void Blizzard_ability2()
+    #region None
+    public float ChannelTime
     {
-        Gravity_2();
-        Damage();
-    }
-
-    public void Gravity_2()
-    {
-        for(int i=0; i< enemyNum.Length; i++)
+        get
         {
-            Character c = enemyNum[i] as Character;
-            bool hitcheck = EllipseScanner(4f, 1.8f, targetPosition, c.transform.position );
-            if(hitcheck)
-            {
-                float dx = targetPosition.x - c.transform.position.x;
-                float dy = targetPosition.y - c.transform.position.y;
-
-                c.transform.position += (new Vector3(dx, dy, 0)) * Time.deltaTime;
-            }
+            throw new NotImplementedException();
         }
     }
 
-    #endregion
-
-    public void Damage()
-    {
-        int damage = 50;
-        for (int i = 0; i < enemyNum.Length; i++)
-        {
-            Character c = enemyNum[i] as Character;
-            bool hitcheck = EllipseScanner(4f, 1.8f, targetPosition, c.transform.position);
-            if (hitcheck)
-            {
-                inTime[i] += Time.deltaTime;
-
-                if(inTime[i]>=1)
-                {
-                    inTime[i] = 0;
-                    caster.AttackTarget(enemyNum[i], damage);
-                }
-            }
-        }
-    }
-
-    #region EllipseScanner
-
-    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
-    {
-        float dx = targetPosition.x - center.x;
-        float dy = targetPosition.y - center.y;
-
-        float l1 = Mathf.Sqrt((dx + Mathf.Sqrt(a * a - b * b)) * (dx + Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-        float l2 = Mathf.Sqrt((dx - Mathf.Sqrt(a * a - b * b)) * (dx - Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-
-        if (l1 + l2 <= 2 * a)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    #endregion
+    public float Timer_Channeling { get; set; }
+#endregion
 
 }

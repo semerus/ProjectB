@@ -17,13 +17,16 @@ public sealed class ControlSystem : MonoBehaviour {
 		ProcessClick ();
 		#endif
 
+		#if UNITY_STANDALONE_WIN
+		ProcessClick ();
+		#endif
+
 		#if UNITY_ANDROID
 		ProcessTouch();
 		#endif
 	}
 
-	#if UNITY_EDITOR
-
+	#if UNITY_EDITOR || UNITY_STANDALONE_WIN
 	private void ProcessClick() {
 		if (Input.GetMouseButtonDown (0)) {
 			startPos [0] = Input.mousePosition;
@@ -87,8 +90,8 @@ public sealed class ControlSystem : MonoBehaviour {
 			}
 		}
 	}
-
 	#endif
+
 
 	#if UNITY_ANDROID
 

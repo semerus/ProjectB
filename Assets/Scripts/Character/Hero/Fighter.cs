@@ -2,6 +2,17 @@
 
 public class Fighter : Hero {
 
+	public override void ReceiveDamage (IBattleHandler attacker, int damage)
+	{
+		if (activeSkills [1].CheckSkillStatus (SkillStatus.ChannelingMask)) {
+			IChanneling ch = activeSkills[1] as IChanneling;
+			ch.OnInterrupt(attacker);
+			return;
+		}
+		base.ReceiveDamage (attacker, damage);
+	}
+
+	/*
     public override void ReceiveDamage(IBattleHandler attacker, int damage)
     {
         int receivedDamage = Calculator.ReceiveDamage(this, damage);
@@ -35,11 +46,15 @@ public class Fighter : Hero {
         }
         UpdateHpUI();
     }
-
+	*/
     // may adapt to Hero class not this class
 	public override void RunTime ()
 	{
 		base.RunTime ();
+		if(anim.Anim.GetCurrentAnimatorStateInfo(0).IsName("Idle") && autoAttack.CheckCondition())
+		{
+			autoAttack.OnCast();
+		}
 		/*
         // Action State Check -> Status Check
         switch (action) {
@@ -87,7 +102,6 @@ public class Fighter : Hero {
                 Debug.LogError("CharacterAction Debug Error!");
                 break;
         }
-
 
 		CheckFacing();
 		*/

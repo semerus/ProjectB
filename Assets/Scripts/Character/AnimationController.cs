@@ -14,6 +14,12 @@ public class AnimationController : MonoBehaviour {
 	public delegate void OnCue();
 	public OnCue onCue;
 
+	public Animator Anim {
+		get {
+			return anim;
+		}
+	}
+
 	protected virtual void Awake() {
 		
 		anim = GetComponent<Animator> ();
@@ -26,7 +32,11 @@ public class AnimationController : MonoBehaviour {
 	}
 
 	// call on change state
-	public virtual void UpdateAnimation() {}
+	public virtual void UpdateAnimation() {
+		if (anim.parameterCount > 1) {
+			anim.SetTrigger ("ChangeAnimation");
+		}
+	}
 
 	public void UpdateFacing(bool isFacingLeft) {
 		if (isFacingLeft == isAnimFacingLeft) {
@@ -46,12 +56,16 @@ public class AnimationController : MonoBehaviour {
 			rends[i].sortingOrder = -(int)(transform.root.position.y * 100f) * 100 + offsets[i];
 		}
 	}
-		
+
 	public void OnAnimEvent() {
 		if (onCue != null) {
 			onCue();
 		}
 		//Debug.Log("Will hit at this moment");
+	}
+
+	public void ClearAnimEvent() {
+		onCue = null;
 	}
 
 	public void PauseAnimation() {

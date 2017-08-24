@@ -20,7 +20,9 @@ public class CharacterAnimationController : AnimationController {
 		base.UpdateAnimation ();
 		if (anim == null)
 			return;
-
+		
+		anim.SetInteger ("Action", (int)character.Action);
+		/*
 		switch (character.Action) {
 		case CharacterAction.Idle:
 			anim.SetInteger ("Action", 0);
@@ -37,9 +39,13 @@ public class CharacterAnimationController : AnimationController {
 		case CharacterAction.Dead:
 			anim.SetInteger ("Action", 4);
 			break;
+		case CharacterAction.Channeling:
+			anim.SetInteger ("Action", 5);
+			break;
 		default:
 			Debug.LogError ("Animation not implemented yet");
 			break;
 		}
+		*/
 	}
 }

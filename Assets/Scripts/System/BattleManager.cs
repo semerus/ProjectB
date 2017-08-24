@@ -20,8 +20,9 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	private static BattleManager instance;
 	private GameState gameState = GameState.Playing;
 	private float gameTime;
-	private new Vector3[] heroPos = new Vector3[]{new Vector3(-5.7f, 0.65f), new Vector3(-7.5f, -0.3f), new Vector3(-3.75f, -0.3f), new Vector3(-5.7f, -2.1f)};
-	private new Vector3[] bossPos = new Vector3[]{new Vector3(6.17f, 0f), new Vector3(6.17f, -2.5f)};
+	private Vector3[] heroPos = new Vector3[]{new Vector3(-5.7f, 0.65f), new Vector3(-7.5f, -0.3f), new Vector3(-3.75f, -0.3f), new Vector3(-5.7f, -2.1f)};
+	private Vector3[] bossPos = new Vector3[]{new Vector3(6.17f, 0f), new Vector3(6.17f, -2.5f)};
+	private Vector3[] movePos = new Vector3[]{new Vector3(0f, 1f), new Vector3(-1f, 0f), new Vector3(1f, 0f)};
 
 	// list of all animators
 	AnimationController[] animControllers;
@@ -136,7 +137,8 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			// change condition here later
 			if (friendly[i].Action != CharacterAction.Dead) {
 				Hero hero = friendly [i] as Hero;
-				hero.BeginMove (target);
+				hero.StopMove ();
+				hero.BeginMove (target + movePos[i]);
                 hero.RemoveTarget();
             }
 		}
@@ -175,6 +177,9 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 
 	// pause game
 	public void PauseGame() {
+		// temporary animation pausing system
+		animControllers = GameObject.FindObjectsOfType<AnimationController> ();
+
 		switch (gameState) {
 		case GameState.Playing:
 			Debug.Log ("Game Paused");

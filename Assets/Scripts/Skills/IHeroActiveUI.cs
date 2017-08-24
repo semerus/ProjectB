@@ -6,5 +6,6 @@ public interface IHeroActiveUI {
 	float MaxCoolDown { get; }
 	int Status { get; }
 
+	bool CheckCondition();
 	void OnCast();
 }

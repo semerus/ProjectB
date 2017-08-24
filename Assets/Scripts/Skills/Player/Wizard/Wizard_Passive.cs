@@ -11,9 +11,17 @@ public class Wizard_Passive : Skill {
     public static bool stackOff = false;
     private float buffTime = 0;
 
-	void Awake() {
-		caster = gameObject.GetComponent<Character> ();
-	}
+
+    private void Awake()
+    {
+        mag = 1;
+        skillCount = 0;
+        skillResfresh = false;
+        stackOff = false;
+        buffTime = 0;
+        caster = gameObject.GetComponent<Character>();
+    }
+
 
     public override void Activate()
     {

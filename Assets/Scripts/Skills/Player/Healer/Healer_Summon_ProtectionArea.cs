@@ -30,7 +30,7 @@ public class Healer_Summon_ProtectionArea : HeroActive {
         skillStatus = SkillStatus.ReadyOn;
 
         //Prefab
-        GameObject potion_ref = Resources.Load("Skills\\Area\\Healer_ProtectionArea", typeof(GameObject)) as GameObject;
+        GameObject potion_ref = Resources.Load("Skills/Area/Healer_ProtectionArea", typeof(GameObject)) as GameObject;
         healer_ProtectionArea_Object = Instantiate(potion_ref, Vector3.zero, Quaternion.identity);
 
         //UI

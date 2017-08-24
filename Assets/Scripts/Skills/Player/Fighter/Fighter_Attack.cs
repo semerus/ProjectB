@@ -2,13 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_Attack : Skill {
+public class Fighter_Attack : MeleeAttack {
 
+	protected int heal;
+
+	public override void SetSkill (Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.heal = (int)param ["heal"];
+	}
+
+	protected override void Attack ()
+	{
+		base.Attack ();
+		if (caster.Target != null) {
+			caster.ReceiveHeal (heal);
+		}
+	}
+
+	/*
     #region implemented abstract members of Skill
 
     public override void Activate ()
 	{
-		Debug.Log ("fighter attacking");
+		//Debug.Log ("fighter attacking");
 
 		CheckTargetRange(caster.Target);
 
@@ -26,7 +43,8 @@ public class Fighter_Attack : Skill {
                 }
                 else
                 {
-                    Debug.Log("sss");
+                    caster.StopMove();
+                    caster.ChangeAction(CharacterAction.Attacking);
                     UpdateSkillStatus(SkillStatus.ProcessOff);
 
                     int attackDmg = Calculator.AttackDamage(caster, dmg);
@@ -66,6 +84,17 @@ public class Fighter_Attack : Skill {
     #endregion
 
     #region Field&Method
+
+	public override bool CheckCondition ()
+	{
+		bool isReady = false;
+
+		return base.CheckCondition ();
+	}
+
+
+
+
     // effect of this skill
     int dmg;
 
@@ -116,5 +145,7 @@ public class Fighter_Attack : Skill {
         //    isTargetInMeleeRange = false;
         //}
     }
+	
     #endregion
+    */
 }

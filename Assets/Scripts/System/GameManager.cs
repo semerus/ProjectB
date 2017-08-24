@@ -52,7 +52,14 @@ public class GameManager : MonoBehaviour {
 			#if UNITY_EDITOR
 			if (Input.GetMouseButtonUp (0)) {
 				phase = 1;
-				SceneManager.LoadScene ("Battlefield");
+				SceneManager.LoadScene(1);
+			}
+			#endif
+
+			#if UNITY_STANDALONE_WIN
+			if (Input.GetMouseButtonUp (0)) {
+				phase = 1;
+				SceneManager.LoadScene(1);
 			}
 			#endif
 

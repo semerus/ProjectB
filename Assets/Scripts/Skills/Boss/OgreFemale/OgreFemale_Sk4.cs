@@ -11,6 +11,8 @@ public class OgreFemale_Sk4 : Skill
     int startNum = 0;
     bool sk4_On = false;
     IBattleHandler[] friendlyNum;
+    float tx;
+    float ty;
 
 	void Awake() {
 		caster = gameObject.GetComponent<Character> ();
@@ -33,7 +35,11 @@ public class OgreFemale_Sk4 : Skill
 
     public override void Activate()
     {
-		caster.StopMove();
+        float dx = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.x / 2;
+        float dy = (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.y / 2) + GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.y;
+        tx = dx - 0.1f;
+        ty = dy - 0.1f;
+        caster.StopMove();
 		// order is important should go after stop move
 		OgreFemale of = caster as OgreFemale;
 		if (of != null) {
@@ -100,58 +106,58 @@ public class OgreFemale_Sk4 : Skill
         switch (mod)
         {
             case 1:
-                if(3.4f-cPosition.y <= 9-cPosition.x)
+                if(ty - cPosition.y <= tx-cPosition.x)
                 {
-                    target.y = 3.4f;
-                    target.x = cPosition.x + (3.4f - cPosition.y);
+                    target.y = ty;
+                    target.x = cPosition.x + (ty - cPosition.y);
                     return target;
                 }
                 else
                 {
-                    target.x = 9f;
-                    target.y = cPosition.y + (9f - cPosition.x);
+                    target.x = tx;
+                    target.y = cPosition.y + (tx - cPosition.x);
                     return target;
                 }
 
             case 2:
-                if (9 - cPosition.x <= cPosition.y + 3.4f)
+                if (tx - cPosition.x <= cPosition.y + ty)
                 {
-                    target.x = 9f;
-                    target.y = -cPosition.y + (9 - cPosition.x);
+                    target.x = tx;
+                    target.y = -cPosition.y + (tx - cPosition.x);
                     return target;
                 }
                 else
                 {
-                    target.y = -3.4f;
-                    target.x = cPosition.x + (3.4f + cPosition.y);
+                    target.y = -ty;
+                    target.x = cPosition.x + (ty + cPosition.y);
                     return target;
                 }
 
             case 3:
-                if (cPosition.y+3.14f <= cPosition.x+9)
+                if (cPosition.y+ty <= cPosition.x+tx)
                 {
-                    target.y = -3.4f;
-                    target.x = cPosition.x - (cPosition.y + 3.4f);
+                    target.y = -ty;
+                    target.x = cPosition.x - (cPosition.y + ty);
                     return target;
                 }
                 else
                 {
-                    target.x = -9f;
-                    target.y = cPosition.y + (cPosition.x + 9);
+                    target.x = -tx;
+                    target.y = cPosition.y + (cPosition.x + tx);
                     return target;
                 }
 
             case 4:
-                if(9+cPosition.x <= 3.4f-cPosition.y)
+                if(9+cPosition.x <= ty-cPosition.y)
                 {
-                    target.x = -9f;
+                    target.x = -tx;
                     target.y = cPosition.y + (cPosition.x + 9);
                     return target;
                 }
                 else
                 {
-                    target.y = 3.4f;
-                    target.x = cPosition.x - (3.4f - cPosition.y);
+                    target.y = ty;
+                    target.x = cPosition.x - (ty - cPosition.y);
                     return target;
                 }
             default:
@@ -164,7 +170,7 @@ public class OgreFemale_Sk4 : Skill
         Vector3 myPosition = this.gameObject.transform.position;
         if (count <= 6)
         {
-            if (myPosition.y >= 3.39)
+            if (myPosition.y >= ty)
             {
                 if (mod == 1)
                 {
@@ -176,7 +182,7 @@ public class OgreFemale_Sk4 : Skill
                 }
                 count++;
             }
-            if (myPosition.y <= -3.39)
+            if (myPosition.y <= -ty)
             {
                 if (mod == 3)
                 {
@@ -188,7 +194,7 @@ public class OgreFemale_Sk4 : Skill
                 }
                 count++;
             }
-            if (myPosition.x >= 8.99)
+            if (myPosition.x >= tx)
             {
                 if (mod == 2)
                 {
@@ -200,7 +206,7 @@ public class OgreFemale_Sk4 : Skill
                 }
                 count++;
             }
-            if (myPosition.x <= -8.99)
+            if (myPosition.x <= -tx)
             {
                 if (mod == 4)
                 {

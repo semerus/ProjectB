@@ -3,43 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Fighter_CounterStance : HeroActive, IChanneling {
+
+	protected int damage;
+	protected int cost;
+	protected float channelTime;
+	protected float timer_Channeling = 0f;
+	protected IBattleHandler interrupter;
+
+
     #region implemented abstract members of Skill
-
-	public override void OnCast ()
-	{
-		// resource check
-		if (caster.CurHP <= HPCost)
-		{
-			print("hp low");
-			return;
-		}
-
-		// skillStatus check
-		if (!CheckSkillStatus(SkillStatus.ReadyMask))
-		{
-			print("skill not ready");
-			return;
-		}
-
-		// Change character State
-		if (caster.ChangeAction (CharacterAction.Channeling)) {
-			caster.CurHP -= HPCost;
-			Debug.Log ("fighter channeling  1213");
-			// Change skill State
-			UpdateSkillStatus(SkillStatus.ChannelingOn);
-
-			// Time system Check
-			TimeSystem.GetTimeSystem ().AddTimer (this);
-
-		} else {
-			// fails to channel
-		}
-		base.OnCast ();
-	}
-
     public override void Activate()
     {
-		
+		caster.ChangeAction (CharacterAction.Active2);
+		caster.Anim.ClearAnimEvent ();
+		caster.Anim.onCue += ReflectDamage;
     }
 
     #endregion
@@ -56,8 +33,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
     }
 
     public void OnChanneling()
-    {
-		Debug.Log ("fighter channeling");
+	{
         timer_Channeling += Time.deltaTime;
 
         // skill fail
@@ -65,7 +41,6 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
         {
             //time check
             timer_Channeling = 0f;
-            timer_cooldown = 0f;
             StartCoolDown();
 
             //character status
@@ -76,9 +51,11 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 
 	public void OnInterrupt(IBattleHandler interrupter)
     {
-		Debug.Log ("Stance interrupted");
+		timer_Channeling = 0f;
 		UpdateSkillStatus (SkillStatus.ChannelingOff);
-		ReflectDamage (interrupter);
+		StartCoolDown();
+		this.interrupter = interrupter;
+		Activate ();
     }
     #endregion
 
@@ -96,6 +73,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 			h.activeSkills [1] = this;
 		}
 
+		/*
         dmg = 250;
         HPCost = 50;
         channelTime = 5f; 
@@ -106,6 +84,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
         Timer_Channeling = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
+		*/
 
 		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill2");
     }
@@ -114,23 +93,24 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 
     #region Field&Method
 
-    // effect & cost of this Skill
-    int dmg;
-    int HPCost;
-
-    float channelTime;
-    float timer_Channeling;
+	public override void SetSkill (Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.damage = (int)param ["damage"];
+		this.cost = (int)param ["cost"];
+		this.channelTime = (float)((double)param ["channel_time"]);
+	}
+   
 
     // Reflect Damage
-    public void ReflectDamage(IBattleHandler attacker)
+    public void ReflectDamage()
     {
-        (attacker as Character).ReceiveDamage(caster, dmg);
-
+		(interrupter as Character).ReceiveDamage(caster, damage);
         caster.ChangeAction(CharacterStatus.Idle);
-		timer_cooldown = 0f;
-		StartCoolDown();
+		caster.Anim.onCue -= ReflectDamage;
     }
 
+	/*
     // Check Melee Range
     bool isTargetInMeleeRange;
     Vector3 positionToMeleeAttack;
@@ -184,7 +164,7 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 
         return isTargetInMeleeRange;
     }
-
+	*/
     #endregion
 
 }

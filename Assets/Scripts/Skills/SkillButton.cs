@@ -51,7 +51,7 @@ public class SkillButton : MonoBehaviour {
 	}
 
 	private void UpdateCooldown() {
-		if (SkillStatus.CheckStatus (skill.Status, SkillStatus.ReadyMask)) {
+		if (skill.CheckCondition()) {
 			OnReady ();
 		} else {
 			button.interactable = false;

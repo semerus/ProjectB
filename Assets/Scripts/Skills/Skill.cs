@@ -72,6 +72,8 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		IChanneling ch = this as IChanneling;
 		if (ch != null) {
 			// start channeling
+			caster.ChangeAction(CharacterAction.Channeling);
+			UpdateSkillStatus(SkillStatus.ChannelingOn);
 			ch.OnChanneling ();
             TimeSystem.GetTimeSystem().AddTimer(this);
 		} else {

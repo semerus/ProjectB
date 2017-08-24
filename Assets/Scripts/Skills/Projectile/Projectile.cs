@@ -6,9 +6,17 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
     protected bool moving = false;
     protected Character caster;
     protected Character target=null;
+    int damage;
     float speed;
     IPooling_Character pool =null;
     private bool Pmoving = false;
+    int abillity;
+
+    public void SetProjectile(int damage, float speed)
+    {
+        this.damage = damage;
+        this.speed = speed;
+    }
 
     public void ProjectileOn(Character caster, IPooling_Character pool)
     {
@@ -19,43 +27,71 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
         transform.position = caster.transform.position;
     }
 
-    public void ProjectileOn(Character caster)
+    public void ProjectileOn(Character caster, int abillity)
     {
+        this.abillity = abillity;
+        pool = null;
         this.caster = caster;
         Pmoving = false;
         this.gameObject.SetActive(true);
     }
 
-    public void ProjectileMove(Character target, float speed)
+    public void DeleteProjectile()
     {
+        Destroy(this.gameObject);
+    }
+
+    public void ProjectileOn(Character caster)
+    {
+        pool = null;
+        this.caster = caster;
+        Pmoving = false;
+        this.gameObject.SetActive(true);
+        transform.position = caster.transform.position;
+    }
+
+    public void ProjectileMove(Character target)
+    {
+        this.target = target;
         Pmoving = true;
         TimeSystem.GetTimeSystem().AddTimer(this);
-        this.target = target;
-        this.speed = speed;
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed*Time.deltaTime);
+        ProjectileRotation();
 
-		if (Vector3.Distance (transform.position, target.transform.position) < 0.1f) {
+        if (Vector3.Distance (transform.position, target.transform.position) < 0.1f) {
 			if (target.Action == CharacterAction.Dead) {
 				moving = false;
 				this.gameObject.SetActive(false);
 				TimeSystem.GetTimeSystem().DeleteTimer(this);
-				pool.Pool.Push(this);
+                if(pool!=null)
+                {
+                    pool.Pool.Push(this);
+                }
 			}
 		}
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    public void ProjectileRotation()
     {
-        if (col != null&&target!=null)
+        float dx = target.transform.position.x - this.gameObject.transform.position.x;
+        float dy = target.transform.position.y - this.gameObject.transform.position.y;
+        float seta = Mathf.Atan(dy / dx);
+        seta = seta * 180 / Mathf.PI;
+        transform.rotation = Quaternion.Euler(0, 0, seta);
+    }
+
+    private void OnTriggerStay2D(Collider2D col)
+    {
+        if (target != null&&Pmoving==true)
         {
-            if (col.transform.root.transform == target.transform)
+            if (col.transform.root.transform == target.transform.root.transform)
             {
-                OnArrival();
+                OnArrival(abillity);
             }
         }
     }
 
-    public virtual void OnArrival()
+    public virtual void OnArrival(int abillity)
     {
         Pmoving = false;
         this.gameObject.SetActive(false);
@@ -70,7 +106,7 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
     {
         if(Pmoving==true)
         {
-            ProjectileMove(target, speed);
+            ProjectileMove(target);
         }
     }
 
@@ -82,5 +118,6 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
 		this.target = target;
         transform.position = caster.transform.position;
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
+        ProjectileRotation();
     }
 }

@@ -72,6 +72,10 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		Vector3 p = new Vector3();
 		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
 		IBattleHandler b = null;
+
+		MoveEventArgs m = new MoveEventArgs (false, transform.position);
+		OnMoveComplete (m);
+
 		for (int i = 0; i < masks.Length; i++) {
 			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[i]);
 			if (hitInfo.collider != null) {
@@ -81,6 +85,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 					AutoAttack (b);
 				} else {
 					p = Camera.main.ScreenToWorldPoint (pixelPos);
+					StopMove ();
 					BeginMove(new Vector3(p.x, p.y, 0f));
                     RemoveTarget();
 				}
@@ -90,6 +95,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		if (b == null) {
 			p = Camera.main.ScreenToWorldPoint (pixelPos);
 			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
+			StopMove ();
 			BeginMove (p);
             RemoveTarget();
         }
@@ -101,12 +107,14 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	public override void RunTime ()
 	{
 		base.RunTime ();
+		/*
 		if (autoAttack != null) {
 			if (autoAttack.CheckSkillStatus(SkillStatus.ReadyMask) && action == CharacterAction.Attacking)
 			{
 				autoAttack.OnCast();
 			}
 		}
+		*/
     }
 
     public void RemoveTarget()
@@ -128,11 +136,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	}
 
 	public virtual void AutoAttack(IBattleHandler target) {
-		
-		if (ChangeAction (CharacterAction.Attacking)) {
 			this.target = target;
 			autoAttack.OnCast ();
-		}
 	}
 
 

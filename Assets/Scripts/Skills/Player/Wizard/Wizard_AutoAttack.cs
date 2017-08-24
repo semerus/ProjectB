@@ -9,9 +9,9 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
 {
     public Stack<IPooledItem_Character> projectileNum = new Stack<IPooledItem_Character>();
 	public Projectile projectiles;
-
+    public Character AtkTarget = null;
 	private int damage;
-	private GameObject projectile;
+    private float speed;
 
     public Stack<IPooledItem_Character> Pool
     {
@@ -29,48 +29,90 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
 		}
 	}
 
-	public override void Activate()
-	{
-		if (caster.Target.Action == CharacterAction.Dead)
-		{
-			caster.ChangeAction (CharacterAction.Idle);
-		}
-		ProjectileStack();
-		//cooldown = 2f;
-		ProjectileStack();
-		StartCoolDown();
-	}
-
 	public override void SetSkill (Dictionary<string, object> param)
 	{
 		base.SetSkill (param);
 		damage = (int)param ["damage"];
-		Hero hero = caster as Hero;
-		if (hero != null) {
-			hero.autoAttack = this;
-		}
+        speed = (float)((double)param["speed"]);
 	}
 
     public void ProjectileStack()
     {
         if (projectileNum.Count < 1)
         {
-            GameObject p = Instantiate(Resources.Load<GameObject>("aaa"));
+            GameObject p = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/AutoAttack/AutoAttack"));
             p.transform.SetParent(GameObject.Find("Projectiles").transform);
             projectiles = p.gameObject.GetComponent<Projectile>();
-
+            projectiles.SetProjectile(damage, speed);
             projectiles.ProjectileOn(caster, this);
-            projectiles.ProjectileMove(caster.Target as Character, 3);
+            projectiles.ProjectileMove(AtkTarget);
         }
         else
         {
-            projectileNum.Pop().PopDo(caster.Target as Character) ;
+            projectileNum.Pop().PopDo(AtkTarget) ;
         }
     }
 
+    public override bool CheckCondition()
+    {
+		bool isReady = false;
+        if(AtkTarget==null)
+        {
+            AtkTarget = caster.Target as Character;
+        }
+
+        if(AtkTarget==null)
+        {
+            isReady = false;
+        }
+        else
+        {
+            if (AtkTarget.Action == CharacterAction.Dead)
+            {
+                AtkTarget = null;
+                isReady = false;
+            }
+            else
+            {
+                isReady = true;
+            }
+        }
+        return isReady && base.CheckCondition();
+    }
+
+    public void Facing()
+    {
+        //Debug.Log("facing");
+        if (AtkTarget.transform.position.x >= this.gameObject.transform.position.x)
+        {
+            caster.IsFacingLeft = false;
+            caster.CheckFacing();
+        }
+        else
+        {
+            caster.IsFacingLeft = true;
+            caster.CheckFacing();
+        }
+    }
+
+    public override void Activate()
+    {
+        if (caster.Target != null)
+        {
+            AtkTarget = caster.Target as Character;
+        }
+		UpdateSkillStatus (SkillStatus.ProcessOn);
+        Facing();
+        caster.ChangeAction(CharacterAction.Attacking);
+        caster.Anim.onCue += AutoAttack;
+    }  
+
     public void AutoAttack()
     {
-        IBattleHandler target = caster.Target;
-        caster.AttackTarget(target, damage);
+		UpdateSkillStatus (SkillStatus.ProcessOff);
+        StartCoolDown();
+        ProjectileStack();
+        caster.ChangeAction(CharacterAction.Idle);
+        caster.Anim.onCue -= AutoAttack;
     }
 }

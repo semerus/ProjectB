@@ -2,11 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fighter_ThousandFists : HeroActive, IChanneling {
+public class Fighter_ThousandFists : HeroActive {
+
+	protected int damage;
+	protected int finalDamage;
+	protected int hitCount = 0;
+	protected int cost;
+	IBattleHandler target;
+	protected float movedLength = 0f;
+	protected float speed = 20f;
+
     #region implemented abstract members of Skill + override things
 
     public override void Activate()
     {
+		if (caster.ChangeAction (CharacterAction.Active3)) {
+			target = caster.Target;
+			StartCoolDown ();
+			//UpdateSkillStatus (SkillStatus.ProcessOn);
+			caster.Anim.ClearAnimEvent ();
+			caster.Anim.onCue += Attack;
+		} else {
+			Debug.Log ("thousandpunch failed");
+		}
+
+		/*
         // resource check
         if (caster.CurHP <= HPCost)
         {
@@ -29,7 +49,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
         {
             // Change character State
 			caster.ChangeAction(CharacterAction.Channeling);
-            caster.CurHP -= HPCost;
+            //caster.CurHP -= HPCost;
 
             // Change skill State
 			skillStatus = SkillStatus.ChannelingOn;
@@ -41,8 +61,10 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
         {
             Debug.LogError("isTargetInMeleeRange is " + isTargetInMeleeRange);
         }
+		*/
     }
 
+	/*
     public void TryAttack(IBattleHandler target)
     {
         if(curHitCoutns < 6 && timer_Channeling > delayBetweenNormal)
@@ -74,7 +96,8 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
             // do nothing
         }
     }
-    
+    */
+	/*
     protected override void OnCoolDown()
     {
         timer_cooldown += Time.deltaTime;
@@ -90,9 +113,11 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
             TimeSystem.GetTimeSystem().DeleteTimer(this as ITimeHandler);
         }
     }
+	*/
     #endregion
     
     #region implemented IChanneling
+	/*
     public float ChannelTime
     {
         get { return channelTime; }
@@ -119,6 +144,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
     {
         Debug.LogError("not realized yet");
     }
+    */
     #endregion
 
     #region MonoBehaviours
@@ -129,7 +155,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
 		if (h != null) {
 			h.activeSkills [2] = this;
 		}
-        
+        /*
 		// set original value
         normalDmg = 20;
         lastDmg = 50;
@@ -147,7 +173,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
         timer_Channeling = 0f;
         isTargetInMeleeRange = false;
         positionToMeleeAttack = new Vector3();
-
+		*/
 		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill3");
     }
 
@@ -155,6 +181,63 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
 
     #region Field&Method
     
+	public override void SetSkill (Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.damage = (int)param ["damage"];
+		this.finalDamage = (int)param ["final_damage"];
+		this.cost = (int)param ["cost"];
+	}
+
+	public override bool CheckCondition ()
+	{
+		bool isReady = false;
+		Hero h = caster as Hero;
+		MeleeAttack melee = h.autoAttack as MeleeAttack;
+		isReady = melee.CheckRange () && caster.CurHP > cost;
+
+		return isReady && base.CheckCondition ();
+	}
+
+	protected override void OnProcess ()
+	{
+		PushTarget ();
+	}
+
+	protected void Attack() {
+		if (hitCount < 6) {
+			hitCount++;
+			caster.AttackTarget (target, damage);
+		} else {
+			caster.AttackTarget (target, finalDamage);
+			hitCount = 0;
+			UpdateSkillStatus (SkillStatus.ProcessOn);
+			caster.Anim.onCue -= Attack;
+		}
+	}
+
+	protected void PushTarget() {
+		Character c = target as Character;
+
+		if (c != null) {
+			if (c.transform.position.x > caster.transform.position.x) {
+				// move right
+				c.transform.position += new Vector3(speed, 0f, 0f) * Time.deltaTime;
+			} else {
+				// move left
+				c.transform.position -= new Vector3(speed, 0f, 0f) * Time.deltaTime;
+			}
+			movedLength += speed * Time.deltaTime;
+		}
+
+		if (movedLength > 3f || !Background.GetBackground().CheckBoundaries(c.transform.position)) {
+			movedLength = 0f;
+			UpdateSkillStatus (SkillStatus.ProcessOff);
+			caster.ChangeAction (CharacterAction.Idle);
+		}
+	}
+
+	/*
     // effect & cost of this Skill
     int normalDmg;
     int lastDmg;
@@ -220,7 +303,7 @@ public class Fighter_ThousandFists : HeroActive, IChanneling {
             positionToMeleeAttack = transform.position + new Vector3(deltaX, deltaY, 0);
         }
     }
-    
+    */
     #endregion
 
 }

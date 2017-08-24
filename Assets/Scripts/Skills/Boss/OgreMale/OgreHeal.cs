@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿/*
+ * Written by Insung Kim
+ * Updated: 2017.08.23
+ */
+using UnityEngine;
 
 public class OgreHeal : Skill, IChanneling {
 
-	protected int healPoint;
+	protected int heal;
 	protected float channelTime;
 	protected float timer_channeling;
 	protected Character target;
@@ -11,8 +15,7 @@ public class OgreHeal : Skill, IChanneling {
 
 	public override void Activate ()
 	{
-		UpdateSkillStatus (SkillStatus.ChannelingOff);
-		caster.HealTarget (healPoint, target);
+		caster.HealTarget (heal, target);
 		Teleport (this.target);
 		StartCoolDown ();
 	}
@@ -23,16 +26,12 @@ public class OgreHeal : Skill, IChanneling {
 
 	public void OnChanneling ()
 	{
-		if(!CheckSkillStatus(SkillStatus.ChannelingMask))
-			UpdateSkillStatus (SkillStatus.ChannelingOn);
-
-		if(!TimeSystem.GetTimeSystem().CheckTimer(this))
-			TimeSystem.GetTimeSystem ().AddTimer (this);
-
 		timer_channeling += Time.deltaTime;
+
 		if (timer_channeling >= channelTime) {
-			Activate ();
 			timer_channeling = 0f;
+			UpdateSkillStatus (SkillStatus.ChannelingOff);
+			Activate ();
 		}
 	}
 
@@ -64,14 +63,11 @@ public class OgreHeal : Skill, IChanneling {
 		caster = gameObject.GetComponent<Character> ();
 	}
 
-	void Start() {
-		// temporary
-		cooldown = 20f;
-		healPoint = 3000;
-		channelTime = 4f;
-
-		timer_cooldown = 0f;
-		timer_channeling = 0f;
+	public override void SetSkill (System.Collections.Generic.Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.heal = (int)param ["heal"];
+		this.channelTime = (float)((double)param ["channel_time"]);
 	}
 
 	public virtual void SetTarget(Character target) {
@@ -90,5 +86,7 @@ public class OgreHeal : Skill, IChanneling {
 			// if inside boundaries teleport
 			caster.transform.position = des;
 		}
+
+		caster.ChangeAction (CharacterAction.Idle);
 	}
 }

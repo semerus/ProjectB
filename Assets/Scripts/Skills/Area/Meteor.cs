@@ -10,6 +10,7 @@ public class Meteor : Area, ITimeHandler {
 	AnimationController anim;
 	int damage = 100;
 	float readyTime = 2f;
+    float aniTime = 0;
 	//float activeTime = 0.1f;
 	float timer_ready;
 
@@ -17,18 +18,7 @@ public class Meteor : Area, ITimeHandler {
 
 	public void RunTime ()
 	{
-		/*
-		switch (state) {
-		case AreaState.Ready:
-			timer_ready += Time.deltaTime;
-			if (timer_ready >= readyTime) {
-				DestroyMeteor ();
-			}
-			break;
-		default:
-			break;
-		}
-		*/
+
 	}
 
 	#endregion
