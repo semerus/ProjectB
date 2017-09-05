@@ -2,7 +2,7 @@
 
 public class Fighter : Hero {
 
-	public override void ReceiveDamage (IBattleHandler attacker, int damage)
+    public override void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
 		if (activeSkills [1].CheckSkillStatus (SkillStatus.ChannelingMask)) {
 			IChanneling ch = activeSkills[1] as IChanneling;

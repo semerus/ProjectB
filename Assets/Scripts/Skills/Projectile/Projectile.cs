@@ -75,9 +75,30 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
     {
         float dx = target.transform.position.x - this.gameObject.transform.position.x;
         float dy = target.transform.position.y - this.gameObject.transform.position.y;
-        float seta = Mathf.Atan(dy / dx);
+        float ax = Mathf.Abs(dx);
+        float ay = Mathf.Abs(dy);
+        float seta = Mathf.Atan(ay / ax);
         seta = seta * 180 / Mathf.PI;
-        transform.rotation = Quaternion.Euler(0, 0, seta);
+
+        if (dx>=0 && dy>=0)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, seta);
+        }
+        else if(dx < 0 && dy >= 0)
+        {
+            seta = 180 - seta;
+            transform.rotation = Quaternion.Euler(0, 0, seta);
+        }
+        else if (dx < 0 && dy < 0)
+        {
+            seta = seta - 180;
+            transform.rotation = Quaternion.Euler(0, 0, seta);
+        }
+        else if (dx >= 0 && dy < 0)
+        {
+            seta = -seta;
+            transform.rotation = Quaternion.Euler(0, 0, seta);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D col)

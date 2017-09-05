@@ -134,7 +134,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
                 if (count >= 5)
                 {
                     UpdateSkillStatus(SkillStatus.ProcessOff);
-                    caster.ChangeAction(CharacterAction.Attacking);
+                    caster.ChangeAction(CharacterAction.Idle);
                     TimeSystem.GetTimeSystem().UnSlowMotion();
                     ResetSetting();
                 }
@@ -150,7 +150,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
                 if (shoottime>=0.2&& count >= snowStack)
                 {
                     UpdateSkillStatus(SkillStatus.ProcessOff);
-                    caster.ChangeAction(CharacterAction.Attacking);
+                    caster.ChangeAction(CharacterAction.Idle);
                     TimeSystem.GetTimeSystem().UnSlowMotion();
                     ResetSetting();
                     Wizard_Snowball_Abillity2.abillity2count = 0;

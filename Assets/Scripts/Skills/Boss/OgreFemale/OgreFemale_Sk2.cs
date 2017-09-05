@@ -106,6 +106,7 @@ public class OgreFemale_Sk2 : Skill {
                         if (OgreFemale_Sk5.rageOn == true)
                         {
                             IBattleHandler ch = c as IBattleHandler;
+                            Debug.Log("ssssssss");
                             caster.AttackTarget(c, 100);
                         }
                         else
