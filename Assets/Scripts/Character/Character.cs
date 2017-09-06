@@ -202,12 +202,18 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	/// <returns><c>true</c>, if move was begun, <c>false</c> otherwise.</returns>
 	/// <param name="target">Target.</param>
 	public bool BeginMove(Vector3 target) {
-		if (ChangeAction (CharacterAction.Moving)) {
-			moveMethod = MoveMethod.Normal;
-			Move (target);
-			return true;
-		} else
-			return false;
+        if (!CheckBoundary(target))
+        {
+            target = SetAdjustPosition(target);
+        }
+            if (ChangeAction(CharacterAction.Moving))
+            {
+                moveMethod = MoveMethod.Normal;
+                Move(target);
+                return true;
+            }
+            else
+                return false;
 	}
 
 	/// <summary>
@@ -218,16 +224,26 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 	/// <param name="speed_x">Speed x.</param>
 	/// <param name="speed_y">Speed y.</param>
 	public bool BeginMove(Vector3 target, float speed_x, float speed_y) {
-		if (ChangeAction (CharacterAction.Moving)) {
-			moveMethod = MoveMethod.CustomSpeed;
-			Move (target, speed_x, speed_y);
-			return true;
-		} else
-			return false;
+        if (!CheckBoundary(target))
+        {
+            target = SetAdjustPosition(target);
+        }
+        if (ChangeAction(CharacterAction.Moving))
+            {
+                moveMethod = MoveMethod.CustomSpeed;
+                Move(target, speed_x, speed_y);
+                return true;
+            }
+            else
+                return false;
 	}
 
 	public bool BeginJumpTarget(Vector3 target, float speed_x, float speed_y) {
-		if (ChangeAction (CharacterAction.Jumping)) {
+        if (!CheckBoundary(target))
+        {
+            SetAdjustPosition(target);
+        }
+        if (ChangeAction (CharacterAction.Jumping)) {
 			moveMethod = MoveMethod.CustomSpeed;
 			Move (target, speed_x, speed_y);
 			return true;
@@ -260,7 +276,6 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		speed = speed_x * Mathf.Sqrt(n.x * n.x / (n.x * n.x + n.y * n.y)) + speed_y * Mathf.Sqrt(n.y * n.y / (n.x * n.x + n.y * n.y));
 		speed *= Calculator.MoveSpeed(this);
 
-
 		if (Vector3.Distance (target, transform.position) > 0.01f) {
 			transform.position = Vector3.MoveTowards (transform.position, target, speed * Time.deltaTime);
 		} else{
@@ -273,7 +288,53 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		}
 	}
 
-	public bool ChangeMoveTarget(Vector3 target)
+    public Vector3 SetAdjustPosition(Vector3 target) {
+        BoxCollider2D controlArea = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>();
+        float lx = controlArea.size.x/ 2 + controlArea.offset.x;
+        float mlx = controlArea.offset.x - controlArea.size.x / 2;
+        float ly = controlArea.size.y / 2 + controlArea.offset.y;
+        float mly = controlArea.offset.y - controlArea.size.y / 2;
+
+        if (target.x >= lx)
+        {
+            target.x = lx - 0.2f;
+        }
+        if(target.x <= mlx)
+        {
+            target.x = mlx +0.2f;
+        }
+        if(target.y >=ly)
+        {
+            target.y = ly - 0.2f;
+        }
+        if(target.y <= mly)
+        {
+            target.y = mly + 0.2f;
+        }
+        return target;
+    }
+
+    public bool CheckBoundary(Vector3 target)
+    {
+        Vector3 position = target;
+        float cpx = position.x;
+        float cpy = position.y;
+        float lx = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.x / 2;
+        float mlx = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.x - (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.x / 2);
+        float ly = (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.y / 2) + GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.y;
+        float mly = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.y - (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.y / 2);
+
+        if ((cpx < lx && cpx > mly) && (cpy < ly && cpy > mly))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool ChangeMoveTarget(Vector3 target)
 	{
 		if (action == CharacterAction.Moving) {
 			moveTarget = target;

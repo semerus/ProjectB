@@ -12,13 +12,15 @@ public abstract class Fighter_MeowPunch : HeroActive {
 
     public override void Activate()
     {
+        caster.StopMove();
 		if (caster.ChangeAction (CharacterAction.Active1)) {
 			target = caster.Target;
 			StartCoolDown ();
-			UpdateSkillStatus (SkillStatus.ProcessOn);
-			caster.Anim.ClearAnimEvent ();
+            caster.ChangeAction(CharacterAction.Active1);
+            caster.Anim.ClearAnimEvent ();
 			caster.Anim.onCue += Attack;
-		} else {
+            
+        } else {
 			Debug.Log ("meowpunch failed");
 		}
 

@@ -101,7 +101,6 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
         {
             AtkTarget = caster.Target as Character;
         }
-		UpdateSkillStatus (SkillStatus.ProcessOn);
         Facing();
         caster.ChangeAction(CharacterAction.Attacking);
         caster.Anim.onCue += AutoAttack;
@@ -109,7 +108,6 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
 
     public void AutoAttack()
     {
-		UpdateSkillStatus (SkillStatus.ProcessOff);
         StartCoolDown();
         ProjectileStack();
         caster.ChangeAction(CharacterAction.Idle);

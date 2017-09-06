@@ -94,7 +94,8 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		}
 		if (b == null) {
 			p = Camera.main.ScreenToWorldPoint (pixelPos);
-			p = CalculatePosition(new Vector3(p.x, p.y, 0f));
+            p.z = 0f;
+			//p = CalculatePosition(new Vector3(p.x, p.y, 0f));
 			StopMove ();
 			BeginMove (p);
             RemoveTarget();

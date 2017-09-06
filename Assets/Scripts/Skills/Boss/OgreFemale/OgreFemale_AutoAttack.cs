@@ -39,7 +39,6 @@ public class OgreFemale_AutoAttack : Skill {
 
     public override void Activate()
     {
-        //cooldown = 2;
         UpdateSkillStatus(SkillStatus.ProcessOn);
         TimeSystem.GetTimeSystem().AddTimer(this);
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
@@ -125,50 +124,53 @@ public class OgreFemale_AutoAttack : Skill {
 
     private void CheckTargetRange()
     {
-        Vector3 enemyPosition = minC.transform.position;
-        
-        float myA = 2.1f;
-        float myB = 0.7f;
-
-        float outerX = 0.5f;
-        float innerX = 0.2f;
-        float outerY = 0.3f;
-
-        float dX = enemyPosition.x - this.transform.position.x;
-        float dY = enemyPosition.y - this.transform.position.y;
-
-        float inX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX;
-        float outX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX;
-
-        float m_inX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX);
-        float m_outX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX);
-
-        if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
+        if (minC != null)
         {
-			caster.StopMove ();
-			if (caster.ChangeAction (CharacterAction.Attacking)) {
-				caster.Anim.onCue += AutoAttacking;
-			}
-            //AutoAttacking();
-            Debug.Log("attack on");
-        }
-        else
-        {
-            if(this.gameObject.transform.position.x <= minC.transform.position.x)
+            Vector3 enemyPosition = minC.transform.position;
+
+            float myA = 2.1f;
+            float myB = 0.7f;
+
+            float outerX = 0.5f;
+            float innerX = 0.2f;
+            float outerY = 0.3f;
+
+            float dX = enemyPosition.x - this.transform.position.x;
+            float dY = enemyPosition.y - this.transform.position.y;
+
+            float inX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX;
+            float outX = (myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX;
+
+            float m_inX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + innerX);
+            float m_outX = -1 * ((myA / myB * Mathf.Sqrt(myB * myB - dY * dY)) + outerX);
+
+            if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
             {
-				if (caster.Action != CharacterAction.Moving)
+                caster.StopMove();
+                if (caster.ChangeAction(CharacterAction.Attacking))
                 {
-                    caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
+                    caster.Anim.onCue += AutoAttacking;
                 }
-                caster.ChangeMoveTarget(minC.transform.position - new Vector3(2.5f,0,0));
+                Debug.Log("attack on");
             }
             else
             {
-				if (caster.Action != CharacterAction.Moving)
+                if (this.gameObject.transform.position.x <= minC.transform.position.x)
                 {
-                    caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
+                    if (caster.Action != CharacterAction.Moving)
+                    {
+                        caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
+                    }
+                    caster.ChangeMoveTarget(minC.transform.position - new Vector3(2.5f, 0, 0));
                 }
-                caster.ChangeMoveTarget(minC.transform.position + new Vector3(2.5f, 0, 0));
+                else
+                {
+                    if (caster.Action != CharacterAction.Moving)
+                    {
+                        caster.MoveComplete += new EventHandler<MoveEventArgs>(OnMoveComplete);
+                    }
+                    caster.ChangeMoveTarget(minC.transform.position + new Vector3(2.5f, 0, 0));
+                }
             }
         }
     }

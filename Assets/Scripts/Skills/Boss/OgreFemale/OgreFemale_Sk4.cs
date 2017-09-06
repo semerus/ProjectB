@@ -11,14 +11,23 @@ public class OgreFemale_Sk4 : Skill
     int startNum = 0;
     bool sk4_On = false;
     IBattleHandler[] friendlyNum;
-    float tx;
-    float ty;
+    float[] burnTimer = new float[10];
+    bool[] burnCheck = new bool [10];
 
-	void Awake() {
+    void Awake() {
 		caster = gameObject.GetComponent<Character> ();
 	}
 
-	public override void SetSkill (Dictionary<string, object> param)
+    private void Update()
+    {
+        if(Input.GetKeyDown("q"))
+        {
+            Activate();
+        }
+        
+    }
+
+    public override void SetSkill (Dictionary<string, object> param)
 	{
 		base.SetSkill (param);
 		this.damage = (int)param ["damage"];
@@ -35,10 +44,11 @@ public class OgreFemale_Sk4 : Skill
 
     public override void Activate()
     {
-        float dx = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.x / 2;
-        float dy = (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.y / 2) + GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.y;
-        tx = dx - 0.1f;
-        ty = dy - 0.1f;
+        for(int i=0; i<10;i++)
+        {
+            burnCheck[i] = false;
+            burnTimer[i] = 0f;
+        }
         caster.StopMove();
 		// order is important should go after stop move
 		OgreFemale of = caster as OgreFemale;
@@ -57,19 +67,32 @@ public class OgreFemale_Sk4 : Skill
         BurnRun();
         EdgeChange();
         BurnBurn();
+        Debug.Log(count);
     }
+
+    
 
     private void BurnBurn()
     {
         for (int i = 0; i < friendlyNum.Length; i++)
         {
             Character c = friendlyNum[i] as Character;
-            bool burnCheck = EllipseScanner(2.6f, 0.9f, this.gameObject.transform.position, c.transform.position);
+            bool hitCheck = EllipseScanner(2.6f, 0.9f, this.gameObject.transform.position, c.transform.position);
 
-            if (burnCheck == true)
+            if (hitCheck == true && !burnCheck[i])
             {
-                //Debug.Log("Burn " + c.transform.name);
+                burnCheck[i] = true;
+                Debug.Log("Burn " + c.transform.name);
 				caster.AttackTarget(c, damage / 10);
+            }
+
+            if (burnCheck[i] == true)
+            {
+                burnTimer[i] += Time.deltaTime;
+                if (burnTimer[i] >= 2)
+                {
+                    burnCheck[i] = false;
+                }
             }
         }
     }
@@ -80,9 +103,11 @@ public class OgreFemale_Sk4 : Skill
     {
         float speed = 3 * Mathf.Sqrt(2);
         Vector3 target = FindTarget();
-		caster.BeginMove (target, speed, speed);
+        Debug.Log(target);
+        caster.BeginMove (target, speed, speed);
         if(count>=6)
         {
+            UpdateSkillStatus(SkillStatus.ProcessOff);
             caster.StopMove();
             sk4_On = false;
             count = 0;
@@ -99,6 +124,12 @@ public class OgreFemale_Sk4 : Skill
 
     private Vector3 FindTarget()
     {
+        BoxCollider2D controlArea = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>();
+        float lx = controlArea.size.x / 2 + controlArea.offset.x;
+        float mlx = controlArea.offset.x - controlArea.size.x / 2;
+        float ly = controlArea.size.y / 2 + controlArea.offset.y;
+        float mly = controlArea.offset.y - controlArea.size.y / 2;
+
         Vector3 cPosition = this.gameObject.transform.position;
 
         Vector3 target = new Vector3();
@@ -106,117 +137,128 @@ public class OgreFemale_Sk4 : Skill
         switch (mod)
         {
             case 1:
-                if(ty - cPosition.y <= tx-cPosition.x)
+                if(ly - cPosition.y <= lx-cPosition.x)
                 {
-                    target.y = ty;
-                    target.x = cPosition.x + (ty - cPosition.y);
+                    target.y = ly;
+                    target.x = cPosition.x + (ly - cPosition.y);
                     return target;
                 }
                 else
                 {
-                    target.x = tx;
-                    target.y = cPosition.y + (tx - cPosition.x);
+                    target.x = lx;
+                    target.y = cPosition.y + (lx - cPosition.x);
                     return target;
                 }
 
             case 2:
-                if (tx - cPosition.x <= cPosition.y + ty)
+                if (lx - cPosition.x <= cPosition.y - mly)
                 {
-                    target.x = tx;
-                    target.y = -cPosition.y + (tx - cPosition.x);
+                    target.x = lx;
+                    target.y = cPosition.y - (lx - cPosition.x);
                     return target;
                 }
                 else
                 {
-                    target.y = -ty;
-                    target.x = cPosition.x + (ty + cPosition.y);
+                    target.y = mly;
+                    target.x = cPosition.x + (cPosition.y - mly);
                     return target;
                 }
 
             case 3:
-                if (cPosition.y+ty <= cPosition.x+tx)
+                if (cPosition.y - mly <= cPosition.x - mlx)
                 {
-                    target.y = -ty;
-                    target.x = cPosition.x - (cPosition.y + ty);
+                    target.y = mly;
+                    target.x = cPosition.x - (cPosition.y - mly);
                     return target;
                 }
                 else
                 {
-                    target.x = -tx;
-                    target.y = cPosition.y + (cPosition.x + tx);
+                    target.x = mlx;
+                    target.y = cPosition.y - (cPosition.x - mlx);
                     return target;
                 }
 
             case 4:
-                if(9+cPosition.x <= ty-cPosition.y)
+                if(cPosition.x - mly <= ly - cPosition.y)
                 {
-                    target.x = -tx;
-                    target.y = cPosition.y + (cPosition.x + 9);
+                    target.x = mlx;
+                    target.y = cPosition.y + (cPosition.x -mlx);
                     return target;
                 }
                 else
                 {
-                    target.y = ty;
-                    target.x = cPosition.x - (ty - cPosition.y);
+                    target.y = ly;
+                    target.x = cPosition.x - (ly - cPosition.y);
                     return target;
                 }
             default:
                 return new Vector3(0,0,0);
         }
+        
     }
 
     private void EdgeChange()
     {
+        BoxCollider2D controlArea = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>();
+        float lx = controlArea.size.x / 2 + controlArea.offset.x;
+        float mlx = controlArea.offset.x - controlArea.size.x / 2;
+        float ly = controlArea.size.y / 2 + controlArea.offset.y;
+        float mly = controlArea.offset.y - controlArea.size.y / 2;
         Vector3 myPosition = this.gameObject.transform.position;
         if (count <= 6)
         {
-            if (myPosition.y >= ty)
+            if (myPosition.y >= ly-0.5f)
             {
                 if (mod == 1)
                 {
                     mod = 2;
+                    count++;
                 }
-                else
+                else if (mod==4)
                 {
                     mod = 3;
+                    count++;
                 }
-                count++;
+                
             }
-            if (myPosition.y <= -ty)
+            else if (myPosition.y <= mly+0.5)
             {
                 if (mod == 3)
                 {
                     mod = 4;
+                    count++;
                 }
-                else
+                else if (mod==2)
                 {
                     mod = 1;
+                    count++;
                 }
-                count++;
             }
-            if (myPosition.x >= tx)
+            else if (myPosition.x >= lx-0.5f)
             {
                 if (mod == 2)
                 {
                     mod = 3;
+                    count++;
                 }
-                else
+                if(mod==1)
                 {
                     mod = 4;
+                    count++;
                 }
-                count++;
             }
-            if (myPosition.x <= -tx)
+            else if (myPosition.x <= mlx+0.5f)
             {
                 if (mod == 4)
                 {
                     mod = 1;
+                    count++;
                 }
-                else
+                else if (mod==3)
                 {
                     mod = 2;
+                    count++;
                 }
-                count++;
             }
         }
         else
