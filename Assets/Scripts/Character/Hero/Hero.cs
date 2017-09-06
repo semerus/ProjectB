@@ -59,15 +59,44 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 
 	public void OnDrag (Vector3 pixelPos)
 	{
+		if (Action == CharacterAction.Channeling) {
+			return;
+		}
+
+		PointerType type = PointerType.Move;
 		Vector3 p = Camera.main.ScreenToWorldPoint (pixelPos);
 		p = new Vector3 (p.x, p.y, 0f);
 
-		Background.GetBackground ().PositionPointer (p, this);
+		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
+		IBattleHandler b = null;
+
+		for (int i = 0; i < masks.Length; i++) {
+			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray, Mathf.Infinity, masks[i]);
+			if (hitInfo.collider != null) {
+				b = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
+				if (b != null && b.Team != Team.Friendly) {
+					this.target = b;
+					type = PointerType.Attack;
+				} else {
+					type = PointerType.Move;
+				}
+				break;
+			}
+		}
+		if (b == null) {
+			type = PointerType.Move;
+		}
+
+		Background.GetBackground ().PositionPointer (p, this, type);
 	}
 
 	// receives pixel coordinates
 	public void OnDrop (Vector3 pixelPos)
 	{
+		if (Action == CharacterAction.Channeling) {
+			return;
+		}
+
 		// move only if it is moveable state
 		Vector3 p = new Vector3();
 		Ray ray = Camera.main.ScreenPointToRay (pixelPos);
