@@ -3,8 +3,9 @@
 public abstract class Buff {
 	protected Character caster;
 	protected Character target;
-    protected bool isBuff;
-    public bool Isbuff
+    protected bool isBuff; // true => buff, false => debuff
+    
+	public bool Isbuff
     {
         get { return isBuff; }
     }

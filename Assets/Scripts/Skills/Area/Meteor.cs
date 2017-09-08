@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class Meteor : Area, ITimeHandler {
 
-	AreaState state;
+	//AreaState state;
 	AnimationController anim;
 	int damage = 100;
-	float readyTime = 2f;
-    float aniTime = 0;
+	//float readyTime = 2f;
+    //float aniTime = 0;
 	//float activeTime = 0.1f;
-	float timer_ready;
+	//float timer_ready;
 
 	#region ITimeHandler implementation
 
@@ -33,8 +33,8 @@ public class Meteor : Area, ITimeHandler {
 		this.damage = damage;
 		gameObject.SetActive (true);
 		transform.position = target;
-		state = AreaState.Ready;
-		timer_ready = 0f;
+		//state = AreaState.Ready;
+		//timer_ready = 0f;
 		TimeSystem.GetTimeSystem ().AddTimer (this);
 		anim.onCue += DestroyMeteor;
 	}

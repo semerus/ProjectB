@@ -23,6 +23,6 @@ public class MoveTest : Skill {
 	}
 
 	void Example() {
-		Type temp = Type.GetType ("MoveTest");
+		//Type temp = Type.GetType ("MoveTest");
 	}
 }

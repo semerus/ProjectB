@@ -54,8 +54,7 @@ public class OgreFemale_AutoAttack : Skill {
             bool hitCheck = EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
             if (hitCheck == true)
             {
-                Debug.Log("Auto Attack => " + c.gameObject.transform.name);
-                IBattleHandler ch = c as IBattleHandler;
+                //Debug.Log("Auto Attack => " + c.gameObject.transform.name);
                 caster.AttackTarget(c, 50);
             }
         }

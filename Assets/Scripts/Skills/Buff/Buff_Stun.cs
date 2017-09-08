@@ -42,6 +42,7 @@ public class Buff_Stun : Buff, ITimeHandler, IStatusBuff {
 
 	public Buff_Stun (float time, Character caster, Character target) {
 		this.buffTime = time;
+		this.isBuff = false;
 
 		StartBuff (caster, target);
 	}

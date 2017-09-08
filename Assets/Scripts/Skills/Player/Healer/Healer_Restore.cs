@@ -3,18 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Healer_Restore : HeroActive {
-    #region Implement abstract member
-    public override void Activate()
-    {
-        if (CheckSkillStatus(SkillStatus.ReadyMask))
-        {
-            if (caster.CheckCharacterStatus(CharacterStatus.IsSilencedMask) == false)
-            {
-
-            }
-        }
-    }
-    #endregion
 
     #region MonoBehaviours
     protected virtual void Awake()
@@ -24,20 +12,40 @@ public class Healer_Restore : HeroActive {
 		if (h != null) {
 			h.activeSkills [2] = this;
 		}
-        //set initial Value
-        skillStatus = SkillStatus.ReadyOn;
-        cooldown = 20f;
-        timer_cooldown = 0f;
 
         //UI
         button = Resources.Load<Sprite>("Skills/Heroes/Healer/Healer_Skill3");
     }
     #endregion
 
-    #region Field & Method
-    // GetFriendly
+	public override void Activate()
+	{
+		// run animation
+		OnAnimationEnd();
+	}
 
-    // 상태이상이 해제된 캐릭터 읽어들이기
-    // 50회복 or 반사버프 시전
-    #endregion
+	private void OnAnimationEnd() {
+		IBattleHandler[] friends = BattleManager.GetBattleManager ().GetEntities (Team.Friendly);
+		for (int i = 0; i < friends.Length; i++) {
+			bool hasDebuff = false;
+			Character character = friends [i] as Character;
+			if (character != null) {
+				for (int j = 0; j < character.Buffs.Count; j++) {
+					if (!character.Buffs [j].Isbuff) {
+						character.Buffs [j].EndBuff ();
+						hasDebuff |= true;
+					}
+				}
+				// invoke extra effect for characters who previously had debuffs
+				if (hasDebuff) {
+					InvokeEffect (character);
+				}
+			}
+		}
+
+		// release onCue
+		StartCoolDown();
+	}
+
+	protected virtual void InvokeEffect(Character target) {	}
 }

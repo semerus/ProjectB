@@ -8,7 +8,7 @@ public class OgreFemale : Enemy {
     IBattleHandler[] friendlyNum;
 	[SerializeField]
 	int pattern = 0;
-	float pattern_timer = 5f;
+	//float pattern_timer = 5f;
 	protected OgreMale partner;
 
 	public OgreMale Partner {

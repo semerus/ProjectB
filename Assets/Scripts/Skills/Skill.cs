@@ -88,7 +88,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	}
 
 	public virtual bool CheckCondition () {
-		if (CheckSkillStatus (SkillStatus.ReadyMask)) {
+		if (CheckSkillStatus (SkillStatus.ReadyMask) && !caster.CheckCharacterStatus(CharacterStatus.NotOrderableMask)) {
 			return true;
 		} else {
 			return false;

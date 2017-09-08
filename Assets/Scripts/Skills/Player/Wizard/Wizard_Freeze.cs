@@ -81,7 +81,7 @@ public class Wizard_Freeze : HeroActive
         for (int i = 0; i < enemyNum.Length; i++)
         {
             Character c = enemyNum[i] as Character;
-            if(c.gameObject.active)
+			if(c.gameObject.activeSelf)
             {
                 caster.AttackTarget(enemyNum[i], damage);
                 // 이속 공속 20퍼 감소 디버프
@@ -101,7 +101,7 @@ public class Wizard_Freeze : HeroActive
             for (int i = 0; i < enemyNum.Length; i++)
             {
                 Character c = enemyNum[i] as Character;
-                if (c.gameObject.active)
+				if (c.gameObject.activeSelf)
                 {
                     caster.AttackTarget(enemyNum[i], damage);
                     // 이동불가 디버프

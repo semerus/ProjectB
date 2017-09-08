@@ -86,7 +86,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
                 switch(abillity)
                 {
                     case 1:
-                        if (!projectile[i].gameObject.active && (int)(skilltime-0.1*i) == i + 1)
+					if (!projectile[i].gameObject.activeSelf && (int)(skilltime-0.1*i) == i + 1)
                         {
                             projectile[i].ProjectileOn(caster,abillity);
                             if (i == 4)
@@ -100,7 +100,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
                         break;
 
                     case 2:
-                        if (!projectile[i].gameObject.active && (int)skilltime == i + 1)
+					if (!projectile[i].gameObject.activeSelf && (int)skilltime == i + 1)
                         {
                             projectile[i].ProjectileOn(caster,abillity);
                             snowStack++;

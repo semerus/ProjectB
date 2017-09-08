@@ -65,7 +65,6 @@ public class OgreMeteorStrike : Skill {
 	}
 
 	Vector3 SetTarget () {
-		Vector3 pos;
 		IBattleHandler[] friendly = BattleManager.GetBattleManager ().GetEntities (Team.Friendly);
 		int random = Random.Range (0, friendly.Length);
 		target = friendly [random] as Character;
