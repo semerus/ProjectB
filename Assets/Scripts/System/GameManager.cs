@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
 	void Update() {
 		switch(phase) {
 		case 0: // title scene
-			#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+			#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
 			if (Input.GetMouseButtonUp (0)) {
 				phase = 1;
 				SceneManager.LoadScene(1);
@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour {
 			#endif
 			break;
 		case 1: // battle scene
-			//#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+			//#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
 			if(Input.GetKeyUp(KeyCode.Alpha1)) {
 				Debug.Log("restart scene");
 				phase = 1;

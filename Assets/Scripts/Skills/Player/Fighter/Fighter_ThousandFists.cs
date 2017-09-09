@@ -16,6 +16,7 @@ public class Fighter_ThousandFists : HeroActive {
 
     public override void Activate()
     {
+		caster.StopMove ();
 		if (caster.ChangeAction (CharacterAction.Active3)) {
 			target = caster.Target;
 			StartCoolDown ();

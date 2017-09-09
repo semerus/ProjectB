@@ -13,7 +13,7 @@ public sealed class ControlSystem : MonoBehaviour {
 	int[] masks = new int[3] { 1 << 8, 1 << 9, 1 << 10 };
 
 	void Update() {
-		#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+		#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
 		ProcessClick ();
 		#endif
 
@@ -22,7 +22,7 @@ public sealed class ControlSystem : MonoBehaviour {
 		#endif
 	}
 
-	#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+	#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
 	private void ProcessClick() {
 		if (Input.GetMouseButtonDown (0)) {
 			startPos [0] = Input.mousePosition;

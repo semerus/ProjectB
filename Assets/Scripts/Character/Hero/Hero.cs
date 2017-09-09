@@ -86,7 +86,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 		if (b == null) {
 			type = PointerType.Move;
 		}
-
+		p = SetAdjustPosition (p);
 		Background.GetBackground ().PositionPointer (p, this, type);
 	}
 
