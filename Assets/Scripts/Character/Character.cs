@@ -325,7 +325,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         float ly = (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.y / 2) + GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.y;
         float mly = GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().offset.y - (GameObject.Find("Background").GetComponentInChildren<BoxCollider2D>().size.y / 2);
 
-        if ((cpx < lx && cpx > mly) && (cpy < ly && cpy > mly))
+        if ((cpx < lx && cpx > mlx) && (cpy < ly && cpy > mly))
         {
             return true;
         }
@@ -472,6 +472,10 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		anim.onCue += DisposeBody;
 		TimeSystem.GetTimeSystem().DeleteTimer(this);
 
+		for (int i = 0; i < skills.Length; i++) {
+			TimeSystem.GetTimeSystem ().DeleteTimer (skills [i]);
+		}
+
 		// BattleManager check
 		BattleManager.GetBattleManager ().CheckGame ();
 	}
@@ -483,7 +487,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 
     public void CheckFacing()
     {
-		Vector3 movePosition = moveTarget;
+		//Vector3 movePosition = moveTarget;
         switch(team)
         {
             case Team.Friendly:

@@ -10,6 +10,13 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 	protected Dictionary<Character, Pointer> current = new Dictionary<Character, Pointer>();
 	protected BoxCollider2D boundary;
 
+	protected string[] paths = {
+		"UI/Control/move_basic_character", "UI/Control/move_basic_ground",
+		"UI/Control/attack_basic_character", "UI/Control/attack_basic_enemy"
+	};
+
+	protected Sprite[] sprites = new Sprite[4];
+
 	public static Background GetBackground() {
 		if (!instance) {
 			instance = GameObject.FindObjectOfType (typeof(Background)) as Background;
@@ -17,6 +24,12 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 				Debug.LogError ("No active Background in the scene");
 		}
 		return instance;
+	}
+
+	public Sprite[] Sprites {
+		get {
+			return sprites;
+		}
 	}
 
 	#region IDoubleTapHandler implementation
@@ -34,6 +47,10 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 		GetBackground ();
 		boundary = GetComponentInChildren<BoxCollider2D> ();
 		pointerPrefab = Resources.Load ("Background/Pointer") as GameObject;
+
+		for (int i = 0; i < paths.Length; i++) {
+			sprites [i] = Resources.Load<Sprite> (paths [i]);
+		}
 	}
 
 	/// <summary>
@@ -49,7 +66,7 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 			return true;
 	}
 
-	public void PositionPointer(Vector3 pos, Character sender) {
+	public void PositionPointer(Vector3 pos, Character sender, PointerType type) {
 		Pointer p;
 		current.TryGetValue (sender, out p);
 		if (p == null) {
@@ -62,7 +79,7 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 			}
 			current.Add (sender, p);
 		}
-		p.PositionPointer (pos, sender.transform.position);
+		p.PositionPointer (pos, sender.transform.position, type);
 	}
 
 	public void DeactivatePointer(Character sender) {

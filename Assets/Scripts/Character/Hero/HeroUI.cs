@@ -13,6 +13,7 @@ public class HeroUI : MonoBehaviour {
 
 	void Start() {
 		hpBar = GetComponentInChildren<HpBar> ();
+		ccBar = GetComponentInChildren<Text> ();
 
 		// separate this later for customization for each hero(different sizes of hp bars)
 		SetUI (maxLength);

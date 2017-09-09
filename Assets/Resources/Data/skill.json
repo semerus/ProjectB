@@ -145,18 +145,19 @@
 		{
 			"id": 100120,
 			"name": "Restore",
-			"name_script": "Healer_Restore",
+			"name_script": "Healer_Restore_BonusHeal",
 			"path_sprite": "",
 			"path_prefab": "",
 			"cooldown": 20.0,
+			"heal": 50
 		},
 		{
 			"id": 100121,
 			"name": "Restore",
-			"name_script": "",
+			"name_script": "Healer_Restore_ReflectionBuff",
 			"path_sprite": "",
 			"path_prefab": "",
-			"cooldown": 20.0,
+			"cooldown": 20.0
 		},
 		{
 			"id": 100230,
@@ -283,7 +284,7 @@
 			"path_sprite": "",
 			"path_prefab": "",
 			"cooldown": 10.0,
-			"buff_time": 1.0
+			"stun_time": 1.0
 		},
 		{
 			"id": 200120,

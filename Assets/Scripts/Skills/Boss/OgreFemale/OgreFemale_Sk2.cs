@@ -10,9 +10,16 @@ public class OgreFemale_Sk2 : Skill {
     Character maxC;
     Character target;
     IBattleHandler maxNum = null;
+	protected float stunTime;
 
 	void Awake() {
 		caster = gameObject.GetComponent<Character> ();
+	}
+
+	public override void SetSkill (Dictionary<string, object> param)
+	{
+		base.SetSkill (param);
+		this.stunTime = (float)((double)param ["stun_time"]);
 	}
 
     public override void Activate()
@@ -96,6 +103,7 @@ public class OgreFemale_Sk2 : Skill {
     public void JumpEnd()
     {
         caster.Anim.onCue -= JumpEnd;
+		new Buff_Stun (stunTime, caster, target);
         caster.ChangeAction(CharacterAction.Idle);
         caster.ChangeAction(CharacterAction.Attacking);
         caster.Anim.onCue += AutoAttacking;
@@ -114,7 +122,6 @@ public class OgreFemale_Sk2 : Skill {
             if (hitCheck == true)
             {
                 Debug.Log("Auto Attack => " + c.gameObject.transform.name);
-                IBattleHandler ch = c as IBattleHandler;
                 caster.AttackTarget(c, 50);
             }
         }

@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour {
 			#if UNITY_ANDROID
 			if (Input.touchCount > 0) {
 				phase = 1;
-				SceneManager.LoadScene ("Battlefield");
+				SceneManager.LoadScene (1);
 			}
 			#endif
 			break;

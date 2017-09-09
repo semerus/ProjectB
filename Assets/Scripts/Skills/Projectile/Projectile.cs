@@ -38,7 +38,7 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
 
     public void DeleteProjectile()
     {
-        Destroy(this.gameObject);
+		gameObject.SetActive (false);
     }
 
     public void ProjectileOn(Character caster)
