@@ -7,7 +7,6 @@ public class OgreFemale_Sk2 : Skill {
 
     IBattleHandler[] friendlyNum;
     Vector3 adjustpoint;
-    Vector3 jumpdistance;
     Character maxC;
     Character target;
     IBattleHandler maxNum = null;
@@ -18,6 +17,8 @@ public class OgreFemale_Sk2 : Skill {
 
     public override void Activate()
     {
+        caster.Anim.ClearAnimEvent();
+        ResetSetting();
         UpdateSkillStatus(SkillStatus.ProcessOn);
         adjustpoint = this.gameObject.transform.position + Vector3.down;
         friendlyNum = BattleManager.GetBattleManager().GetEntities(Team.Friendly);
@@ -52,13 +53,11 @@ public class OgreFemale_Sk2 : Skill {
         {
             adjustpoint = maxC.transform.position;
             adjustpoint.x = maxC.transform.position.x + 1.25f;
-            jumpdistance = adjustpoint - this.gameObject.transform.position;
         }
         else
         {
             adjustpoint = maxC.transform.position;
             adjustpoint.x = maxC.transform.position.x - 1.25f;
-            jumpdistance = adjustpoint - this.gameObject.transform.position;
         }
     }
 
@@ -73,14 +72,21 @@ public class OgreFemale_Sk2 : Skill {
         float y = Mathf.Abs(adjustpoint.y - this.gameObject.transform.position.y);
         Vector3 s = new Vector3(x, y);
 
+        // 보스 뛰어다니기 스킬 후 스턴이 걸리면서 이 스킬이 실행되는데 if문을 통과 못하므로 점프가 실행되지 않음
+
 		if (caster.BeginJumpTarget (adjustpoint, x, y)) {
+            caster.ChangeAction(CharacterAction.Jumping);
 			//caster.MoveComplete += new EventHandler<MoveEventArgs> (OnMoveComplete);
 		} else {
-			// enter what happens when rooted at start
-			// 왜 스턴 당하고 일로 올까?
-			//SkillEventArgs e = new SkillEventArgs(this.name, false);
-			//OnEndSkill(e);
-		}
+            caster.ChangeAction(CharacterAction.Idle);
+            UpdateSkillStatus(SkillStatus.ProcessOff);
+            SkillEventArgs e = new SkillEventArgs(this.name, true);
+            OnEndSkill(e);
+            // enter what happens when rooted at start
+            // 왜 스턴 당하고 일로 올까?
+            //SkillEventArgs e = new SkillEventArgs(this.name, false);
+            //OnEndSkill(e);
+        }
     }
 
     #endregion
@@ -117,6 +123,16 @@ public class OgreFemale_Sk2 : Skill {
         UpdateSkillStatus(SkillStatus.ProcessOff);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
         OnEndSkill(s);
+    }
+
+    #endregion
+
+    #region ResetSetting
+
+    public void ResetSetting()
+    {
+        maxC = null;
+        target = null;
     }
 
     #endregion

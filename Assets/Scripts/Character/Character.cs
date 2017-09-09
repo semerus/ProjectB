@@ -245,7 +245,8 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
         }
         if (ChangeAction (CharacterAction.Jumping)) {
 			moveMethod = MoveMethod.CustomSpeed;
-			Move (target, speed_x, speed_y);
+            ChangeAction(CharacterAction.Jumping);
+            Move (target, speed_x, speed_y);
 			return true;
 		} else
 			return false;

@@ -64,40 +64,53 @@ public class OgreFemale : Enemy {
 
     protected override void InstructEnemyAI()
     {
-		base.InstructEnemyAI ();
-
-		switch (pattern) {
-		// idle
-		case 0:
-			if (skills[1].CheckSkillStatus (SkillStatus.ReadyMask)) {
-				pattern = 2;
-				skills[1].OnCast ();
-			}  else if (skills[2].CheckSkillStatus (SkillStatus.ReadyMask) && Sk3 ()) {
-				pattern = 3;
-				skills[2].OnCast ();
-			} else if (skills[0].CheckSkillStatus (SkillStatus.ReadyMask)) {
-				pattern = 1;
-				skills[0].OnCast ();
-			}
-			break;
-		// autoattack
-		case 1:
-			if (skills[1].CheckSkillStatus (SkillStatus.ReadyMask)) {
-				StopMove ();
-				pattern = 2;
-				skills[1].OnCast ();
-			} else if (skills[2].CheckSkillStatus (SkillStatus.ReadyMask) && Sk3 ()) {
-				StopMove ();
-				pattern = 3;
-				skills[2].OnCast (); 
-			}
-			else if (skills[0].CheckSkillStatus (SkillStatus.ReadyMask)) {
-				skills[0].OnCast ();
-			}
-			break;
-		default:
-			break;
-		}
+        base.InstructEnemyAI();
+        if (!skills[3].CheckSkillStatus(SkillStatus.ProcessMask))
+        {
+            switch (pattern)
+            {
+                // idle
+                case 0:
+                    if (skills[1].CheckSkillStatus(SkillStatus.ReadyMask))
+                    {
+                        StopMove();
+                        pattern = 2;
+                        skills[1].OnCast();
+                    }
+                    else if (skills[2].CheckSkillStatus(SkillStatus.ReadyMask) && Sk3())
+                    {
+                        pattern = 3;
+                        skills[2].OnCast();
+                    }
+                    else if (skills[0].CheckSkillStatus(SkillStatus.ReadyMask))
+                    {
+                        pattern = 1;
+                        skills[0].OnCast();
+                    }
+                    break;
+                // autoattack
+                case 1:
+                    if (skills[1].CheckSkillStatus(SkillStatus.ReadyMask))
+                    {
+                        StopMove();
+                        pattern = 2;
+                        skills[1].OnCast();
+                    }
+                    else if (skills[2].CheckSkillStatus(SkillStatus.ReadyMask) && Sk3())
+                    {
+                        StopMove();
+                        pattern = 3;
+                        skills[2].OnCast();
+                    }
+                    else if (skills[0].CheckSkillStatus(SkillStatus.ReadyMask))
+                    {
+                        skills[0].OnCast();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private bool Sk3()

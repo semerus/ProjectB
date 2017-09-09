@@ -18,15 +18,6 @@ public class OgreFemale_Sk4 : Skill
 		caster = gameObject.GetComponent<Character> ();
 	}
 
-    private void Update()
-    {
-        if(Input.GetKeyDown("q"))
-        {
-            Activate();
-        }
-        
-    }
-
     public override void SetSkill (Dictionary<string, object> param)
 	{
 		base.SetSkill (param);
@@ -70,8 +61,6 @@ public class OgreFemale_Sk4 : Skill
         Debug.Log(count);
     }
 
-    
-
     private void BurnBurn()
     {
         for (int i = 0; i < friendlyNum.Length; i++)
@@ -103,7 +92,6 @@ public class OgreFemale_Sk4 : Skill
     {
         float speed = 3 * Mathf.Sqrt(2);
         Vector3 target = FindTarget();
-        Debug.Log(target);
         caster.BeginMove (target, speed, speed);
         if(count>=6)
         {

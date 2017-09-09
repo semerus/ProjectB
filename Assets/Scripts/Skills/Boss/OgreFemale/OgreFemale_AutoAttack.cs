@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class OgreFemale_AutoAttack : Skill {
 
+    int a = 1;
     IBattleHandler[] friendlyNum;
     Character minC;
     float skillTime = 0f;
@@ -19,12 +20,11 @@ public class OgreFemale_AutoAttack : Skill {
         skillTime -= Time.deltaTime;
         if (CheckSkillStatus(SkillStatus.ProcessMask))
         {
-            if (skillTime <= 0f)
+            if(caster.Action==CharacterAction.Idle || caster.Action==CharacterAction.Moving)
             {
                 AutoAttack();
-                skillTime = 1.5f;
+                caster.Target = minC;
             }
-            caster.Target = minC;
         }
     }
 
@@ -46,6 +46,7 @@ public class OgreFemale_AutoAttack : Skill {
 
     private void AutoAttacking()
     {
+        caster.Anim.ClearAnimEvent();
         caster.Target = minC;
         StartCoolDown();
         for (int i = 0; i < friendlyNum.Length; i++)
@@ -59,10 +60,11 @@ public class OgreFemale_AutoAttack : Skill {
                 caster.AttackTarget(c, 50);
             }
         }
-		caster.Anim.onCue -= AutoAttacking;
+        
         UpdateSkillStatus(SkillStatus.ProcessOff);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
         OnEndSkill(s);
+        //caster.ChangeAction(CharacterAction.Idle);
     }
 
     public void AutoAttack()
@@ -147,8 +149,11 @@ public class OgreFemale_AutoAttack : Skill {
             if (((-1 * outerY) <= dY && dY <= outerY) && ((inX <= dX && dX <= outX) || (m_outX <= dX && dX <= m_inX)))
             {
                 caster.StopMove();
-                if (caster.ChangeAction(CharacterAction.Attacking))
+                Debug.Log(a++ +" "+ caster.Action);
+                if (caster.Action!=CharacterAction.Attacking)
                 {
+                    caster.ChangeAction(CharacterAction.Attacking);
+                    TimeSystem.GetTimeSystem().DeleteTimer(this);
                     caster.Anim.onCue += AutoAttacking;
                 }
                 Debug.Log("attack on");
