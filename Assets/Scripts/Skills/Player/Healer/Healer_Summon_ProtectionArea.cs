@@ -53,7 +53,7 @@ public class Healer_Summon_ProtectionArea : HeroActive {
 		base.SetSkill (param);
 		this.shield = (int)param ["shield"];
 		this.duration = (float)((double)param ["duration"]);
-		healer_ProtectionArea_Script.SetValue (shield, duration, caster);
+		//healer_ProtectionArea_Script.SetValue (shield, duration, caster);
 	}
 
     protected GameObject healer_ProtectionArea_Object;

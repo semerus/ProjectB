@@ -75,7 +75,7 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 			if (hitInfo.collider != null) {
 				b = hitInfo.collider.transform.root.GetComponent<IBattleHandler> ();
 				if (b != null && b.Team != Team.Friendly) {
-					this.target = b;
+					//this.target = b;
 					type = PointerType.Attack;
 				} else {
 					type = PointerType.Move;

@@ -32,8 +32,6 @@ public class Wizard_Blizzard : HeroActive,IChanneling
 
     public virtual void OnChanneling()
     {
-        caster.ChangeAction(CharacterAction.Channeling);
-        UpdateSkillStatus(SkillStatus.ChannelingOn);
         SkillChanneling();
     }
 
