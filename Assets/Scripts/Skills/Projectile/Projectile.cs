@@ -5,15 +5,16 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
 
     protected bool moving = false;
     protected Character caster;
-    protected Character target=null;
-    int damage;
+	protected IBattleHandler target;
+    protected int damage;
     float speed;
     IPooling_Character pool =null;
     private bool Pmoving = false;
     int abillity;
 
-    public void SetProjectile(int damage, float speed)
+	public virtual void SetProjectile(IBattleHandler target, int damage, float speed)
     {
+		this.target = target;
         this.damage = damage;
         this.speed = speed;
     }
@@ -36,29 +37,50 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
         this.gameObject.SetActive(true);
     }
 
+	public void ProjectileOn(Character caster)
+	{
+		pool = null;
+		this.caster = caster;
+		Pmoving = false;
+		this.gameObject.SetActive(true);
+		transform.position = caster.transform.position;
+	}
+
     public void DeleteProjectile()
     {
-		gameObject.SetActive (false);
+		if (gameObject.activeSelf) {
+			gameObject.SetActive (false);
+		}
     }
 
-    public void ProjectileOn(Character caster)
-    {
-        pool = null;
-        this.caster = caster;
-        Pmoving = false;
-        this.gameObject.SetActive(true);
-        transform.position = caster.transform.position;
-    }
+	public void ProjectileMove() {
+		Pmoving = true;
+		TimeSystem.GetTimeSystem().AddTimer(this);
+		transform.position = Vector3.MoveTowards(transform.position, target.Transform.position, speed*Time.deltaTime);
+		ProjectileRotation();
 
-    public void ProjectileMove(Character target)
+		if (Vector3.Distance (transform.position, target.Transform.position) < 0.1f) {
+			if (target.Action == CharacterAction.Dead) {
+				moving = false;
+				this.gameObject.SetActive(false);
+				TimeSystem.GetTimeSystem().DeleteTimer(this);
+				if(pool!=null)
+				{
+					pool.Pool.Push(this);
+				}
+			}
+		}
+	}
+
+    public void ProjectileMove(IBattleHandler target)
     {
         this.target = target;
         Pmoving = true;
         TimeSystem.GetTimeSystem().AddTimer(this);
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed*Time.deltaTime);
+		transform.position = Vector3.MoveTowards(transform.position, target.Transform.position, speed*Time.deltaTime);
         ProjectileRotation();
 
-        if (Vector3.Distance (transform.position, target.transform.position) < 0.1f) {
+		if (Vector3.Distance (transform.position, target.Transform.position) < 0.1f) {
 			if (target.Action == CharacterAction.Dead) {
 				moving = false;
 				this.gameObject.SetActive(false);
@@ -73,8 +95,8 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
 
     public void ProjectileRotation()
     {
-        float dx = target.transform.position.x - this.gameObject.transform.position.x;
-        float dy = target.transform.position.y - this.gameObject.transform.position.y;
+		float dx = target.Transform.position.x - this.gameObject.transform.position.x;
+		float dy = target.Transform.position.y - this.gameObject.transform.position.y;
         float ax = Mathf.Abs(dx);
         float ay = Mathf.Abs(dy);
         float seta = Mathf.Atan(ay / ax);
@@ -105,7 +127,7 @@ public class Projectile : MonoBehaviour, ITimeHandler, IPooledItem_Character {
     {
         if (target != null&&Pmoving==true)
         {
-            if (col.transform.root.transform == target.transform.root.transform)
+			if (col.transform.root == target.Transform.root)
             {
                 OnArrival(abillity);
             }

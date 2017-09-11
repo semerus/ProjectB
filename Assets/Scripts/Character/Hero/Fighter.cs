@@ -51,59 +51,8 @@ public class Fighter : Hero {
 	public override void RunTime ()
 	{
 		base.RunTime ();
-		if(anim.Anim.GetCurrentAnimatorStateInfo(0).IsName("Idle") && autoAttack.CheckCondition())
-		{
-			autoAttack.OnCast();
+		if (anim.Anim.GetCurrentAnimatorStateInfo (0).IsName ("Idle") && autoAttack.CheckCondition ()) {
+			autoAttack.OnCast ();
 		}
-		/*
-        // Action State Check -> Status Check
-        switch (action) {
-        case CharacterAction.Idle:
-                if (target != null)
-                    AutoAttack(target);
-                break;
-
-		case CharacterAction.Moving:
-                switch (moveMethod)
-                {
-                    case MoveMethod.Normal:
-                        Move(moveTarget);
-                        break;
-                    case MoveMethod.CustomSpeed:
-                        Move(moveTarget, customSpeed_x, customSpeed_y);
-                        break;
-                }
-                break;
-
-       case CharacterAction.Jumping:
-			switch (moveMethod) {
-			case MoveMethod.Normal:
-				Move(moveTarget);
-				break;
-			case MoveMethod.CustomSpeed:
-				Move(moveTarget, customSpeed_x, customSpeed_y);
-				break;
-			}
-			break;
-
-        case CharacterAction.Channeling:
-                // Do channeling Ani
-            break;
-
-        case CharacterAction.Attacking:
-                // Do Attacking Ani
-                break;
-
-        case CharacterAction.Dead:
-                // Do Dead Ani
-                break;
-
-        default:
-                Debug.LogError("CharacterAction Debug Error!");
-                break;
-        }
-
-		CheckFacing();
-		*/
 	}
 }

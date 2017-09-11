@@ -43,7 +43,7 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
             GameObject p = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/AutoAttack/AutoAttack"));
             p.transform.SetParent(GameObject.Find("Projectiles").transform);
             projectiles = p.gameObject.GetComponent<Projectile>();
-            projectiles.SetProjectile(damage, speed);
+            projectiles.SetProjectile(AtkTarget, damage, speed);
             projectiles.ProjectileOn(caster, this);
             projectiles.ProjectileMove(AtkTarget);
         }

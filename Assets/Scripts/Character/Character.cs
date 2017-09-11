@@ -92,6 +92,12 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		}
 	}
 
+	public Transform Transform {
+		get {
+			return transform;
+		}
+	}
+
 	public virtual void ReceiveDamage (IBattleHandler attacker, int damage)
 	{
         if(skills != null)
@@ -415,7 +421,7 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		if (CheckCharacterStatus (CharacterStatus.IsSilencedMask)) {
 			for (int i = 0; i < skills.Length; i++) {
 				IChanneling ch = skills [i] as IChanneling;
-				if (ch != null) {
+				if (ch != null && SkillStatus.CheckStatus(skills[i].Status, SkillStatus.ChannelingMask)) {
 					ch.OnInterrupt (null);
 				}
 			}

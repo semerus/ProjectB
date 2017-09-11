@@ -143,4 +143,8 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
         timer_cooldown += time;
     }
 
+	public void CancelSkill() {
+		UpdateSkillStatus (SkillStatus.ProcessOff);
+		StartCoolDown ();
+	}
 }

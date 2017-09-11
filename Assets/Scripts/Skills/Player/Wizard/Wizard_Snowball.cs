@@ -3,19 +3,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
+public class Wizard_Snowball : HeroActive, IPooling_Character, IChanneling
 {
-    IBattleHandler[] enemyNum;
-    IBattleHandler target;
-    protected Projectile[] projectile = new Projectile[5];
-    int damage;
-    float speed;
+    protected IBattleHandler target;
+	protected SnowBall_Projectile[] projectile = new SnowBall_Projectile[5];
+    protected int damage;
+    protected float speed;
     protected float skilltime = 0;
-    float shoottime = 0.2f;
-    int count = 0;
-    int snowStack = 0;
-    float r = 1f;
-    private int start = 0;
+
+    const float r = 1f;
+
+	/*************************/
+
+	protected float shootTimer = 0f;
+	protected float spinTimer = 0f;
+	protected float channelTimer = 0f;
+	protected int ballCount = 0;
+	protected int shootCount = 0;
+	protected float createTime = 1f;
+	protected float shootTime = 0.2f;
+
+
+	#region IChanneling implementation
+
+	public virtual void OnChanneling()
+	{
+		channelTimer += Time.deltaTime;
+		spinTimer += Time.deltaTime;
+
+		if (channelTimer > createTime) {
+			channelTimer = 0f;
+			CreateSnowBall ();
+		}
+		TurnSnowBall ();
+	}
+
+	public virtual void OnInterrupt(IBattleHandler interrupter)
+	{
+		Wizard_Passive.stackOff = true;
+		StartCoolDown();
+		UpdateSkillStatus (SkillStatus.ChannelingOff);
+		ResetSetting ();
+	}
+
+	#endregion
 
     void Awake() {
 		caster = gameObject.GetComponent<Character> ();
@@ -34,41 +65,93 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
         SetSnowProjectile();
     }
 
-    public virtual void OnChanneling()
-    {
-        if (start == 0)
-        {
-            ResetSetting();
-            start = 1;
-        }
-        caster.ChangeAction(CharacterAction.Channeling);
-        UpdateSkillStatus(SkillStatus.ChannelingOn);
-    }
+	public override bool CheckCondition ()
+	{
+		bool isReady = false;
+		if (target == null) {
+			Hero hero = caster as Hero;
+			if (hero != null) {
+				Wizard_AutoAttack auto = hero.autoAttack as Wizard_AutoAttack;
+				if (auto != null) {
+					target = auto.AtkTarget;
+				}
+			}
+		}
 
-    public virtual void OnInterrupt(IBattleHandler interrupter)
-    {
-        Wizard_Passive.stackOff = true;
-        StartCoolDown();
-        UpdateSkillStatus(SkillStatus.ChannelingOff);
-        start = 0;
-    }
+		if (target != null) {
+			if (target.Action == CharacterAction.Dead) {
+				target = null;
+			} else {
+				isReady = true;
+			}
+		}
+
+		return isReady && base.CheckCondition ();
+	}
+
+	protected override void OnProcess ()
+	{
+		base.OnProcess ();
+		shootTimer += Time.deltaTime;
+
+		if (shootTimer > shootTime) {
+			shootTimer = 0f;
+			ShootSnowBall ();
+		}
+	}
 
     #region Projectile
 
-    
-
-    public void SetSnowProjectile()
-    {
-        for(int i=0; i<=4; i++)
-        {
+	protected virtual void SetSnowProjectile() {
+        for(int i = 0; i < 5; i++) {
             GameObject p = Instantiate(Resources.Load<GameObject>("Skills/Heroes/Wizard/SnowBall/Snowball"));
             p.transform.SetParent(GameObject.Find("Projectiles").transform);
-            projectile[i] = p.gameObject.GetComponent<Projectile>();
-            projectile[i].SetProjectile(damage, speed);
+			projectile[i] = p.gameObject.GetComponent<SnowBall_Projectile>();
             projectile[i].gameObject.SetActive(false);
         }
     }
 
+	protected virtual void CreateSnowBall() {
+		if (ballCount < 4) {
+			SetSnowBall (projectile [ballCount++]);
+		} else {
+			// if count is 5 shoot
+			SetSnowBall (projectile [ballCount]);
+
+			StartCoolDown();
+			UpdateSkillStatus(SkillStatus.ChannelingOff);
+			UpdateSkillStatus(SkillStatus.ProcessOn);
+			SlowMotion();
+		}
+	}
+
+	protected void SetSnowBall(SnowBall_Projectile ball) {
+		ball.ProjectileOn (caster);
+		ball.SetProjectile (target, damage, speed);
+	}
+
+	private void TurnSnowBall() {
+		for (int i = 0; i < 5; i++) {
+			float rspeed = i + 0.5f * spinTimer;
+			float cpx = r * Mathf.Sin(2 * rspeed * Mathf.PI / 5);
+			float cpy = r * Mathf.Cos(2 * rspeed * Mathf.PI / 5) + 0.3f;
+			Vector3 target = caster.transform.position;
+			Vector3 position = new Vector3(cpx, cpy, 0f);
+			projectile[i].transform.position = position + target;
+		}
+	}
+
+	protected void ShootSnowBall() {
+		projectile [shootCount++].ProjectileMove ();
+		if (shootCount > ballCount) {
+			UpdateSkillStatus(SkillStatus.ProcessOff);
+			caster.ChangeAction(CharacterAction.Idle);
+			TimeSystem.GetTimeSystem().UnSlowMotion();
+			ResetSetting();
+		}
+	}
+
+	/*
     public void SnowProjectileRoundOn(int abillity)
     {
         if (CheckSkillStatus(SkillStatus.ChannelingMask))
@@ -117,18 +200,21 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
             }
         }
     }
+    */
 
+	/*
     public void SnowProjectileShoot(int abillity)
     {
-        shoottime += Time.deltaTime;
+        shootTime += Time.deltaTime;
 
         switch(abillity)
         {
             case 1:
-                if (shoottime >= 0.4 && count <= 5)
+                if (shootTime >= 0.4 && count <= 5)
                 {
-                    projectile[count].ProjectileMove(caster.Target as Character);
-                    shoottime = 0;
+					projectile [count].SetProjectile (target, damage, speed);
+					projectile[count].ProjectileMove(target as Character);
+                    shootTime = 0;
                     count++;
                 }
                 if (count >= 5)
@@ -141,13 +227,14 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
                 break;
 
             case 2:
-                if (shoottime >= 0.2 && count < snowStack)
+                if (shootTime >= 0.2 && count < snowStack)
                 {
-                    projectile[count].ProjectileMove(caster.Target as Character);
-                    shoottime = 0;
+					projectile [count].SetProjectile (target, damage, speed);				
+					projectile[count].ProjectileMove(target as Character);
+                    shootTime = 0;
                     count++;
                 }
-                if (shoottime>=0.2&& count >= snowStack)
+                if (shootTime>=0.2&& count >= snowStack)
                 {
                     UpdateSkillStatus(SkillStatus.ProcessOff);
                     caster.ChangeAction(CharacterAction.Idle);
@@ -158,18 +245,15 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
                 break;  
         }
     }
+	*/
 
     #endregion
 
-    public void ResetSetting()
-    {
-        cooldown = 10f;
-        target = caster.Target;
-        skilltime = 0;
-        shoottime = 0;
-        count = 0;
-        snowStack = 0;
-        start = 0;
+    public void ResetSetting() {
+		shootTimer = 0f;
+		spinTimer = 0f;
+		channelTimer = 0f;
+		ballCount = 0;
     }
 
     public void ActivePassive()
@@ -203,7 +287,7 @@ public class Wizard_Snowball : HeroActive,IPooling_Character,IChanneling
     public float Timer_Channeling { get ; set ; }
     #endregion
 
-    void SlowMotion()
+    protected void SlowMotion()
     {
         List<ITimeHandler> temp = new List<ITimeHandler>();
         temp.Add(this);

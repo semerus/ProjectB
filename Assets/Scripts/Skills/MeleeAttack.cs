@@ -48,8 +48,10 @@ public class MeleeAttack : Skill {
 	public override void OnCast ()
 	{
 		// check condition
-		if (!CheckCondition())
+		if (!CheckCondition ()) {
+			Debug.Log ("Get Moving");
 			return;
+		}
 
 		// move
 		TimeSystem.GetTimeSystem().AddTimer(this);

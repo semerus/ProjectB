@@ -10,7 +10,7 @@ public class Wizard_Snowball_Abillity2 : Wizard_Snowball{
     public override void OnChanneling()
     {
         base.OnChanneling();
-        SnowProjectileRoundOn(abillity);
+        //SnowProjectileRoundOn(abillity);
     }
 
     public override void OnInterrupt(IBattleHandler interrupter)
@@ -22,6 +22,6 @@ public class Wizard_Snowball_Abillity2 : Wizard_Snowball{
     protected override void OnProcess()
     {
         Wizard_Passive.skillCount++;
-        SnowProjectileShoot(abillity);
+        //SnowProjectileShoot(abillity);
     }
 }

@@ -182,11 +182,12 @@
 		{
 			"id": 100200,
 			"name": "Snowball",
-			"name_script": "Wizard_Snowball_Abillity1",
+			"name_script": "Wizard_Snowball_Stun",
 			"path_sprite": "",
 			"path_prefab": "",
-			"cooldown": 2.0,
-			"damage": 20,
+			"cooldown": 20.0,
+			"damage": 120,
+			"stun_time": 3.0,
 			"speed": 36.0
 		},
 		{

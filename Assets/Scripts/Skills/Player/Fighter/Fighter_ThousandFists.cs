@@ -18,6 +18,8 @@ public class Fighter_ThousandFists : HeroActive {
     {
 		caster.StopMove ();
 		if (caster.ChangeAction (CharacterAction.Active3)) {
+			Hero hero = caster as Hero;
+			hero.CancelCurrentAction ();
 			target = caster.Target;
 			StartCoolDown ();
 			hitCount = 0;
@@ -157,25 +159,6 @@ public class Fighter_ThousandFists : HeroActive {
 		if (h != null) {
 			h.activeSkills [2] = this;
 		}
-        /*
-		// set original value
-        normalDmg = 20;
-        lastDmg = 50;
-        HPCost = 30;
-
-        hitCounts = 7;
-
-        delayBetweenNormal = 0.15f;
-        delayBeforeLast = 0.5f;
-        
-
-        // set Timer value
-        skillStatus = SkillStatus.ReadyOn;
-        timer_cooldown = 0f;
-        timer_Channeling = 0f;
-        isTargetInMeleeRange = false;
-        positionToMeleeAttack = new Vector3();
-		*/
 		button = Resources.Load<Sprite> ("Skills/Heroes/Fighter/Fighter_Skill3");
     }
 

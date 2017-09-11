@@ -189,8 +189,12 @@ public abstract class Hero : Character, ITapHandler, IDragDropHandler {
 	}
 
 	public virtual void AutoAttack(IBattleHandler target) {
-			this.target = target;
-			autoAttack.OnCast ();
+		this.target = target;
+		autoAttack.OnCast ();
+	}
+
+	public void CancelCurrentAction() {
+		autoAttack.CancelSkill ();
 	}
 
 

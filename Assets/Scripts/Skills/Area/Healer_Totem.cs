@@ -41,6 +41,10 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
         get { return action; }
     }
 
+	public Transform Transform {
+		get { return transform; }
+	}
+
     public void ReceiveDamage(IBattleHandler attacker, int damage)
     {
         curHp_Count--;

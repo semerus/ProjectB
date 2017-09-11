@@ -4,23 +4,38 @@ using UnityEngine;
 
 public class SnowBall_Projectile : Projectile {
 
-    IBattleHandler[] enemyNum;
-
     public override void OnArrival(int abiility)
     {
-        SnowBall(abiility);
+        SnowBall();
         base.OnArrival(abiility);
     }
 
-    public void SnowBall(int abillity)
+    public void SnowBall()
     {
+		IBattleHandler[] enemyNum = BattleManager.GetBattleManager().GetEntities(Team.Hostile);
+
+		int finalDamage = (int)(damage * Wizard_Passive.mag);
+		caster.AttackTarget (target, finalDamage);
+
+		for (int i = 0; i < enemyNum.Length; i++)
+		{
+			bool hitcheck = Scanner.EllipseScanner(3f, 1.3f, enemyNum[i].Transform.position, target.Transform.position);
+			if (hitcheck && enemyNum[i] != target)
+			{
+				caster.AttackTarget(enemyNum[i], (int)finalDamage/2);
+			}
+		}
+
+		CameraShake.GetCameraShakeSystem ().CamShakeOn (0.1f, 0.1f);
+
+		/*
         enemyNum = BattleManager.GetBattleManager().GetEntities(Team.Hostile);
         switch (abillity)
         {
             case 1:
                 int damage1 = (int)(120 * Wizard_Passive.mag);
                 int splash1 = 60;
-                caster.AttackTarget(caster.Target, damage1);
+				caster.AttackTarget(target, damage1);
 
                 CameraShake.GetCameraShakeSystem().CamShakeOn(0.1f, 0.1f);
 
@@ -36,7 +51,7 @@ public class SnowBall_Projectile : Projectile {
                 for (int p = 0; p < enemyNum.Length; p++)
                 {
                     Character c = enemyNum[p] as Character;
-                    Character t = caster.Target as Character;
+                    Character t = target as Character;
                     bool hitcheck = EllipseScanner(3f, 1.3f, t.transform.position, c.transform.position);
                     if (hitcheck && t.transform.position != c.transform.position)
                     {
@@ -49,7 +64,7 @@ public class SnowBall_Projectile : Projectile {
                 int damage2 = (int)(20 * (Wizard_Snowball_Abillity2.abillity2count+2) * Wizard_Passive.mag);
                 int splash2 = damage2/2;
                 Wizard_Snowball_Abillity2.abillity2count++;
-                caster.AttackTarget(caster.Target, damage2);
+				caster.AttackTarget(target, damage2);
                 Debug.Log("Wizard SnowBall " + damage2 + " dmg");
 
                 for (int p = 0; p < enemyNum.Length; p++)
@@ -64,28 +79,6 @@ public class SnowBall_Projectile : Projectile {
                 }
                 break;
         }
+        */
     }
-
-    #region EllipseScanner
-
-    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
-    {
-        float dx = targetPosition.x - center.x;
-        float dy = targetPosition.y - center.y;
-
-        float l1 = Mathf.Sqrt((dx + Mathf.Sqrt(a * a - b * b)) * (dx + Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-        float l2 = Mathf.Sqrt((dx - Mathf.Sqrt(a * a - b * b)) * (dx - Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-
-        if (l1 + l2 <= 2 * a)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    #endregion
-
 }

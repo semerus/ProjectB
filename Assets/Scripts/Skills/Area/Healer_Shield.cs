@@ -22,6 +22,10 @@ public class Healer_Shield : HitScanner, ITimeHandler, IBattleHandler {
         get { return action; }
     }
 
+	public Transform Transform {
+		get { return transform; }
+	}
+
     public void ReceiveDamage(IBattleHandler attacker, int damage)
     {
         curHp  -= damage;

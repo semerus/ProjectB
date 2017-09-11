@@ -1,6 +1,6 @@
 ﻿/*
  * Written by Insung Kim
- * Updated: 2017.08.13
+ * Updated: 2017.09.11
  */
 using System;
 using System.Collections.Generic;
@@ -62,7 +62,6 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	void Start() {
 		SetGame ();
 		StartGame ();
-
 		animControllers = GameObject.FindObjectsOfType<AnimationController> ();
 	}
 
@@ -204,10 +203,34 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 		default:
 			break;
 		}
-
-
 	}
-	// unpause game
+		
+	// pause bosses
+	bool isBossPaused = false;
+
+	public void SwitchBossPause() {
+		if (!isBossPaused) {
+			Debug.Log ("Pause Boss");
+			isBossPaused = true;
+			IBattleHandler[] enemies = GetEntities (Team.Hostile);
+			for (int i = 0; i < enemies.Length; i++) {
+				Character c = enemies [i] as Character;
+				if (c != null) {
+					TimeSystem.GetTimeSystem ().DeleteTimer (c);
+				}
+			}
+		} else {
+			Debug.Log ("Unpause Boss");
+			isBossPaused = false;
+			IBattleHandler[] enemies = GetEntities (Team.Hostile);
+			for (int i = 0; i < enemies.Length; i++) {
+				Character c = enemies [i] as Character;
+				if (c != null) {
+					TimeSystem.GetTimeSystem ().AddTimer (c);
+				}
+			}
+		}
+	}
 
 	// end game(timer)
 

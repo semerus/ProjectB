@@ -51,11 +51,13 @@ public class Fighter_CounterStance : HeroActive, IChanneling {
 
 	public void OnInterrupt(IBattleHandler interrupter)
     {
-		timer_Channeling = 0f;
-		UpdateSkillStatus (SkillStatus.ChannelingOff);
-		StartCoolDown();
-		this.interrupter = interrupter;
-		Activate ();
+		if (interrupter != null) {
+			timer_Channeling = 0f;
+			UpdateSkillStatus (SkillStatus.ChannelingOff);
+			StartCoolDown();
+			this.interrupter = interrupter;
+			Activate ();
+		}
     }
     #endregion
 
