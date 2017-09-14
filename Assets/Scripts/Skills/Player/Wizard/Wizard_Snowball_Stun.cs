@@ -41,7 +41,8 @@ public class Wizard_Snowball_Stun : Wizard_Snowball {
 
 			StartCoolDown();
 			UpdateSkillStatus(SkillStatus.ChannelingOff);
-			UpdateSkillStatus(SkillStatus.ProcessOn);
+            caster.ChangeAction(CharacterAction.Idle);
+            UpdateSkillStatus(SkillStatus.ProcessOn);
 			SlowMotion();
 		}
 	}

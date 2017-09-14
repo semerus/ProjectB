@@ -106,6 +106,7 @@ public class OgreFemale_Sk2 : Skill {
 		new Buff_Stun (stunTime, caster, target);
         caster.ChangeAction(CharacterAction.Idle);
         caster.ChangeAction(CharacterAction.Attacking);
+        caster.Target = target;
         caster.Anim.onCue += AutoAttacking;
     }
 

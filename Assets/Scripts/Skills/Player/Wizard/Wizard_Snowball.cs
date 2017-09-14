@@ -254,6 +254,7 @@ public class Wizard_Snowball : HeroActive, IPooling_Character, IChanneling
 		spinTimer = 0f;
 		channelTimer = 0f;
 		ballCount = 0;
+        shootCount = 0;
     }
 
     public void ActivePassive()
