@@ -47,7 +47,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
     #endregion
 
-    public void OnEndSkill(SkillEventArgs e) {
+	public virtual void SendEndMessage(SkillEventArgs e) {
 		UpdateSkillStatus (SkillStatus.ProcessOff);
 
 		EventHandler<SkillEventArgs> endSkill = EndSkill;
@@ -116,6 +116,13 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	protected virtual void StartCoolDown() {
 		UpdateSkillStatus (SkillStatus.OnCoolDownOn);
 		TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
+	}
+
+	public virtual void OnEndSkill() {
+		UpdateSkillStatus (SkillStatus.ProcessOff);
+
+		SkillEventArgs s = new SkillEventArgs(this.name, true);
+		SendEndMessage(s);
 	}
 
 	public bool CheckSkillStatus(int mask){

@@ -51,7 +51,7 @@ public class OgreFemale_AutoAttack : Skill {
         for (int i = 0; i < friendlyNum.Length; i++)
         {
             Character c = friendlyNum[i] as Character;
-            bool hitCheck = EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
+			bool hitCheck = Scanner.EllipseScanner(2, 1.4f, minC.gameObject.transform.position, c.gameObject.transform.position);
             if (hitCheck == true)
             {
                 //Debug.Log("Auto Attack => " + c.gameObject.transform.name);
@@ -61,7 +61,7 @@ public class OgreFemale_AutoAttack : Skill {
         caster.Target = null;
         UpdateSkillStatus(SkillStatus.ProcessOff);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
-        OnEndSkill(s);
+        SendEndMessage(s);
         //caster.ChangeAction(CharacterAction.Idle);
     }
 
@@ -104,7 +104,7 @@ public class OgreFemale_AutoAttack : Skill {
         for (int i = 0; i <= friendlyNum.Length - 1; i++)
         {
             Character c = friendlyNum[i] as Character;
-            bool targetOn = EllipseScanner(3, 1.8f, this.gameObject.transform.position, c.gameObject.transform.position);
+			bool targetOn = Scanner.EllipseScanner(3, 1.8f, this.gameObject.transform.position, c.gameObject.transform.position);
 
             if (targetOn == true)
             {
@@ -178,24 +178,6 @@ public class OgreFemale_AutoAttack : Skill {
         }
     }
 
-    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
-    {
-        float dx = targetPosition.x - center.x;
-        float dy = targetPosition.y - center.y;
-
-        float l1 = Mathf.Sqrt((dx + Mathf.Sqrt(a * a - b * b)) * (dx + Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-        float l2 = Mathf.Sqrt((dx - Mathf.Sqrt(a * a - b * b)) * (dx - Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-
-        if (l1 + l2 <= 2 * a)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     protected void OnMoveComplete(object sender, EventArgs e)
     {
         MoveEventArgs m = e as MoveEventArgs;
@@ -205,7 +187,7 @@ public class OgreFemale_AutoAttack : Skill {
             {
                 UpdateSkillStatus(SkillStatus.ProcessOff);
                 SkillEventArgs s = new SkillEventArgs(this.name, true);
-                OnEndSkill(s);             
+                SendEndMessage(s);             
                 caster.MoveComplete -= OnMoveComplete;
             }
         }

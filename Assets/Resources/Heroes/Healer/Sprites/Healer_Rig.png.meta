@@ -1,0 +1,300 @@
+fileFormatVersion: 2
+guid: fe6955c437f94c24ebc513d92028d240
+timeCreated: 1502278863
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: l_arm
+    21300002: c_head_normal
+    21300004: r_arm
+    21300006: c_head_casting
+    21300008: l_hand
+    21300010: Healer_Rig_5
+    21300012: r_hand
+    21300014: Healer_Rig_7
+    21300016: c_body
+    21300018: c_totem
+    21300020: c_head_dead
+    21300022: l_leg
+    21300024: r_leg
+    21300026: Healer_damaged
+    21300028: l_foot
+    21300030: r_foot
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: l_arm
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 1064
+        width: 117
+        height: 115
+      alignment: 9
+      pivot: {x: 0.88942176, y: 0.65607697}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_normal
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 855
+        width: 347
+        height: 323
+      alignment: 9
+      pivot: {x: 0.51193666, y: 0.042624082}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_arm
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 1015
+        width: 115
+        height: 142
+      alignment: 9
+      pivot: {x: 0.40395403, y: 0.859755}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_casting
+      rect:
+        serializedVersion: 2
+        x: 1073
+        y: 856
+        width: 347
+        height: 323
+      alignment: 9
+      pivot: {x: 0.5119367, y: 0.04262408}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_hand
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 799
+        width: 250
+        height: 218
+      alignment: 9
+      pivot: {x: 0.958385, y: 0.2973322}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Healer_Rig_5
+      rect:
+        serializedVersion: 2
+        x: 894
+        y: 1012
+        width: 4
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_hand
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 811
+        width: 114
+        height: 143
+      alignment: 9
+      pivot: {x: 0.42733335, y: 0.91516924}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Healer_Rig_7
+      rect:
+        serializedVersion: 2
+        x: 949
+        y: 886
+        width: 5
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_body
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 451
+        width: 298
+        height: 285
+      alignment: 9
+      pivot: {x: 0.4768345, y: 0.03492999}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_totem
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 280
+        width: 399
+        height: 456
+      alignment: 9
+      pivot: {x: 0.24393472, y: 0.20630337}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_dead
+      rect:
+        serializedVersion: 2
+        x: 1072
+        y: 456
+        width: 348
+        height: 323
+      alignment: 9
+      pivot: {x: 0.5119367, y: 0.04262408}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_leg
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 243
+        width: 126
+        height: 147
+      alignment: 9
+      pivot: {x: 0.32467616, y: 0.7442015}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_leg
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 211
+        width: 149
+        height: 158
+      alignment: 9
+      pivot: {x: 0.6482608, y: 0.744677}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Healer_damaged
+      rect:
+        serializedVersion: 2
+        x: 1073
+        y: 46
+        width: 348
+        height: 323
+      alignment: 9
+      pivot: {x: 0.5119367, y: 0.04262408}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_foot
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 96
+        width: 113
+        height: 99
+      alignment: 9
+      pivot: {x: 0.47556353, y: 0.5557849}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_foot
+      rect:
+        serializedVersion: 2
+        x: 382
+        y: 96
+        width: 108
+        height: 73
+      alignment: 9
+      pivot: {x: 0.56392074, y: 0.8026148}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

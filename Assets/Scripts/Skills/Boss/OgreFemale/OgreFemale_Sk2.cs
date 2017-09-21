@@ -34,6 +34,12 @@ public class OgreFemale_Sk2 : Skill {
         Jump();
     }
 
+	public override void OnEndSkill ()
+	{
+		base.OnEndSkill ();
+		caster.ChangeAction (CharacterAction.Idle);
+	}
+
     #region JumpAttackTargetting
 
     public void JumpAttackTargetting()
@@ -88,7 +94,7 @@ public class OgreFemale_Sk2 : Skill {
             caster.ChangeAction(CharacterAction.Idle);
             UpdateSkillStatus(SkillStatus.ProcessOff);
             SkillEventArgs e = new SkillEventArgs(this.name, true);
-            OnEndSkill(e);
+            SendEndMessage(e);
             // enter what happens when rooted at start
             // 왜 스턴 당하고 일로 올까?
             //SkillEventArgs e = new SkillEventArgs(this.name, false);
@@ -101,13 +107,13 @@ public class OgreFemale_Sk2 : Skill {
     #region JumpEnd
 
     public void JumpEnd()
-    {
-        caster.Anim.onCue -= JumpEnd;
+	{
 		new Buff_Stun (stunTime, caster, target);
         caster.ChangeAction(CharacterAction.Idle);
         caster.ChangeAction(CharacterAction.Attacking);
         caster.Target = target;
-        caster.Anim.onCue += AutoAttacking;
+		caster.Anim.ClearAnimEvent();
+		caster.Anim.onCue += AutoAttacking;
     }
 
     #endregion
@@ -115,23 +121,21 @@ public class OgreFemale_Sk2 : Skill {
     #region AutoAttacking
 
     private void AutoAttacking()
-    {
-        for (int i = 0; i < friendlyNum.Length; i++)
-        {
-            Character c = friendlyNum[i] as Character;
-            bool hitCheck = EllipseScanner(2, 1.4f, target.gameObject.transform.position, c.gameObject.transform.position);
-            if (hitCheck == true)
-            {
-                Debug.Log("Auto Attack => " + c.gameObject.transform.name);
-                caster.AttackTarget(c, 50);
-            }
-        }
-        caster.Anim.onCue -= AutoAttacking;
-        caster.ChangeAction(CharacterAction.Idle);
-        UpdateSkillStatus(SkillStatus.ProcessOff);
-        SkillEventArgs s = new SkillEventArgs(this.name, true);
-        OnEndSkill(s);
-    }
+	{
+		for (int i = 0; i < friendlyNum.Length; i++) {
+			Character c = friendlyNum [i] as Character;
+			bool hitCheck = Scanner.EllipseScanner (2, 1.4f, target.gameObject.transform.position, c.gameObject.transform.position);
+			if (hitCheck == true) {
+				Debug.Log ("Auto Attack => " + c.gameObject.transform.name);
+				caster.AttackTarget (c, 50);
+			}
+		}
+		caster.Anim.onCue -= AutoAttacking;
+		caster.ChangeAction (CharacterAction.Idle);
+		UpdateSkillStatus (SkillStatus.ProcessOff);
+		SkillEventArgs s = new SkillEventArgs (this.name, true);
+		SendEndMessage (s);
+	}
 
     #endregion
 
@@ -145,27 +149,6 @@ public class OgreFemale_Sk2 : Skill {
 
     #endregion
 
-    #region EllipseScanner
-
-    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
-    {
-        float dx = targetPosition.x - center.x;
-        float dy = targetPosition.y - center.y;
-
-        float l1 = Mathf.Sqrt((dx + Mathf.Sqrt(a * a - b * b)) * (dx + Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-        float l2 = Mathf.Sqrt((dx - Mathf.Sqrt(a * a - b * b)) * (dx - Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-
-        if (l1 + l2 <= 2 * a)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    #endregion
 
     #region None
 

@@ -296,7 +296,7 @@
 			"cooldown": 10.0,
 			"channel_time": 2.0,
 			"cast_time": 1.0,
-			"buff_time": 4.0
+			"stun_time": 4.0
 		},
 		{
 			"id": 200130,
