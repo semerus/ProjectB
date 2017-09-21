@@ -47,7 +47,6 @@ public class OgreFemale_AutoAttack : Skill {
     private void AutoAttacking()
     {
         caster.Anim.ClearAnimEvent();
-        caster.Target = minC;
         StartCoolDown();
         for (int i = 0; i < friendlyNum.Length; i++)
         {
@@ -59,7 +58,7 @@ public class OgreFemale_AutoAttack : Skill {
                 caster.AttackTarget(c, 50);
             }
         }
-        
+        caster.Target = null;
         UpdateSkillStatus(SkillStatus.ProcessOff);
         SkillEventArgs s = new SkillEventArgs(this.name, true);
         OnEndSkill(s);
@@ -95,7 +94,7 @@ public class OgreFemale_AutoAttack : Skill {
             }
         }
         minC = minNum as Character;
-        
+        caster.Target = minC;
     }
 
     private bool OutNumberCheck()

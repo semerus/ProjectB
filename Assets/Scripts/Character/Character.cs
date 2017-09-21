@@ -491,9 +491,43 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
 		gameObject.SetActive (false);
 	}
 
+    private void AdjustFacingByTarget()
+    {
+        Character t = target as Character;
+        Vector3 targetPosition = t.transform.position;
+
+        if (transform.position.x - targetPosition.x >= 0f)
+        {
+            isFacingLeft = true;
+            anim.UpdateFacing(isFacingLeft);
+        }
+        else
+        {
+            isFacingLeft = false;
+            anim.UpdateFacing(isFacingLeft);
+        }
+    }
+
+    private void AdjustFacingByMove()
+    {
+        if (transform.position.x - moveTarget.x > 0f)
+        {
+            isFacingLeft = true;
+            anim.UpdateFacing(isFacingLeft);
+        }
+        else if (transform.position.x - moveTarget.x == 0f)
+        {
+            anim.UpdateFacing(isFacingLeft);
+        }
+        else
+        {
+            isFacingLeft = false;
+            anim.UpdateFacing(isFacingLeft);
+        }
+    }
+
     public void CheckFacing()
     {
-		//Vector3 movePosition = moveTarget;
         switch(team)
         {
             case Team.Friendly:
@@ -533,37 +567,47 @@ public abstract class Character : MonoBehaviour, IBattleHandler, ITimeHandler {
                 break;
 
             case Team.Hostile:
-                if (target != null&&action==CharacterAction.Idle)
+                if (target != null)
                 {
                     Character t = target as Character;
                     Vector3 targetPosition = t.transform.position;
 
-                    if (transform.position.x - targetPosition.x >= 0f)
+                    switch (Action)
                     {
-                        isFacingLeft = true;
-                        anim.UpdateFacing(isFacingLeft);
-                    }
-                    else
-                    {
-                        isFacingLeft = false;
-                        anim.UpdateFacing(isFacingLeft);
+                        case CharacterAction.Idle:
+                            AdjustFacingByTarget();
+                            break;
+
+                        case CharacterAction.Jumping:
+                            AdjustFacingByMove();
+                            break;
+
+                        case CharacterAction.Moving:
+                            AdjustFacingByMove();
+                            break;
+                            
+                        case CharacterAction.Attacking:
+                            AdjustFacingByTarget();
+                            break;
                     }
                 }
                 else
                 {
-                    if (transform.position.x - moveTarget.x > 0f)
+                    switch (Action)
                     {
-                        isFacingLeft = true;
-                        anim.UpdateFacing(isFacingLeft);
-                    }
-                    else if (transform.position.x - moveTarget.x == 0f)
-                    {
-                        anim.UpdateFacing(isFacingLeft);
-                    }
-                    else
-                    {
-                        isFacingLeft = false;
-                        anim.UpdateFacing(isFacingLeft);
+                        case CharacterAction.Idle:
+                            break;
+
+                        case CharacterAction.Jumping:
+                            AdjustFacingByMove();
+                            break;
+
+                        case CharacterAction.Moving:
+                            AdjustFacingByMove();
+                            break;
+
+                        case CharacterAction.Attacking:
+                            break;
                     }
                 }
                 break;
