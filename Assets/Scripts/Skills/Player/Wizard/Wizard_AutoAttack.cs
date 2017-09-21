@@ -10,8 +10,8 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
     public Stack<IPooledItem_Character> projectileNum = new Stack<IPooledItem_Character>();
 	public Projectile projectiles;
     public Character AtkTarget = null;
-	private int damage;
-    private float speed;
+	protected int damage;
+    protected float speed;
 
     public Stack<IPooledItem_Character> Pool
     {
@@ -34,6 +34,12 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
 		base.SetSkill (param);
 		damage = (int)param ["damage"];
         speed = (float)((double)param["speed"]);
+	}
+
+	protected override void StartCoolDown ()
+	{
+		curCooldown = Calculator.AttackCooltime (caster, cooldown);
+		base.StartCoolDown ();
 	}
 
     public void ProjectileStack()
@@ -110,7 +116,11 @@ public class Wizard_AutoAttack : Skill, IPooling_Character
     {
         StartCoolDown();
         ProjectileStack();
-        caster.ChangeAction(CharacterAction.Idle);
         caster.Anim.onCue -= AutoAttack;
+		caster.Anim.onCue += EndSkill;
     }
+
+	public void EndSkill() {
+		caster.ChangeAction(CharacterAction.Idle);
+	}
 }

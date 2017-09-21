@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
 
+	//List<Buff> attackSpeedBuffs = new List<Buff>();
+
     #region ITimeHandler
     public void RunTime()
     {
@@ -115,7 +117,17 @@ public class Healer_Totem : HitScanner, ITimeHandler, IBattleHandler {
         }
         else if(summoner.ActiveSkills[0] is Healer_Summon_Totem_AttackSpeedBuff)
         {
-            Debug.LogError("You should inplement AttackSpeedBuff");
+			bool isAlreadyBuffed = false;
+            //Debug.LogError("You should inplement AttackSpeedBuff");
+			for (int i = 0; i < target.Buffs.Count; i++) {
+				if (target.Buffs [i] is Buff_AttackSpeed_Ratio) {
+					isAlreadyBuffed = true;
+					break;
+				}
+			}
+			if (!isAlreadyBuffed) {
+				new Buff_AttackSpeed_Ratio (summoner, target);
+			}
         }
     }
     

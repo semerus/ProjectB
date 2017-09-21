@@ -24,7 +24,7 @@ public class Healer_Passive : Skill {
         TimeSystem.GetTimeSystem().AddTimer(this);
 
         //Prefab
-        GameObject potion_ref = Resources.Load("Skills\\Area\\Healer_Potion", typeof(GameObject)) as GameObject;
+        GameObject potion_ref = Resources.Load("Skills/Area/Healer_Potion/Healer_Potion", typeof(GameObject)) as GameObject;
         healer_Potion_Object = Instantiate(potion_ref, Vector3.zero, Quaternion.identity);
         healer_Potion_Script = healer_Potion_Object.GetComponentInChildren<Healer_Potion>();
     }

@@ -29,13 +29,17 @@ public abstract class Buff {
     /// <param name="target">Target.</param>
     /// 
     public virtual void StartBuff(Character caster, Character target) {
+		this.caster = caster;
         // check for counterBuff
         CheckCounterBuff();
 
 		// add to Buff list to target
-		this.caster = caster;
+
 		this.target = target; // can do this at construct method
 		target.Buffs.Add(this);
+
+		// debugging
+		target.BuffList.Add (BuffName);
 
 		// check for status changes to the character
 		IStatusBuff buff = this as IStatusBuff;
