@@ -10,6 +10,14 @@ public class Archer_SignTrap : HeroActive {
 
     #region SetSkill
 
+    private void Update()
+    {
+        if (Input.GetKeyDown("k"))
+        {
+            Activate();
+        }
+    }
+
     void Awake()
     {
         caster = gameObject.GetComponent<Character>();
@@ -18,7 +26,7 @@ public class Archer_SignTrap : HeroActive {
         {
             h.activeSkills[0] = this;
         }
-        button = Resources.Load<Sprite>("Skills/Heroes/Wizard/Wizard_Skill1");
+        button = Resources.Load<Sprite>("Skills/Heroes/Archer/Archer_SignTrap");
     }
 
     public override void SetSkill(Dictionary<string, object> param)
@@ -32,6 +40,8 @@ public class Archer_SignTrap : HeroActive {
 
     public override void Activate()
     {
+        Debug.Log(caster);
+        caster.ChangeAction(CharacterAction.Active1);
         caster.Anim.onCue += SetTrap;
         SlowMotion();
     }

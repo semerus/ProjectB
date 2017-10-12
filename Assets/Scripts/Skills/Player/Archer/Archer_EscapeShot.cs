@@ -17,6 +17,7 @@ public class Archer_EscapeShot : HeroActive {
 
     void Awake()
     {
+        button = Resources.Load<Sprite>("Skills/Heroes/Archer/Archer_EscapeShot");
         caster = gameObject.GetComponent<Character>();
         Hero h = caster as Hero;
         if (h != null)

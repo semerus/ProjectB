@@ -6,7 +6,7 @@ public class Archer_SignTrap_Ability1 : Archer_SignTrap {
 
     private void Awake()
     {
-         //button = Resources.Load<Sprite>("Skills/Heroes/Archer/Archer_SignTrap");
+        
     }
 
     protected override void SetTrap()

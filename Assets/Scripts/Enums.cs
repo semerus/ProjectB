@@ -18,7 +18,8 @@ public enum CharacterAction {
 	Channeling = 5,
 	Active1 = 6,
 	Active2 = 7,
-	Active3 = 8
+	Active3 = 8,
+    Attacked =9
 }
 
 public enum AreaState {
