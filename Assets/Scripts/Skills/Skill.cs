@@ -13,6 +13,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	protected Character caster;
 	protected int skillStatus = SkillStatus.ReadyOn;
 	protected float cooldown;
+	protected float curCooldown;
     [SerializeField]
 	protected float timer_cooldown = 0f;
 
@@ -46,7 +47,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
     #endregion
 
-    public void OnEndSkill(SkillEventArgs e) {
+	public virtual void SendEndMessage(SkillEventArgs e) {
 		UpdateSkillStatus (SkillStatus.ProcessOff);
 
 		EventHandler<SkillEventArgs> endSkill = EndSkill;
@@ -59,6 +60,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 		//this.caster = gameObject.GetComponent<Character> ();
 		this.id = (int)param ["id"];
 		this.cooldown = (float)((double)param ["cooldown"]);
+		curCooldown = cooldown;
 	}
 
 	// when ui button is clicked
@@ -103,7 +105,7 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 
 		// change skill ui if necessary
 
-		if (timer_cooldown >= cooldown) {
+		if (timer_cooldown >= curCooldown) {
 			// reset skill to ready
 			UpdateSkillStatus(SkillStatus.OnCoolDownOff);
 			timer_cooldown = 0f;
@@ -114,6 +116,13 @@ public abstract class Skill : MonoBehaviour, ITimeHandler {
 	protected virtual void StartCoolDown() {
 		UpdateSkillStatus (SkillStatus.OnCoolDownOn);
 		TimeSystem.GetTimeSystem ().AddTimer (this as ITimeHandler);
+	}
+
+	public virtual void OnEndSkill() {
+		UpdateSkillStatus (SkillStatus.ProcessOff);
+
+		SkillEventArgs s = new SkillEventArgs(this.name, true);
+		SendEndMessage(s);
 	}
 
 	public bool CheckSkillStatus(int mask){

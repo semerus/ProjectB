@@ -7,8 +7,9 @@ public class OgreFemale : Enemy {
 
     IBattleHandler[] friendlyNum;
 	[SerializeField]
-	int pattern = 0;
-	//float pattern_timer = 5f;
+	protected int pattern = 0;
+	float startPattern = 5f;
+	float patternTimer = 0f;
 	protected OgreMale partner;
 
 	public OgreMale Partner {
@@ -22,13 +23,6 @@ public class OgreFemale : Enemy {
 		partner = GameObject.Find ("Ogre Wizard").GetComponent<OgreMale> ();
 		partner.partner = this;
 
-		/*
-		skills = new Skill[4];
-		skills [0] = gameObject.AddComponent<OgreFemale_AutoAttack> ();
-		skills [1] = gameObject.AddComponent<OgreFemale_Sk2> ();
-		skills [2] = gameObject.AddComponent<OgreFemale_Sk3> ();
-		skills [3] = gameObject.AddComponent<OgreFemale_Sk4> ();
-		*/
 		for (int i = 0; i < skills.Length; i++) {
 			skills [i].EndSkill += new EventHandler<SkillEventArgs> (OnSkillEnd);
 		}
@@ -39,14 +33,17 @@ public class OgreFemale : Enemy {
 	{
 		switch (pattern) {
 		case 1:
+		case 2:
 		case 3:
 		case 4:
 			ChangeAction (CharacterAction.Idle);
 			pattern = 0;
 			break;
+			/*
 		case 2:
 			pattern = 1;
 			break;
+			*/
 		default:
 			break;
 		}
@@ -55,7 +52,11 @@ public class OgreFemale : Enemy {
 	public override void RunTime()
     {
 		base.RunTime ();
-        InstructEnemyAI();
+		if (patternTimer < startPattern) {
+			patternTimer += Time.deltaTime;
+		} else {
+			InstructEnemyAI();
+		}
     }
 
 	public void SetPattern(int change) {
@@ -67,48 +68,49 @@ public class OgreFemale : Enemy {
         base.InstructEnemyAI();
         if (!skills[3].CheckSkillStatus(SkillStatus.ProcessMask))
         {
-            switch (pattern)
-            {
-                // idle
-                case 0:
-                    if (skills[1].CheckSkillStatus(SkillStatus.ReadyMask))
-                    {
-                        StopMove();
-                        pattern = 2;
-                        skills[1].OnCast();
-                    }
-                    else if (skills[2].CheckSkillStatus(SkillStatus.ReadyMask) && Sk3())
-                    {
-                        pattern = 3;
-                        skills[2].OnCast();
-                    }
-                    else if (skills[0].CheckSkillStatus(SkillStatus.ReadyMask))
-                    {
-                        pattern = 1;
-                        skills[0].OnCast();
-                    }
-                    break;
-                // autoattack
-                case 1:
-                    if (skills[1].CheckSkillStatus(SkillStatus.ReadyMask))
-                    {
-                        StopMove();
-                        pattern = 2;
-                        skills[1].OnCast();
-                    }
-                    else if (skills[2].CheckSkillStatus(SkillStatus.ReadyMask) && Sk3())
-                    {
-                        StopMove();
-                        pattern = 3;
-                        skills[2].OnCast();
-                    }
-                    else if (skills[0].CheckSkillStatus(SkillStatus.ReadyMask))
-                    {
-                        skills[0].OnCast();
-                    }
-                    break;
-                default:
-                    break;
+            switch (pattern) {
+			// idle
+            case 0:
+                if (skills[1].CheckSkillStatus(SkillStatus.ReadyMask))
+                {
+                    StopMove();
+                    pattern = 2;
+                    skills[1].OnCast();
+                }
+                else if (skills[2].CheckSkillStatus(SkillStatus.ReadyMask) && Sk3())
+                {
+                    pattern = 3;
+                    skills[2].OnCast();
+                }
+                else if (skills[0].CheckSkillStatus(SkillStatus.ReadyMask))
+                {
+                    pattern = 1;
+                    skills[0].OnCast();
+                }
+                break;
+            // autoattack
+			case 1:
+				if (!skills [0].CheckSkillStatus (SkillStatus.ProcessMask)) {
+					if (skills[1].CheckSkillStatus(SkillStatus.ReadyMask))
+					{
+						StopMove();
+						pattern = 2;
+						skills[1].OnCast();
+					}
+					else if (skills[2].CheckSkillStatus(SkillStatus.ReadyMask) && Sk3())
+					{
+						StopMove();
+						pattern = 3;
+						skills[2].OnCast();
+					}
+					else if (skills[0].CheckSkillStatus(SkillStatus.ReadyMask))
+					{
+						skills[0].OnCast();
+					}
+				}
+                break;
+			default:
+				break;
             }
         }
     }
@@ -120,7 +122,7 @@ public class OgreFemale : Enemy {
         for (int i = 0; i <= friendlyNum.Length - 1; i++)
         {
             Character c = friendlyNum[i] as Character;
-            bool targetOn = EllipseScanner(4, 1.5f, this.gameObject.transform.position, c.gameObject.transform.position);
+			bool targetOn = Scanner.EllipseScanner(4, 1.5f, this.gameObject.transform.position, c.gameObject.transform.position);
 
             if (targetOn == true)
             {
@@ -131,24 +133,6 @@ public class OgreFemale : Enemy {
         if (targetingNum >= 2)
         {
             Debug.Log("e on");
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool EllipseScanner(float a, float b, Vector3 center, Vector3 targetPosition)
-    {
-        float dx = targetPosition.x - center.x;
-        float dy = targetPosition.y - center.y;
-
-        float l1 = Mathf.Sqrt((dx + Mathf.Sqrt(a * a - b * b)) * (dx + Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-        float l2 = Mathf.Sqrt((dx - Mathf.Sqrt(a * a - b * b)) * (dx - Mathf.Sqrt(a * a - b * b)) + (dy * dy));
-
-        if (l1 + l2 <= 2 * a)
-        {
             return true;
         }
         else

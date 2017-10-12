@@ -9,6 +9,7 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 	protected Stack<Pointer> pointers = new Stack<Pointer>();
 	protected Dictionary<Character, Pointer> current = new Dictionary<Character, Pointer>();
 	protected BoxCollider2D boundary;
+	protected GameObject darkEffect;
 
 	protected string[] paths = {
 		"UI/Control/move_basic_character", "UI/Control/move_basic_ground",
@@ -46,6 +47,9 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 	void Awake() {
 		GetBackground ();
 		boundary = GetComponentInChildren<BoxCollider2D> ();
+		darkEffect = transform.Find ("Dark").gameObject;
+		darkEffect.GetComponent<Renderer> ().sortingOrder = 1;
+		darkEffect.SetActive (false);
 		pointerPrefab = Resources.Load ("Background/Pointer") as GameObject;
 
 		for (int i = 0; i < paths.Length; i++) {
@@ -89,6 +93,14 @@ public class Background : MonoBehaviour, IDoubleTapHandler {
 			current.Remove (sender);
 			p.DeactivatePointer ();
 			pointers.Push (p);
+		}
+	}
+
+	public void SetDark(bool on) {
+		if (on) {
+			darkEffect.SetActive (true);
+		} else {
+			darkEffect.SetActive (false);
 		}
 	}
 }

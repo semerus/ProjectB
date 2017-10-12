@@ -96,7 +96,7 @@
 			"name_script": "Healer_Passive",
 			"path_sprite": "",
 			"path_prefab": "",
-			"cooldown": 30.0,
+			"cooldown": 5.0,
 			"heal": 50,
 			"remain_time": 5.0
 		},
@@ -128,7 +128,7 @@
 			"name_script": "Healer_Summon_ProtectionArea",
 			"path_sprite": "",
 			"path_prefab": "",
-			"cooldown": 25.0,
+			"cooldown": 5.0,
 			"shield": 300,
 			"duration": 2.0
 		},
@@ -374,7 +374,7 @@
 			"cooldown": 10.0,
 			"channel_time": 2.0,
 			"cast_time": 1.0,
-			"buff_time": 4.0
+			"stun_time": 4.0
 		},
 		{
 			"id": 200130,

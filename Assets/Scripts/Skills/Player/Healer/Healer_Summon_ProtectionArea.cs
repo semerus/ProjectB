@@ -36,7 +36,7 @@ public class Healer_Summon_ProtectionArea : HeroActive {
 		}
         
         //Prefab
-		protectionArea = Resources.Load("Skills/Area/Healer_ProtectionArea", typeof(GameObject)) as GameObject;
+		protectionArea = Resources.Load("Skills/Area/Healer_Shield/Healer_ProtectionArea", typeof(GameObject)) as GameObject;
 		healer_ProtectionArea_Object = Instantiate (protectionArea);
         healer_ProtectionArea_Script = healer_ProtectionArea_Object.GetComponentInChildren<Healer_ProtectionArea>();
 		healer_ProtectionArea_Object.SetActive (false);

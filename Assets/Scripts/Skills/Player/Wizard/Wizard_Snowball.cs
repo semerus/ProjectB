@@ -147,6 +147,7 @@ public class Wizard_Snowball : HeroActive, IPooling_Character, IChanneling
 			UpdateSkillStatus(SkillStatus.ProcessOff);
 			caster.ChangeAction(CharacterAction.Idle);
 			TimeSystem.GetTimeSystem().UnSlowMotion();
+			Background.GetBackground ().SetDark (false);
 			ResetSetting();
 		}
 	}
@@ -301,5 +302,7 @@ public class Wizard_Snowball : HeroActive, IPooling_Character, IChanneling
         ITimeHandler[] nonSlow = new ITimeHandler[temp.Count];
         temp.CopyTo(nonSlow);
         TimeSystem.GetTimeSystem().SlowMotion(nonSlow);
+
+		Background.GetBackground ().SetDark (true);
     }
 }

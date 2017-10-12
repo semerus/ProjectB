@@ -44,6 +44,8 @@ public class Buff_Stun : Buff, ITimeHandler, IStatusBuff {
 		this.buffTime = time;
 		this.isBuff = false;
 
+		buffName = "Stunned";
+
 		StartBuff (caster, target);
 	}
 

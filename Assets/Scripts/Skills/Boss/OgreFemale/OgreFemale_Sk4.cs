@@ -106,7 +106,7 @@ public class OgreFemale_Sk4 : Skill
 			stun1 = new Buff_Stun (2f, caster, f.Partner);
 
             SkillEventArgs s = new SkillEventArgs(this.name, true);
-            OnEndSkill(s);
+            SendEndMessage(s);
         }
     }
 
