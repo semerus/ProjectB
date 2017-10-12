@@ -4,29 +4,74 @@ using UnityEngine;
 
 public class Archer_Explosive : HeroActive {
 
-    Projectile projectile = new Projectile();
+    // 채널링 없음
 
-    public void EffectOn(int abillity)
+    protected Projectile projectile = new Projectile();
+    protected int damage;
+    protected float speed;
+
+    #region Setskill
+
+    private void Update()
     {
-        switch(abillity)
+        if(Input.GetKeyDown("f"))
         {
-            case 1:
-                projectile = Instantiate(Resources.Load("Skills/Heroes/Archer/Explosive/Explosive_Abillity1")) as Projectile;
-                projectile.ProjectileOn(caster, 1);
-                break;
-
-            case 2:
-                projectile = Instantiate(Resources.Load("Skills/Heroes/Archer/Explosive/Explosive_Abillity2")) as Projectile;
-                projectile.ProjectileOn(caster, 2);
-                break;
+            Activate();
         }
+    }
+
+    void Awake()
+    {
+        caster = gameObject.GetComponent<Character>();
+        Hero h = caster as Hero;
+        if (h != null)
+        {
+            h.activeSkills[1] = this;
+        }
+        button = Resources.Load<Sprite>("Skills/Heroes/Archer/Archer_Explosive");
+    }
+
+    public override void SetSkill(Dictionary<string, object> param)
+    {
+        base.SetSkill(param);
+        damage = (int)param["damage"];
+        speed = (float)((double)param["speed"]);
+    }
+
+    #endregion
+
+    public override void Activate()
+    {
+        caster.ChangeAction(CharacterAction.Active2);
+        SlowMotion();
+        caster.Anim.onCue += SetArrowProjectiles;
+    }
+
+    protected virtual void SetArrowProjectiles()
+    {
+        StartCoolDown();
+        caster.Anim.onCue -= SetArrowProjectiles;
         projectile.transform.SetParent(GameObject.Find("Projectiles").transform);
         projectile.transform.position = caster.transform.position;
+        EffectMove();
+        TimeSystem.GetTimeSystem().UnSlowMotion();
+        caster.ChangeAction(CharacterAction.Idle);
+        Debug.Log("ssssggggg");
     }
 
     public void EffectMove()
     {
-        //projectile.SetProjectile(1, 1);
         projectile.ProjectileMove(caster.Target as Character);
+    }
+
+    protected void SlowMotion()
+    {
+        List<ITimeHandler> temp = new List<ITimeHandler>();
+        temp.Add(this);
+        temp.Add(this.caster);
+
+        ITimeHandler[] nonSlow = new ITimeHandler[temp.Count];
+        temp.CopyTo(nonSlow);
+        TimeSystem.GetTimeSystem().SlowMotion(nonSlow);
     }
 }

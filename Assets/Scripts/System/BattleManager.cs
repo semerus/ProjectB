@@ -20,9 +20,9 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 	private static BattleManager instance;
 	private GameState gameState = GameState.Playing;
 	private float gameTime;
-	private Vector3[] heroPos = new Vector3[]{new Vector3(-5.7f, 0.65f), new Vector3(-7.5f, -0.3f), new Vector3(-3.75f, -0.3f), new Vector3(-5.7f, -2.1f)};
+	private Vector3[] heroPos = new Vector3[]{new Vector3(-5.7f, 0.65f), new Vector3(-7.5f, -0.3f), new Vector3(-3.75f, -0.3f), new Vector3(-5.7f, -2.1f), new Vector3(0,0)};
 	private Vector3[] bossPos = new Vector3[]{new Vector3(6.17f, 0f), new Vector3(6.17f, -2.5f)};
-	private Vector3[] movePos = new Vector3[]{new Vector3(0f, 1f), new Vector3(-1f, 0f), new Vector3(1f, 0f)};
+	private Vector3[] movePos = new Vector3[]{new Vector3(0f, 1f), new Vector3(-1f, 0f), new Vector3(1f, 0f), new Vector3(-1f,0f) };
 
 	// list of all animators
 	AnimationController[] animControllers;
@@ -236,12 +236,13 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 
 	private void SetGame() {
 		// temporary id values
-		int[] hs = {1000, 1001, 1002};
+		int[] hs = {1000, 1001, 1002, 1003};
 		int[] bs = {2000, 2001};
 		int[][] hss0 = new int[][] {
 			new int[] { 100030, 100040, 100000, 100010, 100020 },
 			new int[] { 100130, 100100, 100110, 100120 },
-			new int[] { 100230, 100240, 100200, 100210, 100220 }
+			new int[] { 100230, 100240, 100200, 100210, 100220 },
+            new int[] { 100330, 100340, 100300, 100310, 100320}
 		};
 
 		int[][] bss0 = new int[][] {
@@ -259,6 +260,7 @@ public class BattleManager : MonoBehaviour, ITimeHandler {
 			Dictionary<string, object> param = (Dictionary<string, object>)LoadManager.Instance.HeroData [hs [i]];
 			GameObject prefab = Resources.Load<GameObject> (param ["path_prefab"].ToString ());
 			Hero hero = Instantiate (prefab).GetComponent<Hero> ();
+            Debug.Log(hero);
 			hero.transform.position = heroPos [i];
 			hero.Spawn (param, hss0[i]);
 		}

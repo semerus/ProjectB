@@ -1,0 +1,356 @@
+fileFormatVersion: 2
+guid: d407fb1e185fdde4e94c1faf3f8b8f08
+timeCreated: 1502585812
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: c_head_attaked
+    21300002: l_arm_upper
+    21300004: c_head_normal
+    21300006: r_arm_upper
+    21300008: Archer_Rig_4
+    21300010: l_arm_lower
+    21300012: r_arm_lower
+    21300014: c_head_muffler
+    21300016: c_arrow
+    21300018: c_arrow_back
+    21300020: l_leg
+    21300022: c_body
+    21300024: r_leg
+    21300026: Archer_Rig_13
+    21300028: l_foot
+    21300030: c_body_cape
+    21300032: r_foot
+    21300034: c_head_dead
+    21300036: c_head_casting
+    21300038: c_head_skill
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: c_head_attaked
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 1239
+        width: 372
+        height: 319
+      alignment: 9
+      pivot: {x: 0.509792, y: 0.054673724}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_arm_upper
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 1408
+        width: 152
+        height: 150
+      alignment: 9
+      pivot: {x: 0.5359465, y: 0.6821273}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_normal
+      rect:
+        serializedVersion: 2
+        x: 943
+        y: 1239
+        width: 373
+        height: 319
+      alignment: 9
+      pivot: {x: 0.509792, y: 0.05467372}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_arm_upper
+      rect:
+        serializedVersion: 2
+        x: 1448
+        y: 1443
+        width: 147
+        height: 115
+      alignment: 9
+      pivot: {x: 0.7477928, y: 0.7058827}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Archer_Rig_4
+      rect:
+        serializedVersion: 2
+        x: 1530
+        y: 1441
+        width: 5
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_arm_lower
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 847
+        width: 387
+        height: 468
+      alignment: 9
+      pivot: {x: 0.58000416, y: 0.5233496}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_arm_lower
+      rect:
+        serializedVersion: 2
+        x: 1385
+        y: 1235
+        width: 240
+        height: 131
+      alignment: 9
+      pivot: {x: 0.78836876, y: 0.6112228}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_muffler
+      rect:
+        serializedVersion: 2
+        x: 969
+        y: 1071
+        width: 288
+        height: 123
+      alignment: 9
+      pivot: {x: 0.55691487, y: 0.6480713}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_arrow
+      rect:
+        serializedVersion: 2
+        x: 1316
+        y: 861
+        width: 526
+        height: 320
+      alignment: 9
+      pivot: {x: 0.8393241, y: 0.7561165}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_arrow_back
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 479
+        width: 309
+        height: 411
+      alignment: 9
+      pivot: {x: 0.2583428, y: 0.38478598}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_leg
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 622
+        width: 115
+        height: 124
+      alignment: 9
+      pivot: {x: 0.30995455, y: 0.80844164}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_body
+      rect:
+        serializedVersion: 2
+        x: 961
+        y: 727
+        width: 263
+        height: 268
+      alignment: 9
+      pivot: {x: 0.5138501, y: 0.1466192}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_leg
+      rect:
+        serializedVersion: 2
+        x: 1464
+        y: 656
+        width: 131
+        height: 143
+      alignment: 9
+      pivot: {x: 0.6807395, y: 0.8311409}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Archer_Rig_13
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 719
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: l_foot
+      rect:
+        serializedVersion: 2
+        x: 717
+        y: 490
+        width: 92
+        height: 86
+      alignment: 9
+      pivot: {x: 0.5989818, y: 0.8388409}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_body_cape
+      rect:
+        serializedVersion: 2
+        x: 961
+        y: 490
+        width: 346
+        height: 192
+      alignment: 9
+      pivot: {x: 0.43157077, y: 0.8794317}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: r_foot
+      rect:
+        serializedVersion: 2
+        x: 1483
+        y: 490
+        width: 94
+        height: 91
+      alignment: 9
+      pivot: {x: 0.53875214, y: 0.84023744}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_dead
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 75
+        width: 372
+        height: 319
+      alignment: 9
+      pivot: {x: 0.509792, y: 0.05467372}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_casting
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 70
+        width: 372
+        height: 319
+      alignment: 9
+      pivot: {x: 0.509792, y: 0.05467372}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: c_head_skill
+      rect:
+        serializedVersion: 2
+        x: 1150
+        y: 70
+        width: 372
+        height: 319
+      alignment: 9
+      pivot: {x: 0.509792, y: 0.05467372}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

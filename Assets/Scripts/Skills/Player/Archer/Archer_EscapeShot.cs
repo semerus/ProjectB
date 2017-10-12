@@ -3,55 +3,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Archer_EscapeShot : HeroActive,IChanneling {
+public class Archer_EscapeShot : HeroActive {
 
     Vector3 CurrentPosition;
     Vector3 MoveVector;
     Vector3 targetPosition;
     float MoveVectorSize;
     float time = 0;
+    protected int damage;
+    protected float speed;
 
-    #region None
+    #region SetSkill
 
-    public float ChannelTime
+    void Awake()
     {
-        get
+        caster = gameObject.GetComponent<Character>();
+        Hero h = caster as Hero;
+        if (h != null)
         {
-            throw new NotImplementedException();
+            h.activeSkills[2] = this;
         }
     }
 
-    public float Timer_Channeling { get ; set ;}
+    public override void SetSkill(Dictionary<string, object> param)
+    {
+        base.SetSkill(param);
+        damage = (int)param["damage"];
+        speed = (float)((double)param["speed"]);
+    }
 
     #endregion
 
-    public void OnChanneling()
+    public override void Activate()
     {
-        caster.ChangeAction(CharacterAction.Channeling);
-        UpdateSkillStatus(SkillStatus.ChannelingOn);
-        EscapeMove();
-    }
-
-    public void OnInterrupt(IBattleHandler interrupter)
-    {
-        caster.ChangeAction(CharacterAction.Idle);
         StartCoolDown();
-        UpdateSkillStatus(SkillStatus.ChannelingOff);
     }
 
-    protected override void OnProcess()
-    {
-        caster.ChangeAction(CharacterAction.Idle);
-        base.OnProcess();
-        Damage();
-    }
-    
     public void EscapeTarget(int abiliity)
     {
         time = 0;
-        StartCoolDown();
+        
         CurrentPosition = this.gameObject.transform.position;
-        Character target = Archer_AutoAttack.AttackTarget;
+        //Character target = Archer_AutoAttack.AtkTarget;
+        Character target = caster.Target as Character;
         MoveVector = this.gameObject.transform.position - target.transform.position;
         MoveVectorSize= Mathf.Sqrt(MoveVector.x * MoveVector.x + MoveVector.y * MoveVector.y);
         switch(abiliity)
@@ -107,7 +101,6 @@ public class Archer_EscapeShot : HeroActive,IChanneling {
 
     public void Damage()
     {
-        //2회사격
         caster.AttackTarget(caster.Target, 20);
     }
 
